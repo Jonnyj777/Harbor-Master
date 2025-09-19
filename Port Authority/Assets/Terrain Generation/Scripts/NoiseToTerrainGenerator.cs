@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,6 +33,9 @@ public class NoiseToTerrainGenerator : MonoBehaviour
     [SerializeField]
     private Vector3 meshScale = new Vector3(2.0f, 1.0f, 2.0f);
 
+    [SerializeField]
+    private Gradient meshGradient;
+
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -46,6 +50,7 @@ public class NoiseToTerrainGenerator : MonoBehaviour
         CreateMeshStructure();
         CreateMeshTriangles();
         UpdateToMesh();
+        SetVectorColors();
 
         waterPlaneTransform.position = new Vector3(waterPlaneTransform.position.x, waterLevel, waterPlaneTransform.position.z);
         
@@ -89,6 +94,21 @@ public class NoiseToTerrainGenerator : MonoBehaviour
             }
             vertexOffset++;
         }
+    }
+
+    private void SetVectorColors()
+    {
+        int numVerts = vertices.Length;
+        Color[] vertexColors = new Color[numVerts];
+        for(int i = 0; i < numVerts; i++)
+        {
+            float normalizedHeight = vertices[i].y / maxHeight;
+            print(normalizedHeight);
+            vertexColors[i] = meshGradient.Evaluate(normalizedHeight);
+        }
+
+
+        mesh.colors = vertexColors;
     }
 
     private void UpdateToMesh()
