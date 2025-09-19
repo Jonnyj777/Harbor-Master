@@ -16,6 +16,8 @@ public class LineFollower : MonoBehaviour
     // draw line once the object is clicked
     private void OnMouseDown()
     {
+        drawControl.DeleteLine();
+        startMovement = false;
         drawControl.StartLine(transform.position);
     }
 
