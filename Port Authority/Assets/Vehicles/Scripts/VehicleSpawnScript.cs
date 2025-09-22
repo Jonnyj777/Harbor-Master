@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class VehicleSpawnScript : MonoBehaviour
 {
-    public Camera mainCamera;
     public GameObject ship;
     public float spawnRate = 5f;
     public float spawnMargin = 2f;

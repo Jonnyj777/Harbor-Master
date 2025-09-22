@@ -6,37 +6,50 @@ using UnityEngine;
 
 public class LineFollower : MonoBehaviour
 {
-    public DrawLine drawControl;
+    public GameObject pathLinePrefab;
+    private DrawLine drawControl;
+
     public float speed = 5f;
 
-    bool startMovement = false;
+    bool pathFinding = false;
     Vector3[] positions;
     int moveIndex = 0;
 
     // draw line once the object is clicked
     private void OnMouseDown()
     {
-        drawControl.DeleteLine();
-        startMovement = false;
+        // if this vehicle already has a path, clear it
+        if (drawControl != null)
+            Destroy(drawControl.gameObject);
+
+        // create a new pathLine instance for this vehicle alone
+        GameObject pathLine = Instantiate(pathLinePrefab);
+        drawControl = pathLine.GetComponent<DrawLine>();
+
+        pathFinding = false;
         drawControl.StartLine(transform.position);
     }
 
     private void OnMouseDrag()
     {
-        drawControl.UpdateLine();
+        if (drawControl != null)
+            drawControl.UpdateLine();
     }
 
     private void OnMouseUp()
     {
-        positions = new Vector3[drawControl.drawLine.positionCount];
-        drawControl.drawLine.GetPositions(positions);
-        startMovement = true;
-        moveIndex = 0;
+        if (drawControl != null)
+        {
+            positions = new Vector3[drawControl.drawLine.positionCount];
+            drawControl.drawLine.GetPositions(positions);
+            pathFinding = true;
+            moveIndex = 0;
+        }
     }
 
     private void Update()
     {
-        if (startMovement)
+        if (pathFinding)
         {
             // update position and direction of object
             Vector3 currentPos = positions[moveIndex];
@@ -83,9 +96,14 @@ public class LineFollower : MonoBehaviour
             // remove line after following finishes
             if (moveIndex > positions.Length - 1)
             {
-                startMovement = false;
+                pathFinding = false;
                 drawControl.DeleteLine();
             }
+        }
+        else
+        {
+            // Move forward at a constant velocity
+            transform.position += transform.forward * speed * Time.deltaTime;
         }
     }
 }

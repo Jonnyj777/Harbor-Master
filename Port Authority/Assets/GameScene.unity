@@ -403,12 +403,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 872288914}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 091e5cfef0b71114f9dc775d792f5b7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d284853e0593ea4f80b84cdd6c709b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   worldTopRight: {x: 100, y: 0, z: 100}
   worldBottomLeft: {x: 0, y: 0, z: 0}
-  ocean: {fileID: 5347015206457855318, guid: 8a1e4a9e50c4a9c489b4cf1a43645046, type: 3}
+  ocean: {fileID: 5347015206457855318, guid: 7ca928d439898b1448ec24172e462cab, type: 3}
 --- !u!4 &872288916
 Transform:
   m_ObjectHideFlags: 0
@@ -450,11 +450,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1404711425}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ca38ad6c94bd6c44b10521731629331, type: 3}
+  m_Script: {fileID: 11500000, guid: 65b37b202f768014c880e7d11664ffc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 764578600}
-  ship: {fileID: 7474889960959800330, guid: 8901981fd3672c04c8edccb8113402fa, type: 3}
+  ship: {fileID: 7474889960959800330, guid: 56dd754188b75b04a9024c7e9e9f3d7e, type: 3}
   spawnRate: 5
   spawnMargin: 2
   cornerMargin: 10
