@@ -450,11 +450,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1404711425}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ca38ad6c94bd6c44b10521731629331, type: 3}
+  m_Script: {fileID: 11500000, guid: a35af157b2fc7f841aedb167003c9888, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 764578600}
-  ship: {fileID: 7474889960959800330, guid: 8901981fd3672c04c8edccb8113402fa, type: 3}
+  ship: {fileID: 7474889960959800330, guid: 8374eecc06b3d2a40abd0216a908ceb6, type: 3}
   spawnRate: 5
   spawnMargin: 2
   cornerMargin: 10

@@ -9,7 +9,7 @@ public class LineFollower : MonoBehaviour
     public DrawLine drawControl;
     public float speed = 5f;
 
-    bool startMovement = false;
+    bool pathFinding = false;
     Vector3[] positions;
     int moveIndex = 0;
 
@@ -17,7 +17,7 @@ public class LineFollower : MonoBehaviour
     private void OnMouseDown()
     {
         drawControl.DeleteLine();
-        startMovement = false;
+        pathFinding = false;
         drawControl.StartLine(transform.position);
     }
 
@@ -30,13 +30,13 @@ public class LineFollower : MonoBehaviour
     {
         positions = new Vector3[drawControl.drawLine.positionCount];
         drawControl.drawLine.GetPositions(positions);
-        startMovement = true;
+        pathFinding = true;
         moveIndex = 0;
     }
 
     private void Update()
     {
-        if (startMovement)
+        if (pathFinding)
         {
             // update position and direction of object
             Vector3 currentPos = positions[moveIndex];
@@ -83,9 +83,13 @@ public class LineFollower : MonoBehaviour
             // remove line after following finishes
             if (moveIndex > positions.Length - 1)
             {
-                startMovement = false;
+                pathFinding = false;
                 drawControl.DeleteLine();
             }
+        }
+        else
+        {
+            transform.position += transform.forward * speed * Time.deltaTime;
         }
     }
 }
