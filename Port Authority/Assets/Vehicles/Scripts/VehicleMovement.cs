@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections;
 
 public class VehicleMovement : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class VehicleMovement : MonoBehaviour
     public bool isCrashed = false;  // Indicates if the vehicle is in a crashed state
     public CrashType crashType = CrashType.None;  // Type of crash, default to None
     public Color landCrashedColor = Color.red;  // Color to red when land vehicles crash
+    public Color boatCrashedColor = Color.cyan;  // Color to when boat vehicles crash
 
     // Target position for the vehicle to move towards (moveTo function)
     private Vector3? targetPosition = null;
@@ -49,10 +51,10 @@ public class VehicleMovement : MonoBehaviour
             {
                 MoveTo(targetPosition.Value);
             }
-            else
-            {
-                DefaultBoatMovement();
-            }
+            //else
+            //{
+                //DefaultBoatMovement();
+            //}
         }
         else if (vehicleType == VehicleType.Land)
         {
@@ -141,6 +143,7 @@ public class VehicleMovement : MonoBehaviour
 
         // stop rigidbody immediately to have vehicles stay in place
         Rigidbody rb = GetComponent<Rigidbody>();
+
         if (rb != null)
         {
             rb.angularVelocity = Vector3.zero;
@@ -148,12 +151,31 @@ public class VehicleMovement : MonoBehaviour
             rb.constraints = RigidbodyConstraints.FreezeAll;
         }
 
-        if (type == CrashType.Land && vehicleRenderer != null)
+        switch (type)
         {
-            vehicleRenderer.material.color = landCrashedColor;
-        }
+            case CrashType.Land:
+                if (vehicleRenderer != null)
+                {
+                    vehicleRenderer.material.color = landCrashedColor;
+                }
+                Debug.Log($"{gameObject.name} crashed into another land vehicle and is now an avoidable obstacle");
+                break;
 
-        Debug.Log($"{gameObject.name} crashed into another land vehicle and is now an avoidable obstacle");
+            case CrashType.Boat:
+                if (vehicleRenderer != null)
+                {
+                    vehicleRenderer.material.color = boatCrashedColor;
+                }
+                Debug.Log($"{gameObject.name} crashed and will disappear after 3 seconds...");
+                StartCoroutine(DelayedDestroy(3f));  // 3s delay before being destroyed (after collision)
+                break;
+        }
+    }
+
+    private IEnumerator DelayedDestroy(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Destroy(gameObject);
     }
 }
 
@@ -162,3 +184,6 @@ public class VehicleMovement : MonoBehaviour
 // https://docs.unity3d.com/ScriptReference/Transform.Translate.html
 // https://docs.unity3d.com/ScriptReference/Input.GetKeyDown.html
 // https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types
+// https://docs.unity3d.com/Manual/Coroutines.html
+// https://docs.unity3d.com/ScriptReference/WaitForSeconds.html
+// https://docs.unity3d.com/ScriptReference/Renderer-material.html
