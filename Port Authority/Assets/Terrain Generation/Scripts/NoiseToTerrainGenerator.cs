@@ -103,7 +103,6 @@ public class NoiseToTerrainGenerator : MonoBehaviour
         for(int i = 0; i < numVerts; i++)
         {
             float normalizedHeight = vertices[i].y / maxHeight;
-            print(normalizedHeight);
             vertexColors[i] = meshGradient.Evaluate(normalizedHeight);
         }
 
