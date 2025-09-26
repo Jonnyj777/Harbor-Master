@@ -1,31 +1,34 @@
-using Unity.VisualScripting;
-using UnityEngine;
+using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class VehicleMovement : MonoBehaviour
+
+public class LineFollower : MonoBehaviour
 {
-    [Header("Vehicle Settings")]  // Adds labeled header in Inspector for clarity regarding vehicle type and speed
-    public VehicleType vehicleType = VehicleType.Boat;  // Default to Boat, can be changed in Inspector
-    public float speed = 5f;  // Default, adjustable speed variable for different vehicles
-
-    [Header("Crash Settings")]  // Adds labeled header in Inspector for clarity regarding vehicle crash states
-    public bool isCrashed = false;  // Indicates if the vehicle is in a crashed state
-    public CrashType crashType = CrashType.None;  // Type of crash, default to None
-    public Color landCrashedColor = Color.red;  // Color to red when land vehicles crash
-    public Color boatCrashedColor = Color.cyan;  // Color to when boat vehicles crash
-
-    // Target position for the vehicle to move towards (moveTo function)
-    private Vector3? targetPosition = null;
+    [Header("Vehicle Settings")]
+    public VehicleType vehicleType = VehicleType.Boat;  // Default type: Boat
     private Renderer vehicleRenderer;
+    public DrawLine drawControl;
+    public float speed = 5f;
+
+    [Header("Crash Settings")]
+    public CrashType crashType = CrashType.None;
+    public bool isCrashed = false;
+    public Color landCrashedColor = Color.red;
+    public Color boatCrashedColor = Color.cyan;
     private Color originalColor;  // used for a reset state later on (e.g., repairs on crashed vehicles)
 
-    // enum for crash types
     public enum CrashType
     {
         None,
         Land,
         Boat
     }
+
+    bool pathFinding = false;
+    Vector3[] positions;
+    int moveIndex = 0;
 
     private void Awake()
     {
@@ -36,7 +39,28 @@ public class VehicleMovement : MonoBehaviour
         }
     }
 
-    void Update()
+    // draw line once the object is clicked
+    private void OnMouseDown()
+    {
+        drawControl.DeleteLine();
+        pathFinding = false;
+        drawControl.StartLine(transform.position);
+    }
+
+    private void OnMouseDrag()
+    {
+        drawControl.UpdateLine();
+    }
+
+    private void OnMouseUp()
+    {
+        positions = new Vector3[drawControl.drawLine.positionCount];
+        drawControl.drawLine.GetPositions(positions);
+        pathFinding = true;
+        moveIndex = 0;
+    }
+
+    private void Update()
     {
         // If the vehicle is crashed, do not process movement
         if (isCrashed)
@@ -44,76 +68,67 @@ public class VehicleMovement : MonoBehaviour
             return;
         }
 
-        // Decide movement behavior based on vehicle type
-        if (vehicleType == VehicleType.Boat)
+        if (pathFinding)
         {
-            if (targetPosition.HasValue)
+            // update position and direction of object
+            Vector3 currentPos = positions[moveIndex];
+            transform.position = Vector3.MoveTowards(transform.position, currentPos, speed * Time.deltaTime);
+
+            Vector3 direction = (currentPos - transform.position).normalized;
+
+            if (direction.sqrMagnitude > 0.001f) 
             {
-                MoveTo(targetPosition.Value);
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                float angleOffset = Quaternion.Angle(transform.rotation, targetRotation);
+
+                if (angleOffset > 5f)
+                {
+                    transform.LookAt(currentPos);
+                }
             }
-            //else
-            //{
-                //DefaultBoatMovement();
-            //}
+
+            float distance = Vector3.Distance(currentPos, transform.position);
+            if (distance <= 0.05f)
+            {
+                moveIndex++;
+            }
+
+            // remove the part of line already traveled on
+            if (drawControl.drawLine.positionCount > 1)
+            {
+                Vector3[] currentPositions = new Vector3[drawControl.drawLine.positionCount];
+                drawControl.drawLine.GetPositions(currentPositions);
+
+                currentPositions[0] = transform.position;
+
+                if (Vector3.Distance(currentPositions[0], currentPositions[1]) < 0.05f)
+                {
+                    List<Vector3> temp = new List<Vector3>(currentPositions);
+                    temp.RemoveAt(0);
+                    currentPositions = temp.ToArray();
+                }
+
+                drawControl.drawLine.positionCount = currentPositions.Length;
+                drawControl.drawLine.SetPositions(currentPositions);
+            }
+
+            // remove line after following finishes
+            if (moveIndex > positions.Length - 1)
+            {
+                pathFinding = false;
+                drawControl.DeleteLine();
+            }
         }
-        else if (vehicleType == VehicleType.Land)
+        else
         {
-            if (targetPosition.HasValue)
-            {
-                MoveTo(targetPosition.Value);
-            }
-            else
-            {
-                DefaultLandMovement();
-            }
+            transform.position += transform.forward * speed * Time.deltaTime;
         }
-
-        // USED FOR TESTING PURPOSES ONLY - REMOVE LATER
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-            //SetTarget(new Vector3(10, 0, 10));
-        //}
-
-        // USED FOR TESTING PURPOSES ONLY - REMOVE LATER
-        //if (Input.GetKeyDown(KeyCode.E))
-        //{
-            //SetTarget(new Vector3(70, 0, 20));
-        //}
-    }
-
-    // Sets a new destination for this vehicle
-    // Sade can call this function for path-drawing(?)
-    public void SetTarget(Vector3 newTarget)
-    {
-        targetPosition = newTarget;
-    }
-
-    // Moves the vehicle towards the target position
-    private void MoveTo(Vector3 destination)
-    {
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            destination,
-            speed * Time.deltaTime
-            );
-    }
-
-    // Default movement for boats (e.g., moving forward continuously)
-    private void DefaultBoatMovement()
-    {
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
-    }
-
-    // Default movement for land vehicles
-    private void DefaultLandMovement()
-    {
-        // Discuss cycling behavior in next call
     }
 
     // Collision detection to set crash state
     private void OnCollisionEnter(Collision collision)
     {
-        VehicleMovement other = collision.gameObject.GetComponent<VehicleMovement>();
+        LineFollower other = collision.gameObject.GetComponent<LineFollower>();
         if (other == null) return;
 
         // land vehicle crash state
