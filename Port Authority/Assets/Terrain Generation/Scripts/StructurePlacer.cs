@@ -42,7 +42,7 @@ public class StructurePlacer : MonoBehaviour
             GameObject newStructure = Instantiate(structures[randomStructureIndex]);
             newStructure.transform.position = spawnLocations[i].position;
             randomStructureIndex = (int)Mathf.Floor(Random.Range(0, structures.Count));
-
+            print(newStructure);
             spawns.Add(newStructure);
         }
     }
