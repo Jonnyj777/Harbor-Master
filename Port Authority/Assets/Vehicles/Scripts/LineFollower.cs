@@ -9,15 +9,20 @@ public class LineFollower : MonoBehaviour
     [Header("Vehicle Settings")]
     public VehicleType vehicleType = VehicleType.Boat;  // Default type: Boat
     private Renderer vehicleRenderer;
+    private Color originalColor;  // used for a reset state later on (e.g., repairs on crashed vehicles)
+
+    [Header("Path Settings")]
     public DrawLine drawControl;
     public float speed = 5f;
+    bool pathFinding = false;
+    Vector3[] positions;
+    int moveIndex = 0;
 
     [Header("Crash Settings")]
     public CrashType crashType = CrashType.None;
     public bool isCrashed = false;
     public Color landCrashedColor = Color.red;
     public Color boatCrashedColor = Color.cyan;
-    private Color originalColor;  // used for a reset state later on (e.g., repairs on crashed vehicles)
 
     public enum CrashType
     {
@@ -26,17 +31,21 @@ public class LineFollower : MonoBehaviour
         Boat
     }
 
-    bool pathFinding = false;
-    Vector3[] positions;
-    int moveIndex = 0;
+    [Header("Environment")]
+    private Transform waterPlane;
+    private Transform terrain;   // used for land vehicles later on
+    private float waterLevel;
 
-    private void Awake()
+    private void Start()
     {
         vehicleRenderer = GetComponent<Renderer>();
         if (vehicleRenderer != null)
         {
             originalColor = vehicleRenderer.material.color;
         }
+
+        GameObject waterPlane = GameObject.Find("WaterPlane");
+        waterLevel = waterPlane.transform.position.y;
     }
 
     // draw line once the object is clicked
@@ -72,6 +81,9 @@ public class LineFollower : MonoBehaviour
         {
             // update position and direction of object
             Vector3 currentPos = positions[moveIndex];
+
+            // lock the object to environment y-position
+            currentPos.y = waterLevel;
             transform.position = Vector3.MoveTowards(transform.position, currentPos, speed * Time.deltaTime);
 
             Vector3 direction = (currentPos - transform.position).normalized;
@@ -126,27 +138,37 @@ public class LineFollower : MonoBehaviour
     }
 
     // Collision detection to set crash state
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        LineFollower other = collision.gameObject.GetComponent<LineFollower>();
-        if (other == null) return;
+        if (vehicleType == VehicleType.Land && other.CompareTag("Water"))
+        {
+            EnterCrashState(CrashType.Land);
+        }
+
+        if (vehicleType == VehicleType.Boat && other.CompareTag("Terrain"))
+        {
+            EnterCrashState(CrashType.Boat);
+        }
+
+        LineFollower vehicle = other.gameObject.GetComponent<LineFollower>();
+        if (vehicle == null) return;
 
         // land vehicle crash state
         // if land vehicle collides into another land vehicle, both land vehicles enter land crash state
         // land crash state == stuck in place, no fade out
-        if (vehicleType == VehicleType.Land && other.vehicleType == VehicleType.Land)
+        if (vehicleType == VehicleType.Land && vehicle.vehicleType == VehicleType.Land)
         {
             EnterCrashState(CrashType.Land);
-            other.EnterCrashState(CrashType.Land);
+            vehicle.EnterCrashState(CrashType.Land);
         }
 
         // boat vehicle crash state
         // if boat vehicle collides into another boat vehicle, both boat vehicles enter boat crash state
         // boat crash state = disappear off map after a few seconds (do NOT act as additional obstacles)
-        if (vehicleType == VehicleType.Boat && other.vehicleType == VehicleType.Boat)
+        if (vehicleType == VehicleType.Boat && vehicle.vehicleType == VehicleType.Boat)
         {
             EnterCrashState(CrashType.Boat);
-            other.EnterCrashState(CrashType.Boat);
+            vehicle.EnterCrashState(CrashType.Boat);
         }
     }
 

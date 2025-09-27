@@ -5,27 +5,31 @@ public class VehicleSpawnScript : MonoBehaviour
 {
     public GameObject ship;
     public float spawnRate = 5f;
-    public float spawnMargin = 2f;
+    public float spawnMargin = 0f;
     public float cornerMargin = 10f;
     public float maxSpawnAngle = 15f;
     private float timer = 0f;
 
     // World Bounds
     private float minX, maxX, minZ, maxZ;
+    private float waterLevel;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // Calculate the world bounds after the game bounds object exists
-        GameObject gameBoundsObject = GameObject.Find("Game Bounds");
-        GameBoundsScript gameBounds = gameBoundsObject.GetComponent<GameBoundsScript>();
-        Vector3 worldBottomLeft = gameBounds.worldBottomLeft;
-        Vector3 worldTopRight = gameBounds.worldTopRight;
+        GameObject waterPlane = GameObject.Find("WaterPlane");
+        waterLevel = waterPlane.transform.position.y;
+        Renderer waterPlaneRend = waterPlane.GetComponent<Renderer>();
+        if (waterPlaneRend != null)
+        {
+            Bounds bounds = waterPlaneRend.bounds;
 
-        minX = worldBottomLeft.x;
-        maxX = worldTopRight.x;
-        minZ = worldBottomLeft.z;
-        maxZ = worldTopRight.z;
+            minX = bounds.min.x;
+            maxX = bounds.max.x;
+            minZ = bounds.min.z;
+            maxZ = bounds.max.z;
+        }
         Debug.Log("MinX: " + minX + "; " + "MaxX: " + maxX + "; " + "MinZ: " + minZ + "; " + "MaxZ: " + maxZ + "; ");
 
         // Spawn a boat immediately
@@ -54,19 +58,19 @@ public class VehicleSpawnScript : MonoBehaviour
         switch (side)
         {
             case 0: // Left
-                spawnPos = new Vector3(minX - spawnMargin, 0, Random.Range(minZ + cornerMargin, maxZ - cornerMargin));
+                spawnPos = new Vector3(minX - spawnMargin, waterLevel, Random.Range(minZ + cornerMargin, maxZ - cornerMargin));
                 shipDirection = Vector3.right;
                 break;
             case 1: // Right
-                spawnPos = new Vector3(maxX + spawnMargin, 0, Random.Range(minZ + cornerMargin, maxZ - cornerMargin));
+                spawnPos = new Vector3(maxX + spawnMargin, waterLevel, Random.Range(minZ + cornerMargin, maxZ - cornerMargin));
                 shipDirection = Vector3.left;
                 break;
             case 2: // Bottom
-                spawnPos = new Vector3(Random.Range(minX + cornerMargin, maxX - cornerMargin), 0, minZ - spawnMargin);
+                spawnPos = new Vector3(Random.Range(minX + cornerMargin, maxX - cornerMargin), waterLevel, minZ - spawnMargin);
                 shipDirection = Vector3.forward;
                 break;
             case 3: // Top
-                spawnPos = new Vector3(Random.Range(minX + cornerMargin, maxX - cornerMargin), 0, maxZ + spawnMargin);
+                spawnPos = new Vector3(Random.Range(minX + cornerMargin, maxX - cornerMargin), waterLevel, maxZ + spawnMargin);
                 shipDirection = Vector3.back;
                 break;
         }
