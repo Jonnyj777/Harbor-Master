@@ -2,7 +2,7 @@ using UnityEngine;
 
 
 public class VehicleSpawnScript : MonoBehaviour
-{
+{   
     public GameObject ship;
     public float spawnRate = 5f;
     public float spawnMargin = 0f;
@@ -18,12 +18,14 @@ public class VehicleSpawnScript : MonoBehaviour
     void Start()
     {
         // Calculate the world bounds after the game bounds object exists
-        GameObject waterPlane = GameObject.Find("WaterPlane");
-        waterLevel = waterPlane.transform.position.y;
-        Renderer waterPlaneRend = waterPlane.GetComponent<Renderer>();
-        if (waterPlaneRend != null)
+        GameObject terrain = GameObject.Find("TerrainGenerator");
+        GameObject water = GameObject.Find("WaterPlane");
+        Renderer terrainRenderer = terrain.GetComponent<Renderer>();
+        waterLevel = water.transform.position.y;
+
+        if (terrainRenderer != null)
         {
-            Bounds bounds = waterPlaneRend.bounds;
+            Bounds bounds = terrainRenderer.bounds;
 
             minX = bounds.min.x;
             maxX = bounds.max.x;

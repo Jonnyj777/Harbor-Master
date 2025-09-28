@@ -153,18 +153,14 @@ public class LineFollower : MonoBehaviour
         LineFollower vehicle = other.gameObject.GetComponent<LineFollower>();
         if (vehicle == null) return;
 
-        // land vehicle crash state
-        // if land vehicle collides into another land vehicle, both land vehicles enter land crash state
-        // land crash state == stuck in place, no fade out
+        // Truck-to-Truck collision
         if (vehicleType == VehicleType.Land && vehicle.vehicleType == VehicleType.Land)
         {
             EnterCrashState(CrashType.Land);
             vehicle.EnterCrashState(CrashType.Land);
         }
 
-        // boat vehicle crash state
-        // if boat vehicle collides into another boat vehicle, both boat vehicles enter boat crash state
-        // boat crash state = disappear off map after a few seconds (do NOT act as additional obstacles)
+        // Boat-to-Boat collision
         if (vehicleType == VehicleType.Boat && vehicle.vehicleType == VehicleType.Boat)
         {
             EnterCrashState(CrashType.Boat);
@@ -175,17 +171,14 @@ public class LineFollower : MonoBehaviour
     // Apply crash state behavior depending on vehicle type
     private void EnterCrashState(CrashType type)
     {
-        isCrashed = true;  // switches the vehicle to a crashed state
-        crashType = type;  // helps depict what class of vehicle is crashed
+        isCrashed = true;
+        crashType = type;  // Truck or Boat collision?
 
-        // stop rigidbody immediately to have vehicles stay in place
-        Rigidbody rb = GetComponent<Rigidbody>();
+        LineFollower vehicle = GetComponent<LineFollower>();
 
-        if (rb != null)
+        if (vehicle != null)
         {
-            rb.angularVelocity = Vector3.zero;
-            rb.linearVelocity = Vector3.zero;
-            rb.constraints = RigidbodyConstraints.FreezeAll;
+            vehicle.speed = 0;
         }
 
         switch (type)
