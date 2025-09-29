@@ -23,7 +23,6 @@ public class NetworkLobby : NetworkRoomManager
     public override void OnRoomClientEnter()
     {
         base.OnRoomClientEnter();
-        lobbyCanvas.enabled = true;
     }
 
 }

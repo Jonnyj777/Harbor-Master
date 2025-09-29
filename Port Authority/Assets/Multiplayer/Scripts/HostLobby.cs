@@ -13,6 +13,7 @@ public class HostLobby : MonoBehaviour
         hostButton.onClick.AddListener(() =>
         {
             NetworkManager.singleton.StartHost();
+            print(NetworkManager.singleton.networkAddress);
         });
     }
 
