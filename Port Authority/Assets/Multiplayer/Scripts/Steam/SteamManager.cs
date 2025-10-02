@@ -1,20 +1,32 @@
 using UnityEngine;
+using Steamworks;
+using Mirror;
 
 public class SteamManager : MonoBehaviour
 {
     public uint appId;
+
+    public static SteamManager Singleton { get; private set; }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        DontDestroyOnLoad(this);
-        try
+        if(Singleton == null)
         {
-            Steamworks.SteamClient.Init(appId, true);
-            Debug.Log("Steam is working");
+            Singleton = this;
+            DontDestroyOnLoad(gameObject);
+            try
+            {
+                SteamClient.Init(appId, true);
+                Debug.Log("Steam is working");
+            }
+            catch(System.Exception e)
+            {
+                Debug.Log(e.Message);
+            }
         }
-        catch(System.Exception e)
+        else
         {
-            Debug.Log(e.Message);
+            Destroy(gameObject);
         }
 
 
