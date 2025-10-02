@@ -10,7 +10,7 @@ public class SteamManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        if(Singleton == null)
+        if (Singleton == null)
         {
             Singleton = this;
             DontDestroyOnLoad(gameObject);

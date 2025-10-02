@@ -7,12 +7,16 @@ using UnityEngine.Events;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
+using IO.Swagger.Model;
+using Mirror.Discovery;
+using Steamworks.Data;
 
 public class SteamLobbyManager : MonoBehaviour
 {
     public static Steamworks.Data.Lobby Lobby { get; private set; }
 
     public static bool isLobbySet = false;
+    Steamworks.ServerList.Internet Request;
 
     public UnityEvent OnLobbyCreatedEvent;
     public UnityEvent OnLobbyJoinedEvent;
@@ -27,6 +31,9 @@ public class SteamLobbyManager : MonoBehaviour
     {
         DontDestroyOnLoad(this);
 
+        Request = new Steamworks.ServerList.Internet();
+        Request.RunQueryAsync(30);
+
         SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
         SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
         SteamMatchmaking.OnLobbyMemberJoined += OnLobbyMemberJoined;
@@ -38,10 +45,44 @@ public class SteamLobbyManager : MonoBehaviour
 
     }
 
+    void OnServersUpdated()
+    {
+        if(Request.Responsive.Count == 0)
+        {
+            print("No servers found currently");
+            return;
+        }
+
+        foreach(var s in Request.Responsive)
+        {
+            ServerResponse(s);
+        }
+
+        Request.Responsive.Clear();
+    }
+
+    void ServerResponse(ServerInfo server)
+    {
+        Debug.Log($"{server.Name} Responded");
+    }
     public void Host()
     {
         NetworkManager.singleton.StartHost();
         CreateLobbyAsync();
+
+        GetLobbyInfo();
+    }
+
+    async void GetLobbyInfo()
+    {
+
+        var LobbyList = SteamMatchmaking.LobbyList;
+        var LobbyResult = await LobbyList.RequestAsync();
+
+        foreach(var l in LobbyResult)
+        {
+            Debug.Log($"A lobby has been found: {l}.");
+        }
     }
 
     public async void CreateLobbyAsync()
@@ -73,8 +114,9 @@ public class SteamLobbyManager : MonoBehaviour
 
             SetLobby(lobbyOutput.Value);
             Lobby.SetPublic();
-            Lobby.SetFriendsOnly();
+           // Lobby.SetFriendsOnly();
             Lobby.SetJoinable(true);
+            //Lobby.
 
 
             return true;
