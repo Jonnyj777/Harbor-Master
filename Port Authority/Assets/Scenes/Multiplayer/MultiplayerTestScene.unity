@@ -2164,9 +2164,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   friendTemplate: {fileID: 7875385277958524514, guid: 3fb45de2f061114429f15cd3ecfbadd1, type: 3}
-  friendContent: {fileID: 0}
-  lobbyTemplate: {fileID: 0}
-  lobbyContent: {fileID: 0}
+  friendContent: {fileID: 1710998337}
+  lobbyTemplate: {fileID: 126710076824631995, guid: 70f525232bba88048983cb1fcbea0787, type: 3}
+  lobbyContent: {fileID: 1272379750}
 --- !u!1 &1129467815
 GameObject:
   m_ObjectHideFlags: 0
