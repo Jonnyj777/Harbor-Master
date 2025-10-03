@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using IO.Swagger.Model;
 using Mirror.Discovery;
 using Steamworks.Data;
+using System;
 
 public class SteamLobbyManager : MonoBehaviour
 {
@@ -23,9 +24,16 @@ public class SteamLobbyManager : MonoBehaviour
     public UnityEvent OnLobbyLeftEvent;
 
     public GameObject friendTemplate;
-    public Transform content;
+    public Transform friendContent;
+
+    public GameObject lobbyTemplate;
+    public Transform lobbyContent;
+
+    private readonly int lobbyListDelayDuration = 3000;
 
     public Dictionary<SteamId, GameObject> inLobby = new Dictionary<SteamId, GameObject>();
+
+    public Dictionary<SteamId, GameObject> lobbyList = new Dictionary<SteamId, GameObject>();
 
     private void Start()
     {
@@ -42,6 +50,8 @@ public class SteamLobbyManager : MonoBehaviour
         SteamMatchmaking.OnLobbyGameCreated += OnLobbyGameCreated;
         SteamFriends.OnGameLobbyJoinRequested += OnGameLobbyJoinRequest;
         SteamMatchmaking.OnLobbyInvite += OnLobbyInvite;
+
+        GetLobbyInfo();
 
     }
 
@@ -69,20 +79,38 @@ public class SteamLobbyManager : MonoBehaviour
     {
         NetworkManager.singleton.StartHost();
         CreateLobbyAsync();
-
-        GetLobbyInfo();
     }
 
-    async void GetLobbyInfo()
+    public async void GetLobbyInfo()
     {
-        await Task.Delay(3000);
+        foreach(var l in lobbyList.Values)
+        {
+            Destroy(l);
+        }
+
+        lobbyList.Clear();
+
+        await Task.Delay(lobbyListDelayDuration);
         var LobbyList = SteamMatchmaking.LobbyList;
         var LobbyResult = await LobbyList.RequestAsync();
 
         foreach(var l in LobbyResult)
         {
-            Debug.Log($"A lobby has been found: {l.Owner} vs {Lobby.Owner}.");
+            if(l.GetData("game") == "PORTAUTH")
+            {
+                GameObject lobbyObj = Instantiate(lobbyTemplate, lobbyContent);
+                Debug.Log(l.GetData("name"));
+                lobbyObj.GetComponentInChildren<TextMeshProUGUI>().text = l.GetData("name");
+                lobbyObj.GetComponentInChildren<Button>().onClick.AddListener(() => AttemptJoin(l));
+                lobbyList.Add(l.Id, lobbyObj);
+                Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("name")}.");
+            }
         }
+    }
+
+    private void AttemptJoin(Steamworks.Data.Lobby l)
+    {
+        l.Join();
     }
 
     public async void CreateLobbyAsync()
@@ -117,6 +145,7 @@ public class SteamLobbyManager : MonoBehaviour
            // Lobby.SetFriendsOnly();
             Lobby.SetJoinable(true);
             Lobby.SetData("name", SteamClient.Name + "'s Lobby");
+            Lobby.SetData("game", "PORTAUTH");
             //Lobby.
 
 
@@ -138,7 +167,7 @@ public class SteamLobbyManager : MonoBehaviour
     private async void OnLobbyMemberJoined(Steamworks.Data.Lobby lobby, Friend friend)
     {
         Debug.Log($"{friend.Name} joined the lobby");
-        GameObject playerObj = Instantiate(friendTemplate, content);
+        GameObject playerObj = Instantiate(friendTemplate, friendContent);
         playerObj.GetComponent<TextMeshProUGUI>().text = friend.Name;
         playerObj.GetComponent<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
         inLobby.Add(friend.Id, playerObj);
@@ -201,7 +230,7 @@ public class SteamLobbyManager : MonoBehaviour
 
         inLobby.Clear();
 
-        GameObject playerObj = Instantiate(friendTemplate, content);
+        GameObject playerObj = Instantiate(friendTemplate, friendContent);
         playerObj.GetComponentInChildren<TextMeshProUGUI>().text = SteamClient.Name;
         playerObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(SteamClient.SteamId);
 
@@ -211,7 +240,7 @@ public class SteamLobbyManager : MonoBehaviour
         {
             if (friend.Id != SteamClient.SteamId)
             {
-                GameObject friendObj = Instantiate(friendTemplate, content);
+                GameObject friendObj = Instantiate(friendTemplate, friendContent);
                 friendObj.GetComponent<TextMeshProUGUI>().text = friend.Name;
                 friendObj.GetComponent<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
             }
