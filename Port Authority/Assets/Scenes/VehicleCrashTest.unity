@@ -158,6 +158,10 @@ MonoBehaviour:
   crashType: 0
   landCrashedColor: {r: 1, g: 0, b: 0, a: 1}
   boatCrashedColor: {r: 0, g: 1, b: 1, a: 1}
+  sinkLength: 0.5
+  sinkDuration: 2
+  fadeDelay: 1
+  fadeDuration: 2
 --- !u!54 &269152876
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -268,8 +272,8 @@ Transform:
   m_GameObject: {fileID: 269152874}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: -15.5}
-  m_LocalScale: {x: 3, y: 1.5, z: 3}
+  m_LocalPosition: {x: 0, y: 0.73, z: -15.5}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -405,8 +409,8 @@ Transform:
   m_GameObject: {fileID: 480632009}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14, y: 0.5, z: -8}
-  m_LocalScale: {x: 3, y: 1.5, z: 3}
+  m_LocalPosition: {x: -14, y: 1.36, z: -8}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -429,6 +433,10 @@ MonoBehaviour:
   crashType: 0
   landCrashedColor: {r: 1, g: 0, b: 0, a: 1}
   boatCrashedColor: {r: 0, g: 1, b: 1, a: 1}
+  sinkLength: 0.5
+  sinkDuration: 2
+  fadeDelay: 1
+  fadeDuration: 2
 --- !u!1 &494372253
 GameObject:
   m_ObjectHideFlags: 0
@@ -589,6 +597,10 @@ MonoBehaviour:
   crashType: 0
   landCrashedColor: {r: 1, g: 0, b: 0, a: 1}
   boatCrashedColor: {r: 0, g: 1, b: 1, a: 1}
+  sinkLength: 0.5
+  sinkDuration: 2
+  fadeDelay: 1
+  fadeDuration: 2
 --- !u!54 &727717537
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -744,6 +756,10 @@ MonoBehaviour:
   crashType: 0
   landCrashedColor: {r: 1, g: 0, b: 0, a: 1}
   boatCrashedColor: {r: 0, g: 1, b: 1, a: 1}
+  sinkLength: 0.5
+  sinkDuration: 2
+  fadeDelay: 1
+  fadeDuration: 2
 --- !u!54 &1123514077
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1062,6 +1078,10 @@ MonoBehaviour:
   crashType: 0
   landCrashedColor: {r: 1, g: 0, b: 0, a: 1}
   boatCrashedColor: {r: 0, g: 1, b: 1, a: 1}
+  sinkLength: 0.5
+  sinkDuration: 2
+  fadeDelay: 1
+  fadeDuration: 2
 --- !u!54 &1628803413
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1172,8 +1192,8 @@ Transform:
   m_GameObject: {fileID: 1628803411}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14, y: 0.5, z: -8}
-  m_LocalScale: {x: 3, y: 1.5, z: 3}
+  m_LocalPosition: {x: 14, y: 1.03, z: -8}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1354,6 +1374,10 @@ MonoBehaviour:
   crashType: 0
   landCrashedColor: {r: 1, g: 0, b: 0, a: 1}
   boatCrashedColor: {r: 0, g: 1, b: 1, a: 1}
+  sinkLength: 0.5
+  sinkDuration: 2
+  fadeDelay: 1
+  fadeDuration: 2
 --- !u!54 &2052950162
 Rigidbody:
   m_ObjectHideFlags: 0
