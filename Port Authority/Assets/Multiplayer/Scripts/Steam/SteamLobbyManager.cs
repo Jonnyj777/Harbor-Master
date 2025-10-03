@@ -75,13 +75,13 @@ public class SteamLobbyManager : MonoBehaviour
 
     async void GetLobbyInfo()
     {
-
+        await Task.Delay(3000);
         var LobbyList = SteamMatchmaking.LobbyList;
         var LobbyResult = await LobbyList.RequestAsync();
 
         foreach(var l in LobbyResult)
         {
-            Debug.Log($"A lobby has been found: {l}.");
+            Debug.Log($"A lobby has been found: {l.Owner} vs {Lobby.Owner}.");
         }
     }
 
@@ -116,6 +116,7 @@ public class SteamLobbyManager : MonoBehaviour
             Lobby.SetPublic();
            // Lobby.SetFriendsOnly();
             Lobby.SetJoinable(true);
+            Lobby.SetData("name", SteamClient.Name + "'s Lobby");
             //Lobby.
 
 
