@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -8,6 +9,7 @@ public class VehicleSpawnScript : MonoBehaviour
     public float spawnMargin = 0f;
     public float cornerMargin = 10f;
     public float maxSpawnAngle = 15f;
+    public float spawnHeightOffset = 5f;
     private float timer = 0f;
 
     // World Bounds
@@ -35,7 +37,7 @@ public class VehicleSpawnScript : MonoBehaviour
         Debug.Log("MinX: " + minX + "; " + "MaxX: " + maxX + "; " + "MinZ: " + minZ + "; " + "MaxZ: " + maxZ + "; ");
 
         // Spawn a boat immediately
-        spawnVehicle();
+        //spawnVehicle();
     }
 
     // Update is called once per frame
@@ -60,19 +62,19 @@ public class VehicleSpawnScript : MonoBehaviour
         switch (side)
         {
             case 0: // Left
-                spawnPos = new Vector3(minX - spawnMargin, waterLevel, Random.Range(minZ + cornerMargin, maxZ - cornerMargin));
+                spawnPos = new Vector3(minX - spawnMargin, waterLevel + spawnHeightOffset, Random.Range(minZ + cornerMargin, maxZ - cornerMargin));
                 shipDirection = Vector3.right;
                 break;
             case 1: // Right
-                spawnPos = new Vector3(maxX + spawnMargin, waterLevel, Random.Range(minZ + cornerMargin, maxZ - cornerMargin));
+                spawnPos = new Vector3(maxX + spawnMargin, waterLevel + spawnHeightOffset, Random.Range(minZ + cornerMargin, maxZ - cornerMargin));
                 shipDirection = Vector3.left;
                 break;
             case 2: // Bottom
-                spawnPos = new Vector3(Random.Range(minX + cornerMargin, maxX - cornerMargin), waterLevel, minZ - spawnMargin);
+                spawnPos = new Vector3(Random.Range(minX + cornerMargin, maxX - cornerMargin), waterLevel + spawnHeightOffset, minZ - spawnMargin);
                 shipDirection = Vector3.forward;
                 break;
             case 3: // Top
-                spawnPos = new Vector3(Random.Range(minX + cornerMargin, maxX - cornerMargin), waterLevel, maxZ + spawnMargin);
+                spawnPos = new Vector3(Random.Range(minX + cornerMargin, maxX - cornerMargin), waterLevel + spawnHeightOffset, maxZ + spawnMargin);
                 shipDirection = Vector3.back;
                 break;
         }
@@ -80,6 +82,13 @@ public class VehicleSpawnScript : MonoBehaviour
         Quaternion rotation = Quaternion.LookRotation(shipDirection);
         rotation *= Quaternion.Euler(0, Random.Range(-maxSpawnAngle, maxSpawnAngle), 0);
 
-        Instantiate(ship, spawnPos, rotation);
+        GameObject spawnedShip = Instantiate(ship, spawnPos, rotation);
+
+        // set spawn time of cargo
+        List<Cargo> cargoList = spawnedShip.GetComponent<Boat>().cargo;
+        foreach (var c in cargoList)
+        {
+            c.spawnTime = Time.time; 
+        }
     }
 }
