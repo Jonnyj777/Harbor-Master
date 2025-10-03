@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -9,7 +10,7 @@ public class DrawLine : MonoBehaviour
     private List<Vector3> positions;
 
     private float timer;
-    public float timerDelay = 0.01f; 
+    public float timerDelay = 0.01f;
 
     public LineRenderer drawLine;
 
@@ -36,17 +37,22 @@ public class DrawLine : MonoBehaviour
 
     public void UpdateLine()
     {
-        if (Input.GetMouseButton(0))
+        Mouse mouse = Mouse.current;
+        if (mouse == null || !mouse.leftButton.isPressed)
         {
-            Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red);
-            timer -= Time.deltaTime;
-            if (timer <= 0)
-            {
-                positions.Add(GetMousePosition());
-                drawLine.positionCount = positions.Count; 
-                drawLine.SetPositions(positions.ToArray());
-                timer = timerDelay;
-            }
+            return;
+        }
+
+        Vector2 mouseScreen = mouse.position.ReadValue();
+        Vector3 screenPoint = new Vector3(mouseScreen.x, mouseScreen.y, 0f);
+        Debug.DrawRay(Camera.main.ScreenToWorldPoint(screenPoint), GetMousePosition(), Color.red);
+        timer -= Time.deltaTime;
+        if (timer <= 0)
+        {
+            positions.Add(GetMousePosition());
+            drawLine.positionCount = positions.Count;
+            drawLine.SetPositions(positions.ToArray());
+            timer = timerDelay;
         }
     }
 
@@ -63,7 +69,13 @@ public class DrawLine : MonoBehaviour
 
     Vector3 GetMousePosition()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Mouse mouse = Mouse.current;
+        if (mouse == null)
+        {
+            return Vector3.zero;
+        }
+
+        Ray ray = Camera.main.ScreenPointToRay(mouse.position.ReadValue());
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, drawMask))
         {

@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 public class LineFollower : MonoBehaviour
@@ -16,6 +17,12 @@ public class LineFollower : MonoBehaviour
     // draw line once the object is clicked
     private void OnMouseDown()
     {
+        Mouse mouse = Mouse.current;
+        if (mouse == null || !mouse.leftButton.isPressed)
+        {
+            return;
+        }
+
         drawControl.DeleteLine();
         startMovement = false;
         drawControl.StartLine(transform.position);
@@ -23,11 +30,23 @@ public class LineFollower : MonoBehaviour
 
     private void OnMouseDrag()
     {
+        Mouse mouse = Mouse.current;
+        if (mouse == null || !mouse.leftButton.isPressed)
+        {
+            return;
+        }
+
         drawControl.UpdateLine();
     }
 
     private void OnMouseUp()
     {
+        Mouse mouse = Mouse.current;
+        if (mouse == null || !mouse.leftButton.wasReleasedThisFrame)
+        {
+            return;
+        }
+
         positions = new Vector3[drawControl.drawLine.positionCount];
         drawControl.drawLine.GetPositions(positions);
         startMovement = true;
