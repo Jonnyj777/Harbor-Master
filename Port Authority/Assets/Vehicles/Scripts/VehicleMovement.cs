@@ -1,6 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Rendering;
 
 public class VehicleMovement : MonoBehaviour
 {
@@ -13,6 +14,12 @@ public class VehicleMovement : MonoBehaviour
     public CrashType crashType = CrashType.None;  // Type of crash, default to None
     public Color landCrashedColor = Color.red;  // Color to red when land vehicles crash
     public Color boatCrashedColor = Color.cyan;  // Color to when boat vehicles crash
+
+    // settings for boat collisions
+    public float sinkLength = 0.5f;  // distance the boat sinks down
+    public float sinkDuration = 2f;  // time it takes to sink down to the desired length
+    public float fadeDelay = 1f;  // time to wait before fading starts
+    public float fadeDuration = 2f;  // how long to fully fade out
 
     // Target position for the vehicle to move towards (moveTo function)
     private Vector3? targetPosition = null;
@@ -167,14 +174,49 @@ public class VehicleMovement : MonoBehaviour
                     vehicleRenderer.material.color = boatCrashedColor;
                 }
                 Debug.Log($"{gameObject.name} crashed and will disappear after 3 seconds...");
-                StartCoroutine(DelayedDestroy(3f));  // 3s delay before being destroyed (after collision)
+                StartCoroutine(SinkFadeOut());  // boat will sink, then fade away and disappear
                 break;
         }
     }
 
-    private IEnumerator DelayedDestroy(float delay)
+    // function to make boats sink, fade, then destroyed after crashing into another boat vehicle
+    private IEnumerator SinkFadeOut()
     {
-        yield return new WaitForSeconds(delay);
+        // sinking
+        Vector3 startPos = transform.position;
+        Vector3 endPos = new Vector3(startPos.x, startPos.y - sinkLength, startPos.z);
+        float time = 0f;
+        while (time < sinkDuration)
+        {
+            transform.position = Vector3.Lerp(startPos, endPos, time / sinkDuration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = endPos;
+
+        // wait before fade
+        yield return new WaitForSeconds(fadeDelay);
+
+        // fade out
+        if (vehicleRenderer != null)
+        {
+            Material mat = vehicleRenderer.material;
+            Color fadeColor = mat.color;
+            float fadeElapsed = 0f;
+
+            // ensure material supports transparency
+            mat.SetFloat("_Mode", 2);
+            mat.color = fadeColor;
+
+            while (fadeElapsed < fadeDuration)
+            {
+                float alpha = Mathf.Lerp(1f, 0f, fadeElapsed / fadeDuration);
+                mat.color = new Color(fadeColor.r, fadeColor.g, fadeColor.b, alpha);
+                fadeElapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+        // destroy game object
         Destroy(gameObject);
     }
 }
