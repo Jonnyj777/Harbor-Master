@@ -18,10 +18,14 @@ public class DrawLine : MonoBehaviour
 
     public float lineWidth;
 
+    public float heightOffset;
+
     private void Start()
     {
         positions = new List<Vector3>();
         timer = timerDelay;
+        Renderer rend = GetComponent<Renderer>();
+        heightOffset = rend.bounds.size.y * 0.5f;
     }
 
     public void StartLine(Vector3 position)
@@ -30,8 +34,8 @@ public class DrawLine : MonoBehaviour
         drawLine.startWidth = drawLine.endWidth = lineWidth;
         drawLine.endWidth = lineWidth;
         drawLine.material = new Material(Shader.Find("Sprites/Default"));
-        drawLine.startColor = RandomColor();
-        drawLine.endColor = RandomColor();
+        drawLine.startColor = Color.red;
+        drawLine.endColor = Color.red;
     }
 
     public void UpdateLine()
@@ -56,9 +60,18 @@ public class DrawLine : MonoBehaviour
         positions.Clear();
     }
 
-    Color RandomColor()
+    public void SnapToSurface()
     {
-        return Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+        if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, Mathf.Infinity, drawMask))
+        {
+            Vector3 projectedForward = Vector3.ProjectOnPlane(transform.forward, hit.normal).normalized;
+
+            Quaternion targetRotation = Quaternion.LookRotation(projectedForward, hit.normal);
+
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
+
+            transform.position = hit.point + transform.up * heightOffset;
+        }
     }
 
     Vector3 GetMousePosition()
@@ -67,7 +80,8 @@ public class DrawLine : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, drawMask))
         {
-            return hit.point + Vector3.up * 0.1f;
+            Vector3 pos = hit.point + Vector3.up * 0.75f;
+            return pos;
         }
 
         return ray.origin + ray.direction * 10;

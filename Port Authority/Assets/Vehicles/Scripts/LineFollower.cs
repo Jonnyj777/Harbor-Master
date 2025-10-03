@@ -14,7 +14,9 @@ public class LineFollower : MonoBehaviour
     [Header("Path Settings")]
     public DrawLine drawControl;
     public float speed = 5f;
-    bool pathFinding = false;
+    public bool pathFinding = false;
+    bool drawingLine = false;
+    public bool atPort = false;
     Vector3[] positions;
     int moveIndex = 0;
 
@@ -44,15 +46,17 @@ public class LineFollower : MonoBehaviour
             originalColor = vehicleRenderer.material.color;
         }
 
-        GameObject waterPlane = GameObject.Find("WaterPlane");
-        waterLevel = waterPlane.transform.position.y;
+        //GameObject waterPlane = GameObject.Find("WaterPlane");
+        //waterLevel = waterPlane.transform.position.y;
     }
 
     // draw line once the object is clicked
     private void OnMouseDown()
     {
         drawControl.DeleteLine();
+        atPort = false;
         pathFinding = false;
+        drawingLine = true;
         drawControl.StartLine(transform.position);
     }
 
@@ -66,6 +70,7 @@ public class LineFollower : MonoBehaviour
         positions = new Vector3[drawControl.drawLine.positionCount];
         drawControl.drawLine.GetPositions(positions);
         pathFinding = true;
+        drawingLine = false;
         moveIndex = 0;
     }
 
@@ -79,31 +84,34 @@ public class LineFollower : MonoBehaviour
 
         if (pathFinding)
         {
-            // update position and direction of object
+            // update position, direction, and rotation of object
             Vector3 currentPos = positions[moveIndex];
 
-            // lock the object to environment y-position
-            currentPos.y = waterLevel;
-            transform.position = Vector3.MoveTowards(transform.position, currentPos, speed * Time.deltaTime);
+            Vector3 targetPos = new Vector3(currentPos.x, transform.position.y, currentPos.z);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
 
-            Vector3 direction = (currentPos - transform.position).normalized;
+            Vector3 direction = (targetPos - transform.position);
+            direction.y = 0f;
+            direction.Normalize();
 
             if (direction.sqrMagnitude > 0.001f) 
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
-                float angleOffset = Quaternion.Angle(transform.rotation, targetRotation);
-
-                if (angleOffset > 5f)
+            { 
+                Quaternion targetRotation = Quaternion.LookRotation(direction); 
+                float angleOffset = Quaternion.Angle(transform.rotation, targetRotation); 
+                if (angleOffset > 10f) 
                 {
-                    transform.LookAt(currentPos);
-                }
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
+                } 
             }
 
-            float distance = Vector3.Distance(currentPos, transform.position);
-            if (distance <= 0.05f)
+            Vector3 currentPosXZ = new Vector3(transform.position.x, 0, transform.position.z);
+            Vector3 nextPosXZ = new Vector3(currentPos.x, 0, currentPos.z);
+            if (Vector3.Distance(currentPosXZ, nextPosXZ) <= 0.05f)
             {
                 moveIndex++;
             }
+
+            drawControl.SnapToSurface();
 
             // remove the part of line already traveled on
             if (drawControl.drawLine.positionCount > 1)
@@ -113,7 +121,10 @@ public class LineFollower : MonoBehaviour
 
                 currentPositions[0] = transform.position;
 
-                if (Vector3.Distance(currentPositions[0], currentPositions[1]) < 0.05f)
+                Vector3 flatCurrent = new Vector3(currentPositions[0].x, 0, currentPositions[0].z);
+                Vector3 flatNext = new Vector3(currentPositions[1].x, 0, currentPositions[1].z);
+
+                if (Vector3.Distance(flatCurrent, flatNext) < 0.5f)
                 {
                     List<Vector3> temp = new List<Vector3>(currentPositions);
                     temp.RemoveAt(0);
@@ -130,16 +141,24 @@ public class LineFollower : MonoBehaviour
                 pathFinding = false;
                 drawControl.DeleteLine();
             }
+            
         }
-        else
+        else if (!drawingLine && vehicleType == VehicleType.Boat & !atPort)
         {
             transform.position += transform.forward * speed * Time.deltaTime;
+            drawControl.SnapToSurface();
         }
     }
 
     // Collision detection to set crash state
     private void OnTriggerEnter(Collider other)
     {
+        if (other.CompareTag("Building"))
+        {
+            pathFinding = false;
+            drawControl.DeleteLine();
+        }
+
         if (vehicleType == VehicleType.Land && other.CompareTag("Water"))
         {
             EnterCrashState(CrashType.Land);
@@ -196,7 +215,7 @@ public class LineFollower : MonoBehaviour
                 {
                     vehicleRenderer.material.color = boatCrashedColor;
                 }
-                Debug.Log($"{gameObject.name} crashed and will disappear after 3 seconds...");
+                //Debug.Log($"{gameObject.name} crashed and will disappear after 3 seconds...");
                 StartCoroutine(DelayedDestroy(3f));  // 3s delay before being destroyed (after collision)
                 break;
         }
