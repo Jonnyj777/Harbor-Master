@@ -1,0 +1,11 @@
+{
+    "name": "Tests",
+    "references": [
+        "Assembly-CSharp",
+        "Unity.InputSystem",
+        "Unity.InputSystem.TestFramework"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}
