@@ -81,14 +81,6 @@ public class VehicleSpawnScript : MonoBehaviour
 
         Quaternion rotation = Quaternion.LookRotation(shipDirection);
         rotation *= Quaternion.Euler(0, Random.Range(-maxSpawnAngle, maxSpawnAngle), 0);
-
-        GameObject spawnedShip = Instantiate(ship, spawnPos, rotation);
-
-        // set spawn time of cargo
-        List<Cargo> cargoList = spawnedShip.GetComponent<Boat>().cargo;
-        foreach (var c in cargoList)
-        {
-            c.spawnTime = Time.time; 
-        }
+        Instantiate(ship, spawnPos, rotation);
     }
 }
