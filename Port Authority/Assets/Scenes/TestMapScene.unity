@@ -197,7 +197,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b0c3eec6683eeff4081f7738fb59a7ec, type: 3}
   m_PrefabInstance: {fileID: 4496220}
   m_PrefabAsset: {fileID: 0}
---- !u!43 &32932008
+--- !u!43 &7563375
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -528,9 +528,10 @@ GameObject:
   - component: {fileID: 274804571}
   - component: {fileID: 274804570}
   - component: {fileID: 274804575}
+  - component: {fileID: 274804576}
   m_Layer: 0
   m_Name: TerrainGenerator
-  m_TagString: Untagged
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -556,7 +557,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 32932008}
+  m_Mesh: {fileID: 7563375}
 --- !u!23 &274804571
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -609,7 +610,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 274804569}
-  m_Mesh: {fileID: 32932008}
+  m_Mesh: {fileID: 7563375}
 --- !u!114 &274804573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5739,6 +5740,31 @@ MonoBehaviour:
   - {fileID: 151886747}
   - {fileID: 1934897372}
   isActive: 0
+--- !u!114 &274804576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 274804569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57f316afdf8c3488ebd18a5e02896e1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  runOnStart: 1
+  pointsToFind: 5
+  maxAttemptsPerPoint: 50
+  areaSize: {x: 500, y: 500}
+  pointSpacing: 25
+  shoreSpacing: 5
+  radialSamples: 16
+  cubeSize: 10
+  terrainTag: Terrain
+  waterTag: Water
+  raycastMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1001 &516886511
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6102,7 +6128,7 @@ GameObject:
   - component: {fileID: 1008855289}
   m_Layer: 0
   m_Name: WaterPlane
-  m_TagString: Untagged
+  m_TagString: Water
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
