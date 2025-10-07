@@ -8,6 +8,8 @@ TagManager:
   - Water
   - Port
   - Building
+  - Boat
+  - Truck
   layers:
   - Default
   - TransparentFX

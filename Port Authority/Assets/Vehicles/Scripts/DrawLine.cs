@@ -84,6 +84,8 @@ public class DrawLine : MonoBehaviour
             return pos;
         }
 
-        return ray.origin + ray.direction * 10;
+        Vector2 defaultPos = ray.origin + ray.direction * 10f;
+        defaultPos.y = 0f;
+        return defaultPos;
     }
 }
