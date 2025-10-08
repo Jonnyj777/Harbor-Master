@@ -9,6 +9,7 @@ public class Boat : MonoBehaviour
     public List<GameObject> cargoBoxes;
 
     // settings for boat collisions
+    private bool hasCrashed = false;
     private float sinkLength = 0.5f;  // distance the boat sinks down
     private float sinkDuration = 2f;  // time it takes to sink down to the desired length
     private float fadeDelay = 1f;  // time to wait before fading starts
@@ -97,6 +98,15 @@ public class Boat : MonoBehaviour
 
     public void EnterCrashState()
     {
+        // Prevent multiple triggers
+        if (hasCrashed)
+        {
+            return;
+        }
+        hasCrashed = true;
+
+        LivesManager.Instance.LoseLife();
+
         vehicle.SetIsCrashed(true);
         if (vehicleRenderer != null)
         {

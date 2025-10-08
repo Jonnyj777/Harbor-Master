@@ -8,6 +8,7 @@ public class ScoreManager : MonoBehaviour
     private int score = 0;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI popUpText;
+    public TextMeshProUGUI losePopUpText;
 
     private void Start()
     {
@@ -39,5 +40,15 @@ public class ScoreManager : MonoBehaviour
         yield return new WaitForSeconds(1f); 
 
         popUpText.gameObject.SetActive(false);
+    }
+
+    public void ShowLosePopUp()
+    {
+        losePopUpText.text = "Great Work!\r\n" +
+                             "You safely delivered\r\n" +
+                             "$" + score + "\r\n" +
+                             "worth of goods\r\n" +
+                             "this shift.";
+        losePopUpText.gameObject.SetActive(true);
     }
 }
