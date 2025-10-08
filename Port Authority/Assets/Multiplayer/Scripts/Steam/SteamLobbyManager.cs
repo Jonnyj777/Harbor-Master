@@ -23,17 +23,22 @@ public class SteamLobbyManager : MonoBehaviour
     public UnityEvent OnLobbyJoinedEvent;
     public UnityEvent OnLobbyLeftEvent;
 
-    public GameObject friendTemplate;
-    public Transform friendContent;
+    public GameObject playerTemplate;
+    public Transform playerContent;
 
     public GameObject lobbyTemplate;
     public Transform lobbyContent;
 
+    public Button startButton;
+
     private readonly int lobbyListDelayDuration = 3000;
 
-    public Dictionary<SteamId, GameObject> inLobby = new Dictionary<SteamId, GameObject>();
+    public Dictionary<SteamId, PlayerInfo> inLobby = new Dictionary<SteamId, PlayerInfo>();
 
     public Dictionary<SteamId, GameObject> lobbyList = new Dictionary<SteamId, GameObject>();
+
+    private bool isAllReady = false;
+
 
     private void Start()
     {
@@ -41,6 +46,8 @@ public class SteamLobbyManager : MonoBehaviour
 
         Request = new Steamworks.ServerList.Internet();
         Request.RunQueryAsync(30);
+
+        //attach functions to event listeners
 
         SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
         SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
@@ -53,6 +60,38 @@ public class SteamLobbyManager : MonoBehaviour
 
         GetLobbyInfo();
 
+    }
+
+    private bool IsAllReady()
+    {
+        foreach (PlayerInfo playerInfo in inLobby.Values)
+        {
+            print(playerInfo.isReady);
+            if (!playerInfo.isReady)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void ClearLobby()
+    {
+        foreach (var l in lobbyList.Values)
+        {
+            Destroy(l);
+        }
+
+        lobbyList.Clear();
+    }
+
+    public void ClearLobbyForStart()
+    {
+        if(IsAllReady())
+        {
+            ClearLobby();
+        }
     }
 
     void OnServersUpdated()
@@ -83,12 +122,8 @@ public class SteamLobbyManager : MonoBehaviour
 
     public async void GetLobbyInfo()
     {
-        foreach(var l in lobbyList.Values)
-        {
-            Destroy(l);
-        }
-
-        lobbyList.Clear();
+        //clear all lobbies that exist so no duplicates occur
+        ClearLobby();
 
         await Task.Delay(lobbyListDelayDuration);
         var LobbyList = SteamMatchmaking.LobbyList;
@@ -167,10 +202,10 @@ public class SteamLobbyManager : MonoBehaviour
     private async void OnLobbyMemberJoined(Steamworks.Data.Lobby lobby, Friend friend)
     {
         Debug.Log($"{friend.Name} joined the lobby");
-        GameObject playerObj = Instantiate(friendTemplate, friendContent);
+        GameObject playerObj = Instantiate(playerTemplate, playerContent);
         playerObj.GetComponent<TextMeshProUGUI>().text = friend.Name;
         playerObj.GetComponent<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
-        inLobby.Add(friend.Id, playerObj);
+        inLobby.Add(friend.Id, new PlayerInfo(playerObj));
     }
 
     void OnLobbyMemberDisconnected(Steamworks.Data.Lobby lobby, Friend friend)
@@ -180,7 +215,7 @@ public class SteamLobbyManager : MonoBehaviour
 
         if (inLobby.ContainsKey(friend.Id))
         {
-            Destroy(inLobby[friend.Id]);
+            Destroy(inLobby[friend.Id].playerObj);
             inLobby.Remove(friend.Id);
         }
     }
@@ -225,22 +260,22 @@ public class SteamLobbyManager : MonoBehaviour
 
         foreach (var friend in inLobby.Values)
         {
-            Destroy(friend);
+            Destroy(friend.playerObj);
         }
 
         inLobby.Clear();
 
-        GameObject playerObj = Instantiate(friendTemplate, friendContent);
+        GameObject playerObj = Instantiate(playerTemplate, playerContent);
         playerObj.GetComponentInChildren<TextMeshProUGUI>().text = SteamClient.Name;
         playerObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(SteamClient.SteamId);
 
-        inLobby.Add(SteamClient.SteamId, playerObj);
+        inLobby.Add(SteamClient.SteamId, new PlayerInfo(playerObj));
 
         foreach (var friend in Lobby.Members)
         {
             if (friend.Id != SteamClient.SteamId)
             {
-                GameObject friendObj = Instantiate(friendTemplate, friendContent);
+                GameObject friendObj = Instantiate(playerTemplate, playerContent);
                 friendObj.GetComponent<TextMeshProUGUI>().text = friend.Name;
                 friendObj.GetComponent<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
             }
@@ -258,7 +293,7 @@ public class SteamLobbyManager : MonoBehaviour
 
             foreach (var friend in inLobby.Values)
             {
-                Destroy(friend);
+                Destroy(friend.playerObj);
             }
 
             inLobby.Clear();
