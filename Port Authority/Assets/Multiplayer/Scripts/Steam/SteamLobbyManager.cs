@@ -203,8 +203,8 @@ public class SteamLobbyManager : MonoBehaviour
     {
         Debug.Log($"{friend.Name} joined the lobby");
         GameObject playerObj = Instantiate(playerTemplate, playerContent);
-        playerObj.GetComponent<TextMeshProUGUI>().text = friend.Name;
-        playerObj.GetComponent<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
+        playerObj.GetComponentInChildren<TextMeshProUGUI>().text = friend.Name;
+        playerObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
         inLobby.Add(friend.Id, new PlayerInfo(playerObj));
     }
 
@@ -276,8 +276,9 @@ public class SteamLobbyManager : MonoBehaviour
             if (friend.Id != SteamClient.SteamId)
             {
                 GameObject friendObj = Instantiate(playerTemplate, playerContent);
-                friendObj.GetComponent<TextMeshProUGUI>().text = friend.Name;
-                friendObj.GetComponent<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
+                friendObj.GetComponentInChildren<TextMeshProUGUI>().text = friend.Name;
+                friendObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
+                inLobby.Add(friend.Id, new PlayerInfo(friendObj));
             }
         }
 
