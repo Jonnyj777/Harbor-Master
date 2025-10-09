@@ -11,9 +11,9 @@ public class PlayerInfo
         playerObj = obj;
         isReady = false;
 
-        playerObj.GetComponentInChildren<Toggle>().onValueChanged.AddListener( (bool call) =>
-        {
-            isReady = !isReady;
-        });
+        //playerObj.GetComponentInChildren<Toggle>().onValueChanged.AddListener( (bool call) =>
+        //{
+        //    isReady = !isReady;
+        //});
     }
 }
