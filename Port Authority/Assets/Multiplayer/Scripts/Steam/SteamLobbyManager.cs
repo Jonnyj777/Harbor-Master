@@ -272,7 +272,7 @@ public class SteamLobbyManager : MonoBehaviour
         inLobby.Add(SteamClient.SteamId, new PlayerInfo(playerObj));
 
         print("member Count: " + lobby.MemberCount);
-        foreach (var friend in Lobby.Members)
+        foreach (var friend in lobby.Members)
         {
             if (friend.Id != SteamClient.SteamId)
             {
