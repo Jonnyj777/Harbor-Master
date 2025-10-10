@@ -1,11 +1,15 @@
 using TMPro;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class LivesManager : MonoBehaviour
 {
     public static LivesManager Instance;
-    private int lives = 15;
+    private int lives = 6;
     public TextMeshProUGUI livesText;
+    public Button resetButton;
+    public Button menuButton;
 
     void Start()
     {
@@ -28,6 +32,19 @@ public class LivesManager : MonoBehaviour
             Time.timeScale = 0f;
 
             ScoreManager.Instance.ShowLosePopUp();
+            ShowOptionsPopUp();
         }
+    }
+
+    public void ShowOptionsPopUp()
+    {
+        resetButton.gameObject.SetActive(true);
+        menuButton.gameObject.SetActive(true);
+    }
+
+    public void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Time.timeScale = 1f;
     }
 }
