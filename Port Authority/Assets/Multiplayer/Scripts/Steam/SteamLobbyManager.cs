@@ -114,14 +114,18 @@ public class SteamLobbyManager : MonoBehaviour
     {
         Debug.Log($"{server.Name} Responded");
     }
-    public async Task HostAsync()
+    public async void Host()
     {
-        bool isSuccessful = await CreateLobbyAsync();
+        var isSuccessful = await CreateLobby();
 
-        if (isSuccessful)
+        if (!isSuccessful)
         {
-            NetworkManager.singleton.StartHost();
+            Debug.LogError("Error with creating lobby with steam.");
+            return;
         }
+
+        NetworkManager.singleton.StartHost();
+
     }
 
     public async void GetLobbyInfo()
@@ -151,17 +155,6 @@ public class SteamLobbyManager : MonoBehaviour
     {
         l.Join();
     }
-
-    public async Task<bool> CreateLobbyAsync()
-    {
-        bool isSuccess = await CreateLobby();
-
-        if (!isSuccess)
-        {
-            Debug.Log("Failed to create lobby");
-        }
-        return isSuccess;
-    }
     public void SetLobby(Steamworks.Data.Lobby newLobbyData)
     {
         Lobby = newLobbyData;
@@ -186,7 +179,7 @@ public class SteamLobbyManager : MonoBehaviour
             Lobby.SetJoinable(true);
             Lobby.SetData("name", SteamClient.Name + "'s Lobby");
             Lobby.SetData("game", "PORTAUTH");
-            //Lobby.
+            Lobby.SetData("HostAddress", SteamClient.SteamId.Value.ToString());
 
 
             return true;
@@ -287,7 +280,22 @@ public class SteamLobbyManager : MonoBehaviour
                 inLobby.Add(friend.Id, new PlayerInfo(friendObj));
             }
         }
+
         OnLobbyJoinedEvent.Invoke();
+
+        string hostAddress = lobby.GetData("HostAddress");
+
+        if (SteamClient.SteamId.ToString() != hostAddress)
+        {
+            Debug.Log($"Connecting to host {hostAddress} via Facepunch transport...");
+            var manager = NetworkManager.singleton;
+            manager.networkAddress = hostAddress;
+            manager.StartClient();
+        }
+        else
+        {
+            Debug.Log("We are the host; no need to connect as client.");
+        }
     }
 
     public void LeaveLobby()
