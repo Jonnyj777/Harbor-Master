@@ -25,6 +25,12 @@ public class NetworkLobby : NetworkRoomManager
         base.OnRoomClientEnter();
     }
 
+    public override void OnClientConnect()
+    {
+        base.OnClientConnect();
+        NetworkClient.Ready();
+    }
+
 
 
 }
