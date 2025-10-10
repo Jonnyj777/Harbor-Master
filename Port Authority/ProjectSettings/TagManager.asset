@@ -3,15 +3,21 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Terrain
+  - Water
+  - Port
+  - Building
+  - Boat
+  - Truck
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Land
   - Water
   - UI
-  - Boat
+  - Ship
   - 
   - 
   - 
