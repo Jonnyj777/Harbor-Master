@@ -3915,6 +3915,7 @@ GameObject:
   - component: {fileID: 1817171527}
   - component: {fileID: 1817171525}
   - component: {fileID: 1817171526}
+  - component: {fileID: 1817171528}
   m_Layer: 0
   m_Name: NetworkRoomManager
   m_TagString: Untagged
@@ -3944,7 +3945,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1817171521}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
   m_Name: 
@@ -4000,7 +4001,7 @@ MonoBehaviour:
   offlineScene: 
   onlineScene: 
   offlineSceneLoadDelay: 0
-  transport: {fileID: 0}
+  transport: {fileID: 1817171528}
   networkAddress: localhost
   maxConnections: 100
   disconnectInactiveConnections: 0
@@ -4034,8 +4035,28 @@ MonoBehaviour:
   GameplayScene: Assets/Scenes/Multiplayer/TestGameScene.unity
   _allPlayersReady: 0
   clientIndex: 0
+  facepunchTransport: {fileID: 1817171528}
   lobbyCanvas: {fileID: 147494724}
   playerList: {fileID: 488648050}
+--- !u!114 &1817171528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1817171521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b007cc34dc2c984594d0d2d5a8b47e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Channels: 0200000001000000
+  Timeout: 25
+  SteamAppID: 480
+  AllowSteamRelay: 1
+  UseNextGenSteamNetworking: 1
+  InitFacepunch: 1
+  SteamUserID: 0
 --- !u!1 &1829533325
 GameObject:
   m_ObjectHideFlags: 0
