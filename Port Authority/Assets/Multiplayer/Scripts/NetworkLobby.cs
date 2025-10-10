@@ -17,6 +17,11 @@ public class NetworkLobby : NetworkRoomManager
             playerList.text += "\n" + player;
 
         }
+
+        if(!conn.isReady)
+        {
+            NetworkServer.SetClientReady(conn);
+        }
     
     }
 
@@ -24,13 +29,6 @@ public class NetworkLobby : NetworkRoomManager
     {
         base.OnRoomClientEnter();
     }
-
-    public override void OnClientConnect()
-    {
-        base.OnClientConnect();
-        NetworkClient.Ready();
-    }
-
 
 
 }
