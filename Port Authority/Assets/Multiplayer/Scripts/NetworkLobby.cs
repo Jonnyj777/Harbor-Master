@@ -25,6 +25,11 @@ public class NetworkLobby : NetworkRoomManager
     
     }
 
+    public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+    {
+        base.OnServerAddPlayer(conn);
+    }
+
     public override void OnRoomClientEnter()
     {
         base.OnRoomClientEnter();
@@ -32,6 +37,11 @@ public class NetworkLobby : NetworkRoomManager
 
     public void MoveToGameplayScene()
     {
+        foreach(var p in roomSlots)
+        {
+            Debug.Log($"RoomSlot: conn={p.connectionToClient.connectionId} ready={p.readyToBegin}");
+        }
+
         if(NetworkServer.active && NetworkServer.connections.Count > 0)
         {
             ServerChangeScene(GameplayScene);

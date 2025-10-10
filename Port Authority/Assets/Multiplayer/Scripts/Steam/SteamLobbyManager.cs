@@ -114,10 +114,14 @@ public class SteamLobbyManager : MonoBehaviour
     {
         Debug.Log($"{server.Name} Responded");
     }
-    public void Host()
+    public async Task HostAsync()
     {
-        NetworkManager.singleton.StartHost();
-        CreateLobbyAsync();
+        bool isSuccessful = await CreateLobbyAsync();
+
+        if (isSuccessful)
+        {
+            NetworkManager.singleton.StartHost();
+        }
     }
 
     public async void GetLobbyInfo()
@@ -148,7 +152,7 @@ public class SteamLobbyManager : MonoBehaviour
         l.Join();
     }
 
-    public async void CreateLobbyAsync()
+    public async Task<bool> CreateLobbyAsync()
     {
         bool isSuccess = await CreateLobby();
 
@@ -156,6 +160,7 @@ public class SteamLobbyManager : MonoBehaviour
         {
             Debug.Log("Failed to create lobby");
         }
+        return isSuccess;
     }
     public void SetLobby(Steamworks.Data.Lobby newLobbyData)
     {
