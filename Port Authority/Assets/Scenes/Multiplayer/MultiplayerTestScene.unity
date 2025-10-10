@@ -2896,7 +2896,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1817171527}
         m_TargetAssemblyTypeName: NetworkLobby, Assembly-CSharp
-        m_MethodName: OnRoomServerPlayersReady
+        m_MethodName: MoveToGameplayScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -30,5 +30,13 @@ public class NetworkLobby : NetworkRoomManager
         base.OnRoomClientEnter();
     }
 
+    public void MoveToGameplayScene()
+    {
+        if(NetworkServer.active && NetworkServer.connections.Count > 0)
+        {
+            ServerChangeScene(GameplayScene);
+        }
+    }
+
 
 }
