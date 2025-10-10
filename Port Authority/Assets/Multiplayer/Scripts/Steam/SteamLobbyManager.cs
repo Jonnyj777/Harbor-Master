@@ -282,7 +282,7 @@ public class SteamLobbyManager : MonoBehaviour
                 inLobby.Add(friend.Id, new PlayerInfo(friendObj));
             }
         }
-
+        NetworkClient.Ready();
         OnLobbyJoinedEvent.Invoke();
     }
 
