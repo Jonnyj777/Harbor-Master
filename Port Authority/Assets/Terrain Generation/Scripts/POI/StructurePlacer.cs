@@ -2,7 +2,6 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
 public class StructurePlacer : MonoBehaviour
 {
     [SerializeField]
@@ -17,7 +16,11 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField]
     private bool isActive = false;
 
-    private void Update()
+    private void Start()
+    {
+        Vector3 point = PointFinder.Instance.FindPoint(false, true);
+    }
+    /*private void Update()
     {
 
         if(!isActive) return;
@@ -32,7 +35,7 @@ public class StructurePlacer : MonoBehaviour
 
         PlaceStructures();
     }
-
+*/
     private void PlaceStructures()
     {
         int randomStructureIndex = (int)Mathf.Floor(Random.Range(0, structures.Count)); 

@@ -4,8 +4,8 @@ using UnityEngine.Serialization;
 
 public class PointFinder : MonoBehaviour
 {
-    [SerializeField] private bool runOnStart = true;
-    [SerializeField] private int pointsToFind = 5;
+    public static PointFinder Instance { get; private set; }
+    
     [SerializeField] private int maxAttemptsPerPoint = 50;
     private float raycastHeight = 100f;
     private Vector2 areaCenter = Vector2.zero;
@@ -20,27 +20,35 @@ public class PointFinder : MonoBehaviour
 
     private readonly List<Vector3> foundPoints = new List<Vector3>();
     private readonly List<GameObject> spawnedMarkers = new List<GameObject>();
-
-    private void Start()
+    
+    public Vector3 FindPoint(bool shorePadding, bool shoreRequired)
     {
-        if (runOnStart)
-            FindPointsAndSpawnMarkers();
+        Vector3 point = FindPointsAndSpawnMarkers(shorePadding, shoreRequired);  
+        if(point == Vector3.zero)
+            Debug.LogWarning("Failed to find a valid point within the specified area and constraints.");
         
+        return point;
+    }
+
+    public void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
     }
     
-    public void FindPointsAndSpawnMarkers()
+    public Vector3 FindPointsAndSpawnMarkers(bool shorePadding, bool shoreRequired)
     {
         foundPoints.Clear();
         ClearExistingMarkers();
 
-        if (pointsToFind <= 0)
-            return;
-        
-
         int totalAttempts = 0;
-        int maxAttempts = Mathf.Max(1, maxAttemptsPerPoint) * pointsToFind;
+        Vector3 point = Vector3.zero;
 
-        while (foundPoints.Count < pointsToFind && totalAttempts < maxAttempts)
+        while (totalAttempts < maxAttemptsPerPoint)
         {
             totalAttempts++;
 
@@ -52,15 +60,15 @@ public class PointFinder : MonoBehaviour
                 continue;
             
 
-            if (!IsAreaSafe(surfacePoint))
+            if (!IsAreaSafe(surfacePoint, shorePadding, shoreRequired))
                 continue;
             
             foundPoints.Add(surfacePoint);
             SpawnMarker(surfacePoint);
+            return surfacePoint;
         }
-
-        if (foundPoints.Count < pointsToFind)
-            Debug.LogWarning($"PointFinder only located {foundPoints.Count}/{pointsToFind} valid points. Consider adjusting the sampling settings.");
+        
+        return Vector3.zero;
     }
 
     private void ClearExistingMarkers()
@@ -99,7 +107,7 @@ public class PointFinder : MonoBehaviour
         return true;
     }
 
-    private bool IsAreaSafe(Vector3 center)
+    private bool IsAreaSafe(Vector3 center, bool shorePadding, bool shoreRequired)
     {
         //if (shoreSpacing <= 0f || radialSamples <= 0)
             //return true;
@@ -116,7 +124,7 @@ public class PointFinder : MonoBehaviour
             if (!ValidateRaycasts(hits, out RaycastHit terrainHit, out RaycastHit waterHit))
                 return false;
 
-            if (waterHit.collider != null && waterHit.distance <= terrainHit.distance)
+            if (shorePadding && waterHit.collider != null && waterHit.distance <= terrainHit.distance)
                 return false;
         }
 
