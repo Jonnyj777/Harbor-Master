@@ -52,6 +52,7 @@ public class VehicleSpawnScript : MonoBehaviour
         }
     }
 
+    [Server]
     void spawnVehicle()
     {
         Vector3 spawnPos = Vector3.zero;
