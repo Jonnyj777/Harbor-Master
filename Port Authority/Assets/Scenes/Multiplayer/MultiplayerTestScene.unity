@@ -3913,7 +3913,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1817171523}
   - component: {fileID: 1817171527}
-  - component: {fileID: 1817171525}
   - component: {fileID: 1817171526}
   - component: {fileID: 1817171528}
   m_Layer: 0
@@ -3938,35 +3937,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1817171525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1817171521}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  port: 7777
-  DualMode: 1
-  NoDelay: 1
-  Interval: 10
-  Timeout: 10000
-  RecvBufferSize: 7361536
-  SendBufferSize: 7361536
-  FastResend: 2
-  ReceiveWindowSize: 4096
-  SendWindowSize: 4096
-  MaxRetransmit: 40
-  MaximizeSocketBuffers: 1
-  ReliableMaxMessageSize: 297433
-  UnreliableMaxMessageSize: 1194
-  debugLog: 0
-  statisticsGUI: 0
-  statisticsLog: 0
 --- !u!114 &1817171526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4035,7 +4005,6 @@ MonoBehaviour:
   GameplayScene: Assets/Scenes/Multiplayer/TestGameScene.unity
   _allPlayersReady: 0
   clientIndex: 0
-  facepunchTransport: {fileID: 1817171528}
   lobbyCanvas: {fileID: 147494724}
   playerList: {fileID: 488648050}
 --- !u!114 &1817171528
