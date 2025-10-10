@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class LivesManager : MonoBehaviour
@@ -40,11 +39,5 @@ public class LivesManager : MonoBehaviour
     {
         resetButton.gameObject.SetActive(true);
         menuButton.gameObject.SetActive(true);
-    }
-
-    public void ResetScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        Time.timeScale = 1f;
     }
 }
