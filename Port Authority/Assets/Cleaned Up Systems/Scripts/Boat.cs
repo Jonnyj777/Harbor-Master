@@ -9,6 +9,7 @@ public class Boat : MonoBehaviour
     public List<GameObject> cargoBoxes;
 
     // settings for boat collisions
+    private bool hasCrashed = false;
     private float sinkLength = 0.5f;  // distance the boat sinks down
     private float sinkDuration = 2f;  // time it takes to sink down to the desired length
     private float fadeDelay = 1f;  // time to wait before fading starts
@@ -17,12 +18,33 @@ public class Boat : MonoBehaviour
     public Color crashedColor = Color.cyan;  // Color to when boat vehicles crash
     private Renderer vehicleRenderer;
 
+    // World bounds
+    float minX, maxX, minZ, maxZ;
+
     private void Start()
     {
         AssignCargo();
         vehicle = GetComponent<LineFollow>();
         vehicleRenderer = GetComponent<Renderer>();
+
+        // Teach the boat the world bounds so it can destroy itself
+        GameObject terrain = GameObject.Find("TerrainGenerator");
+        MeshFilter terrainMeshFilter = terrain.GetComponent<MeshFilter>();
+        Bounds terrainMeshBounds = terrainMeshFilter.mesh.bounds;
+        Vector3 terrainUnscaledSize = terrainMeshBounds.size;
+        Vector3 terrainScaledSize = Vector3.Scale(terrainUnscaledSize, terrain.transform.localScale);
+
+        minX = terrain.transform.position.x;
+        maxX = minX + terrainScaledSize.x;
+        minZ = terrain.transform.position.z;
+        maxZ = minZ + terrainScaledSize.z;
     }
+
+    private void Update()
+    {
+        CheckBounds();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         // boat vehicle crash state
@@ -97,6 +119,15 @@ public class Boat : MonoBehaviour
 
     public void EnterCrashState()
     {
+        // Prevent multiple triggers
+        if (hasCrashed)
+        {
+            return;
+        }
+        hasCrashed = true;
+
+        LivesManager.Instance.LoseLife();
+
         vehicle.SetIsCrashed(true);
         if (vehicleRenderer != null)
         {
@@ -143,6 +174,32 @@ public class Boat : MonoBehaviour
             }
         }
         // destroy game object
+        Destroy(gameObject);
+    }
+
+    private void CheckBounds()
+    {
+        Vector3 pos = transform.position;
+
+        // Small buffer to prevent boats from being deleted too early if their model origin isn’t centered
+        float buffer = 5f;
+
+        if (pos.x < minX - buffer || pos.x > maxX + buffer ||
+            pos.z < minZ - buffer || pos.z > maxZ + buffer)
+        {
+            DestroyBoatOutOfBounds();
+        }
+    }
+
+    private void DestroyBoatOutOfBounds()
+    {
+        // Avoid duplicate calls if already crashing/sinking
+        if (vehicle != null && hasCrashed)
+        {
+            return;
+        }
+
+        //Debug.Log($"Boat {name} went out of bounds and was destroyed.");
         Destroy(gameObject);
     }
 }
