@@ -5,48 +5,65 @@ using UnityEngine.Serialization;
 public class PointFinder : MonoBehaviour
 {
     public static PointFinder Instance { get; private set; }
-    
+
+    [SerializeField] private float shoreDistance = 10f;
+    [SerializeField] private float shoreBuildingRadius = 25f;
+    [SerializeField] private float landBuildingRadius = 25f;
+    [SerializeField] private float landShoreClearance = 40f;
+
     [SerializeField] private int maxAttemptsPerPoint = 50;
-    private float raycastHeight = 100f;
-    private Vector2 areaCenter = Vector2.zero;
+    [SerializeField] private int shoreMaxAttempts = 500;
+    [SerializeField] private float raycastHeight = 100f;
+    [SerializeField] private Vector2 areaCenter = Vector2.zero;
     [SerializeField] private Vector2 areaSize = new Vector2(500f, 500f);
-    [SerializeField] private float pointSpacing = 25f;
-    [SerializeField] private float shoreSpacing = 25f;
     [SerializeField] private int radialSamples = 16;
     [SerializeField] private float cubeSize = 2f;
     [SerializeField] private string terrainTag = "Terrain";
     [SerializeField] private string waterTag = "Water";
     [SerializeField] private LayerMask raycastMask = ~0;
 
-    private readonly List<Vector3> foundPoints = new List<Vector3>();
-    private readonly List<GameObject> spawnedMarkers = new List<GameObject>();
-    
-    public Vector3 FindPoint(bool shorePadding, bool shoreRequired)
+    private readonly List<Vector3> landPoints = new List<Vector3>();
+    private readonly List<Vector3> shorePoints = new List<Vector3>();
+    private readonly List<GameObject> landMarkers = new List<GameObject>();
+    private readonly List<GameObject> shoreMarkers = new List<GameObject>();
+
+    public Vector3 SetShorePoint(float distance, int maxAttempts)
     {
-        Vector3 point = FindPointsAndSpawnMarkers(shorePadding, shoreRequired);  
-        if(point == Vector3.zero)
-            Debug.LogWarning("Failed to find a valid point within the specified area and constraints.");
-        
+        shoreDistance = Mathf.Max(0f, distance);
+        shoreMaxAttempts = Mathf.Max(1, maxAttempts);
+
+        Vector3 point = FindShorePoint();
+
+        if (point == Vector3.zero)
+            Debug.LogWarning("Failed to find a valid shore point within the provided parameters.");
+
         return point;
     }
 
-    public void Awake()
+    public Vector3 FindLandPoint()
+    {
+        Vector3 point = FindLandPointInternal();
+
+        if (point == Vector3.zero)
+            Debug.LogWarning("Failed to find a valid land point within the specified area and constraints.");
+
+        return point;
+    }
+
+    private void Awake()
     {
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
     }
-    
-    public Vector3 FindPointsAndSpawnMarkers(bool shorePadding, bool shoreRequired)
-    {
-        foundPoints.Clear();
-        ClearExistingMarkers();
 
+    private Vector3 FindLandPointInternal()
+    {
         int totalAttempts = 0;
-        Vector3 point = Vector3.zero;
 
         while (totalAttempts < maxAttemptsPerPoint)
         {
@@ -54,36 +71,44 @@ public class PointFinder : MonoBehaviour
 
             if (!TryFindValidPoint(out Vector3 surfacePoint))
                 continue;
-            
 
-            if (!IsFarFromExistingPoints(surfacePoint))
+            if (!IsFarFromPoints(surfacePoint, landPoints, landBuildingRadius))
                 continue;
-            
 
-            if (!IsAreaSafe(surfacePoint, shorePadding, shoreRequired))
+            if (HasWaterWithinRadius(surfacePoint, landShoreClearance))
                 continue;
-            
-            foundPoints.Add(surfacePoint);
-            SpawnMarker(surfacePoint);
+
+            landPoints.Add(surfacePoint);
+            landMarkers.Add(SpawnMarker(surfacePoint));
             return surfacePoint;
         }
-        
+
         return Vector3.zero;
     }
 
-    private void ClearExistingMarkers()
+    private Vector3 FindShorePoint()
     {
-        for (int i = spawnedMarkers.Count - 1; i >= 0; i--)
-        {
-            GameObject marker = spawnedMarkers[i];
+        int totalAttempts = 0;
 
-            if (marker == null)
+        while (totalAttempts < shoreMaxAttempts)
+        {
+            totalAttempts++;
+
+            if (!TryFindValidPoint(out Vector3 surfacePoint))
                 continue;
-            
-            Destroy(marker);
+
+            if (!IsFarFromPoints(surfacePoint, shorePoints, shoreBuildingRadius))
+                continue;
+
+            if (!HasWaterWithinRadius(surfacePoint, shoreDistance))
+                continue;
+
+            shorePoints.Add(surfacePoint);
+            shoreMarkers.Add(SpawnMarker(surfacePoint));
+            return surfacePoint;
         }
 
-        spawnedMarkers.Clear();
+        return Vector3.zero;
     }
 
     private bool TryFindValidPoint(out Vector3 point)
@@ -107,28 +132,28 @@ public class PointFinder : MonoBehaviour
         return true;
     }
 
-    private bool IsAreaSafe(Vector3 center, bool shorePadding, bool shoreRequired)
+    private bool HasWaterWithinRadius(Vector3 center, float radius)
     {
-        //if (shoreSpacing <= 0f || radialSamples <= 0)
-            //return true;
+        if (radius <= 0f || radialSamples <= 0)
+            return false;
 
         float step = Mathf.PI * 2f / radialSamples;
 
         for (int i = 0; i < radialSamples; i++)
         {
             float angle = step * i;
-            Vector3 offset = new Vector3(Mathf.Cos(angle) * shoreSpacing, 0f, Mathf.Sin(angle) * shoreSpacing);
+            Vector3 offset = new Vector3(Mathf.Cos(angle) * radius, 0f, Mathf.Sin(angle) * radius);
             Vector3 origin = new Vector3(center.x + offset.x, raycastHeight, center.z + offset.z);
             RaycastHit[] hits = Physics.RaycastAll(origin, Vector3.down, Mathf.Infinity, EffectiveRaycastMask);
 
             if (!ValidateRaycasts(hits, out RaycastHit terrainHit, out RaycastHit waterHit))
-                return false;
+                continue;
 
-            if (shorePadding && waterHit.collider != null && waterHit.distance <= terrainHit.distance)
-                return false;
+            if (waterHit.collider != null && waterHit.distance <= terrainHit.distance)
+                return true;
         }
 
-        return true;
+        return false;
     }
 
     private bool ValidateRaycasts(RaycastHit[] hits, out RaycastHit terrainHit, out RaycastHit waterHit)
@@ -166,27 +191,28 @@ public class PointFinder : MonoBehaviour
         return true;
     }
 
-    private bool IsFarFromExistingPoints(Vector3 candidate)
+    private bool IsFarFromPoints(Vector3 candidate, List<Vector3> points, float radius)
     {
-        if (pointSpacing <= 0f)
+        if (radius <= 0f)
             return true;
 
-        float minDistanceSqr = pointSpacing * pointSpacing;
+        float minDistanceSqr = radius * radius;
 
-        for (int i = 0; i < foundPoints.Count; i++)
-            if ((foundPoints[i] - candidate).sqrMagnitude < minDistanceSqr)
+        for (int i = 0; i < points.Count; i++)
+        {
+            if ((points[i] - candidate).sqrMagnitude < minDistanceSqr)
                 return false;
+        }
 
         return true;
     }
 
-    private void SpawnMarker(Vector3 position)
+    private GameObject SpawnMarker(Vector3 position)
     {
         GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
         marker.transform.localScale = Vector3.one * cubeSize;
         marker.transform.position = position + Vector3.up * (cubeSize * 0.5f);
-        spawnedMarkers.Add(marker);
-        
+        return marker;
     }
 
     private Vector2 GetRandomXZWithinArea()

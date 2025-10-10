@@ -16,9 +16,18 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField]
     private bool isActive = false;
 
+    [SerializeField]
+    private float shoreSearchDistance = 10f;
+
+    [SerializeField]
+    private int shoreSearchMaxAttempts = 1000;
+
     private void Start()
     {
-        Vector3 point = PointFinder.Instance.FindPoint(false, true);
+        PointFinder.Instance.SetShorePoint(shoreSearchDistance, shoreSearchMaxAttempts);
+        PointFinder.Instance.SetShorePoint(shoreSearchDistance, shoreSearchMaxAttempts);
+        PointFinder.Instance.SetShorePoint(shoreSearchDistance, shoreSearchMaxAttempts);
+        PointFinder.Instance.FindLandPoint();
     }
     /*private void Update()
     {
