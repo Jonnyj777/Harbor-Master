@@ -232,6 +232,8 @@ GameObject:
   - component: {fileID: 4592552348582821306}
   - component: {fileID: 1373061060865479387}
   - component: {fileID: 5484665934614282575}
+  - component: {fileID: 123370551021672185}
+  - component: {fileID: 2794480793190435409}
   m_Layer: 0
   m_Name: Boat
   m_TagString: Boat
@@ -504,6 +506,57 @@ MonoBehaviour:
   - {fileID: 2124991968752743807}
   - {fileID: 4825489036044855431}
   crashedColor: {r: 0, g: 1, b: 1, a: 1}
+--- !u!114 &123370551021672185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3145206158688813664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 3069941615
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &2794480793190435409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3145206158688813664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 7572274700235345642}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  useFixedUpdate: 0
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
 --- !u!1 &4825489036044855431
 GameObject:
   m_ObjectHideFlags: 0

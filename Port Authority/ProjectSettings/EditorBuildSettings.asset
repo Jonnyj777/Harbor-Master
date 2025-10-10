@@ -9,9 +9,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Multiplayer/MultiplayerTestScene.unity
     guid: e1734cd02cd139548a6ae40acaa0cce2
   - enabled: 1
+    path: Assets/Scenes/Multiplayer/TestGameScene.unity
+    guid: 69990c7c00e737d4d8cd940147eca670
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Tests/LineFollowingTest.unity
     guid: 0703aa03f32fb4faba0c1c332318aad5
   - enabled: 1

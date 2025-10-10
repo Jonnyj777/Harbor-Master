@@ -1545,7 +1545,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &700163414
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2829,7 +2829,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1437093641
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4029,7 +4029,7 @@ MonoBehaviour:
   minPlayers: 1
   roomPlayerPrefab: {fileID: 338399410527955210, guid: 5404f5dab5d3a9d479529ca39aeaac81, type: 3}
   RoomScene: Assets/Scenes/Multiplayer/MultiplayerTestScene.unity
-  GameplayScene: Assets/Scenes/SampleScene.unity
+  GameplayScene: Assets/Scenes/Multiplayer/TestGameScene.unity
   _allPlayersReady: 0
   clientIndex: 0
   lobbyCanvas: {fileID: 147494724}
