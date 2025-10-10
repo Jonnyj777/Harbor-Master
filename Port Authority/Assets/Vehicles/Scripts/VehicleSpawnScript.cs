@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -81,6 +82,7 @@ public class VehicleSpawnScript : MonoBehaviour
 
         Quaternion rotation = Quaternion.LookRotation(shipDirection);
         rotation *= Quaternion.Euler(0, Random.Range(-maxSpawnAngle, maxSpawnAngle), 0);
-        Instantiate(ship, spawnPos, rotation);
+        GameObject spawnedShip = Instantiate(ship, spawnPos, rotation);
+        NetworkServer.Spawn(spawnedShip);
     }
 }
