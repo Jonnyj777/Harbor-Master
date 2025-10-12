@@ -1,10 +1,8 @@
-using System.Collections;
+using Mirror;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class LineFollow : MonoBehaviour
+public class LineFollow : NetworkBehaviour
 {
     [Header("Line Drawing Settings")]
 
@@ -29,6 +27,11 @@ public class LineFollow : MonoBehaviour
     private Vector3[] positions;
     private int moveIndex = 0;
     private float heightOffset = 0;
+
+    //variables for network server-side authority and request management
+    [SyncVar] private uint authorizedId = 0;
+
+
 
     private void Start()
     {
@@ -102,25 +105,32 @@ public class LineFollow : MonoBehaviour
     // Line Following Functions
     private void OnMouseDown()
     {
+        CmdRequestControl(netId);
+        /*
         DeleteLine();
         atPort = false;
         lineFollowing = false;
         drawingLine = true;
         StartLine(transform.position);
+        */
     }
 
     private void OnMouseDrag()
     {
-        UpdateLine();
+        CmdRequestMove(netId);
+        //UpdateLine();
     }
 
     private void OnMouseUp()
     {
+        CmdReleaseControl(netId);
+        /*
         positions = new Vector3[line.positionCount];
         line.GetPositions(positions);
         lineFollowing = true;
         drawingLine = false;
         moveIndex = 0;
+        */
     }
 
     public void SnapToSurface()
@@ -247,8 +257,51 @@ public class LineFollow : MonoBehaviour
         
     }
 
+    [Command(requiresAuthority = false)]
+    public void CmdRequestControl(uint playerId)
+    {
+        if(authorizedId == 0 || authorizedId == playerId)
+        {
+            authorizedId = playerId;
+            DeleteLine();
+            atPort = false;
+            lineFollowing = false;
+            drawingLine = true;
+            StartLine(transform.position);
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdRequestMove(uint playerId)
+    {
+        if(authorizedId == playerId)
+        {
+            UpdateLine();
+        }
+    }
+
+
+    [Command(requiresAuthority = false)]
+    public void CmdReleaseControl(uint playerId)
+    {
+        if (authorizedId == playerId)
+        {
+            positions = new Vector3[line.positionCount];
+            line.GetPositions(positions);
+            lineFollowing = true;
+            drawingLine = false;
+            moveIndex = 0;
+            authorizedId = 0;
+        }
+    }
+
     private void Update()
     {
+        if (!isServer)
+        {
+            print("No server found with linefollow");
+            return;
+        }
         if (isCrashed)
         {
             return;
