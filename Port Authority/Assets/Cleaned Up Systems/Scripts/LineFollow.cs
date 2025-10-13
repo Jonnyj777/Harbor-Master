@@ -134,6 +134,7 @@ public class LineFollow : NetworkBehaviour
         */
     }
 
+    [Command]
     public void StartDrag()
     {
         print("Start Drag");
@@ -168,6 +169,7 @@ public class LineFollow : NetworkBehaviour
         */
     }
 
+    [Command]
     public void SnapToSurface()
     {
         if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, Mathf.Infinity, layerMask))
@@ -232,6 +234,7 @@ public class LineFollow : NetworkBehaviour
         }
     }
 
+    [Command]
     private void FollowLineBoat()
     {
         // update position and direction of object
@@ -272,16 +275,19 @@ public class LineFollow : NetworkBehaviour
         }
     }
 
+    [Command]
     public void SetLineFollowing(bool value)
     {
         lineFollowing = value;
     }
 
+    [Command]
     public void SetAtPort(bool value)
     {
         atPort = value;
     }
 
+    [Command]
     public void SetIsCrashed(bool value)
     {
         if (value)
@@ -333,6 +339,7 @@ public class LineFollow : NetworkBehaviour
 
     }
 
+    [Command]
     private void Update()
     {
         //if (!isServer) return;
