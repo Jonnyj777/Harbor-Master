@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class VehicleSpawnScript : MonoBehaviour
+public class VehicleSpawnScript : NetworkBehaviour
 {   
     public GameObject ship;
     public float spawnRate = 5f;
