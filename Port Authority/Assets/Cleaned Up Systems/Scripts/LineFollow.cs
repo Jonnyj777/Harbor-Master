@@ -69,8 +69,8 @@ public class LineFollow : NetworkBehaviour
         //Debug.DrawRay(Camera.main.ScreenToWorldPoint(mousePos), GetMousePosition(mousePos), Color.red);
         timer -= Time.deltaTime;
         {
-        if (timer <= 0)
-            linePositions.Add(GetMousePosition(raycastMousePos));
+            if (timer <= 0)
+                linePositions.Add(raycastMousePos);
             line.positionCount = linePositions.Count;
             line.SetPositions(linePositions.ToArray());
             timer = timerDelayBetweenLinePoints;
@@ -84,9 +84,9 @@ public class LineFollow : NetworkBehaviour
         lineFollowing = false;
     }
 
-    Vector3 GetMousePosition(Vector3 mousePos)
+    Vector3 GetMousePosition()
     {
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
         {
@@ -97,11 +97,11 @@ public class LineFollow : NetworkBehaviour
                 pos.y = transform.position.y;
             }
 
-                return pos;
+            return pos;
         }
 
         Vector3 defaultPos = ray.origin + ray.direction * 10f;
-        defaultPos.y = transform.position.y; 
+        defaultPos.y = transform.position.y;
         return defaultPos;
     }
 
@@ -116,7 +116,7 @@ public class LineFollow : NetworkBehaviour
         playerAuthorizer.CmdRequestAuthority(unitIdentity);
         print("check stats: isServer: " + isServer);
 
-        if(isServer || isOwned)
+        if (isServer || isOwned)
         {
             StartDrag();
         }
@@ -146,10 +146,10 @@ public class LineFollow : NetworkBehaviour
 
     private void OnMouseDrag()
     {
-        print("ondrag: " + isDragging + " : " + isOwned + " : " + isDraggable);
-        if (!isDragging || (!isServer && !isOwned) || !isDraggable) return;
-        CmdRequestMove(Input.mousePosition, GetMousePosition(Input.mousePosition));
-        Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(Input.mousePosition), Color.red);
+        //print("ondrag: " + isDragging + " : " + isOwned + " : " + isDraggable);
+        //if (!isDragging || (!isServer && !isOwned) || !isDraggable) return;
+        //CmdRequestMove(Input.mousePosition, GetMousePosition(Input.mousePosition));
+        //Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(Input.mousePosition), Color.red);
         //UpdateLine();
     }
 
@@ -288,7 +288,7 @@ public class LineFollow : NetworkBehaviour
             DeleteLine();
         }
         isCrashed = value;
-        
+
     }
 
     /*
@@ -312,7 +312,7 @@ public class LineFollow : NetworkBehaviour
     [Command]
     public void CmdReleaseControl()
     {
-        if(isServer)
+        if (isServer)
         {
             unitIdentity.RemoveClientAuthority();
         }
@@ -324,7 +324,7 @@ public class LineFollow : NetworkBehaviour
         moveIndex = 0;
         authorizedId = 0;
         isDraggable = false;
-        
+
     }
 
     public override void OnStartAuthority()
@@ -342,8 +342,8 @@ public class LineFollow : NetworkBehaviour
         {
             if (Input.GetMouseButton(0))
             {
-                //CmdRequestMove(Input.mousePosition, GetMousePosition(Input.mousePosition);
-                //Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(Input.mousePosition), Color.red);
+                CmdRequestMove(Input.mousePosition, GetMousePosition());
+                Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red);
             }
             if (isCrashed)
             {
