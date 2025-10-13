@@ -62,20 +62,18 @@ public class LineFollow : NetworkBehaviour
         line.startColor = line.endColor = lineColor;
     }
 
-    public void UpdateLine()
+    [Command]
+    public void CmdUpdateLine(Vector3 mousePos, Vector3 raycastMousePos)
     {
         print("Update line");
-        if (Input.GetMouseButton(0))
+        //Debug.DrawRay(Camera.main.ScreenToWorldPoint(mousePos), GetMousePosition(mousePos), Color.red);
+        timer -= Time.deltaTime;
         {
-            Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red);
-            timer -= Time.deltaTime;
-            if (timer <= 0)
-            {
-                linePositions.Add(GetMousePosition());
-                line.positionCount = linePositions.Count;
-                line.SetPositions(linePositions.ToArray());
-                timer = timerDelayBetweenLinePoints;
-            }
+        if (timer <= 0)
+            linePositions.Add(GetMousePosition(raycastMousePos));
+            line.positionCount = linePositions.Count;
+            line.SetPositions(linePositions.ToArray());
+            timer = timerDelayBetweenLinePoints;
         }
     }
 
@@ -86,9 +84,9 @@ public class LineFollow : NetworkBehaviour
         lineFollowing = false;
     }
 
-    Vector3 GetMousePosition()
+    Vector3 GetMousePosition(Vector3 mousePos)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
         {
@@ -134,7 +132,6 @@ public class LineFollow : NetworkBehaviour
         */
     }
 
-    [Command]
     public void StartDrag()
     {
         print("Start Drag");
@@ -151,7 +148,8 @@ public class LineFollow : NetworkBehaviour
     {
         print("ondrag: " + isDragging + " : " + isOwned + " : " + isDraggable);
         if (!isDragging || (!isServer && !isOwned) || !isDraggable) return;
-        CmdRequestMove();
+        CmdRequestMove(Input.mousePosition, GetMousePosition(Input.mousePosition));
+        Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(Input.mousePosition), Color.red);
         //UpdateLine();
     }
 
@@ -169,7 +167,6 @@ public class LineFollow : NetworkBehaviour
         */
     }
 
-    [Command]
     public void SnapToSurface()
     {
         if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, Mathf.Infinity, layerMask))
@@ -234,7 +231,6 @@ public class LineFollow : NetworkBehaviour
         }
     }
 
-    [Command]
     private void FollowLineBoat()
     {
         // update position and direction of object
@@ -275,19 +271,16 @@ public class LineFollow : NetworkBehaviour
         }
     }
 
-    [Command]
     public void SetLineFollowing(bool value)
     {
         lineFollowing = value;
     }
 
-    [Command]
     public void SetAtPort(bool value)
     {
         atPort = value;
     }
 
-    [Command]
     public void SetIsCrashed(bool value)
     {
         if (value)
@@ -311,21 +304,25 @@ public class LineFollow : NetworkBehaviour
     */
 
     [Command]
-    public void CmdRequestMove()
+    public void CmdRequestMove(Vector3 mousePos, Vector3 raycastMousePos)
     {
-        UpdateLine();
+        CmdUpdateLine(mousePos, raycastMousePos);
     }
 
     [Command]
     public void CmdReleaseControl()
     {
+        if(isServer)
+        {
+            unitIdentity.RemoveClientAuthority();
+        }
+
         positions = new Vector3[line.positionCount];
         line.GetPositions(positions);
         lineFollowing = true;
         drawingLine = false;
         moveIndex = 0;
         authorizedId = 0;
-        unitIdentity.RemoveClientAuthority();
         isDraggable = false;
         
     }
@@ -339,10 +336,15 @@ public class LineFollow : NetworkBehaviour
 
     }
 
-    [Command]
     private void Update()
     {
-        //if (!isServer) return;
+        if(isOwned || isServer)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                //CmdRequestMove(Input.mousePosition, GetMousePosition(Input.mousePosition);
+                //Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(Input.mousePosition), Color.red);
+            }
         if (isCrashed)
         {
             return;
