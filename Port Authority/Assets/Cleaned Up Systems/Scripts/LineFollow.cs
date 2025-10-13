@@ -304,6 +304,7 @@ public class LineFollow : NetworkBehaviour
     }
     */
 
+    [Command]
     public void CmdRequestMove()
     {
         UpdateLine();
