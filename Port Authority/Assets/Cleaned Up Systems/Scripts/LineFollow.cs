@@ -338,38 +338,39 @@ public class LineFollow : NetworkBehaviour
 
     private void Update()
     {
-        if(isOwned || isServer)
+        if (isOwned || isServer)
         {
             if (Input.GetMouseButton(0))
             {
                 //CmdRequestMove(Input.mousePosition, GetMousePosition(Input.mousePosition);
                 //Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(Input.mousePosition), Color.red);
             }
-        if (isCrashed)
-        {
-            return;
-        }
-
-        if (lineFollowing)
-        {
-            if (CompareTag("Boat"))
+            if (isCrashed)
             {
-                FollowLineBoat();
-            }
-            else if (CompareTag("Truck"))
-            {
-                FollowLineTruck();
+                return;
             }
 
-            // remove line after following finishes
-            if (moveIndex > positions.Length - 1)
+            if (lineFollowing)
             {
-                DeleteLine();
+                if (CompareTag("Boat"))
+                {
+                    FollowLineBoat();
+                }
+                else if (CompareTag("Truck"))
+                {
+                    FollowLineTruck();
+                }
+
+                // remove line after following finishes
+                if (moveIndex > positions.Length - 1)
+                {
+                    DeleteLine();
+                }
             }
-        }
-        else if (!drawingLine && CompareTag("Boat") && !atPort)
-        {
-            transform.position += transform.forward * speed * Time.deltaTime;
+            else if (!drawingLine && CompareTag("Boat") && !atPort)
+            {
+                transform.position += transform.forward * speed * Time.deltaTime;
+            }
         }
     }
 }
