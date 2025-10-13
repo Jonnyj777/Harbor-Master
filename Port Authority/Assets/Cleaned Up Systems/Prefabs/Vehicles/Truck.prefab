@@ -433,6 +433,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19a6dde95921c6b41ab625e4679cf986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 8
@@ -630,7 +633,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneId: 0
   _assetId: 1541718997
-  serverOnly: 0
+  serverOnly: 1
   visibility: 0
   hasSpawned: 0
 --- !u!114 &8709811365971076411
@@ -647,7 +650,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
-  syncInterval: 0.1
+  syncInterval: 0
   target: {fileID: 5466057443297664885}
   syncPosition: 1
   syncRotation: 1
@@ -681,7 +684,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
-  syncInterval: 0.1
+  syncInterval: 0
   target: {fileID: 5466057443297664885}
   syncPosition: 1
   syncRotation: 1

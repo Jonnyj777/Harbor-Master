@@ -30,11 +30,15 @@ public class LineFollow : NetworkBehaviour
 
     //variables for network server-side authority and request management
     [SyncVar] private uint authorizedId = 0;
+    private bool isDragging = false;
+    private bool isDraggable = false;
+    private NetworkIdentity unitIdentity;
 
 
 
     private void Start()
     {
+        unitIdentity = GetComponent<NetworkIdentity>();
         linePositions = new List<Vector3>();
         line = GetComponent<LineRenderer>();
         rb = GetComponent<Rigidbody>();
@@ -60,6 +64,7 @@ public class LineFollow : NetworkBehaviour
 
     public void UpdateLine()
     {
+        print("Update line");
         if (Input.GetMouseButton(0))
         {
             Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red);
@@ -105,7 +110,21 @@ public class LineFollow : NetworkBehaviour
     // Line Following Functions
     private void OnMouseDown()
     {
-        CmdRequestControl(netId);
+        if (!NetworkClient.localPlayer) return;
+        print("On Mouse Down: " + NetworkClient.localPlayer);
+        if (!NetworkClient.localPlayer) return;
+
+        NetworkAuthorizer playerAuthorizer = NetworkClient.localPlayer.GetComponent<NetworkAuthorizer>();
+        playerAuthorizer.CmdRequestAuthority(unitIdentity);
+        print("check stats: isServer: " + isServer);
+
+        if(isServer || isOwned)
+        {
+            StartDrag();
+        }
+
+        //if (!NetworkClient.active || !isOwned) return;
+        //isDragging = true;
         /*
         DeleteLine();
         atPort = false;
@@ -115,15 +134,31 @@ public class LineFollow : NetworkBehaviour
         */
     }
 
+    public void StartDrag()
+    {
+        print("Start Drag");
+        isDragging = true;
+        isDraggable = true;
+        DeleteLine();
+        atPort = false;
+        lineFollowing = false;
+        drawingLine = true;
+        StartLine(transform.position);
+    }
+
     private void OnMouseDrag()
     {
-        CmdRequestMove(netId);
+        //print("ondrag: " + isDragging + " : " + isOwned + " : " + isDraggable);
+        if (!isDragging || (!isServer && !isOwned) || !isDraggable) return;
+        CmdRequestMove();
         //UpdateLine();
     }
 
     private void OnMouseUp()
     {
-        CmdReleaseControl(netId);
+        if (!isDragging || (!isServer && !isOwned) || !isDraggable) return;
+        isDragging = false;
+        CmdReleaseControl();
         /*
         positions = new Vector3[line.positionCount];
         line.GetPositions(positions);
@@ -257,51 +292,49 @@ public class LineFollow : NetworkBehaviour
         
     }
 
-    [Command(requiresAuthority = false)]
-    public void CmdRequestControl(uint playerId)
+    /*
+    [Command(requiresAuthority = true)]
+    public void CmdRequestControl()
     {
-        if(authorizedId == 0 || authorizedId == playerId)
-        {
-            authorizedId = playerId;
-            DeleteLine();
-            atPort = false;
-            lineFollowing = false;
-            drawingLine = true;
-            StartLine(transform.position);
-        }
+        DeleteLine();
+        atPort = false;
+        lineFollowing = false;
+        drawingLine = true;
+        StartLine(transform.position);
     }
+    */
 
-    [Command(requiresAuthority = false)]
-    public void CmdRequestMove(uint playerId)
+    public void CmdRequestMove()
     {
-        if(authorizedId == playerId)
-        {
-            UpdateLine();
-        }
+        UpdateLine();
     }
 
 
-    [Command(requiresAuthority = false)]
-    public void CmdReleaseControl(uint playerId)
+    public void CmdReleaseControl()
     {
-        if (authorizedId == playerId)
-        {
-            positions = new Vector3[line.positionCount];
-            line.GetPositions(positions);
-            lineFollowing = true;
-            drawingLine = false;
-            moveIndex = 0;
-            authorizedId = 0;
-        }
+        positions = new Vector3[line.positionCount];
+        line.GetPositions(positions);
+        lineFollowing = true;
+        drawingLine = false;
+        moveIndex = 0;
+        authorizedId = 0;
+        unitIdentity.RemoveClientAuthority();
+        isDraggable = false;
+        
+    }
+
+    public override void OnStartAuthority()
+    {
+        base.OnStartAuthority();
+        print("OnStartAuthority");
+
+        StartDrag();
+
     }
 
     private void Update()
     {
-        if (!isServer)
-        {
-            print("No server found with linefollow");
-            return;
-        }
+        //if (!isServer) return;
         if (isCrashed)
         {
             return;
