@@ -3,6 +3,10 @@ using Mirror;
 
 public class NetworkAuthorizer : NetworkBehaviour
 {
+    private void Start()
+    {
+        print("Start function for authorizer called");
+    }
     [Command]
     public void CmdRequestAuthority(NetworkIdentity vehicle)
     {

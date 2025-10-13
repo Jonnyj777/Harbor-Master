@@ -148,7 +148,7 @@ public class LineFollow : NetworkBehaviour
 
     private void OnMouseDrag()
     {
-        //print("ondrag: " + isDragging + " : " + isOwned + " : " + isDraggable);
+        print("ondrag: " + isDragging + " : " + isOwned + " : " + isDraggable);
         if (!isDragging || (!isServer && !isOwned) || !isDraggable) return;
         CmdRequestMove();
         //UpdateLine();
@@ -309,7 +309,7 @@ public class LineFollow : NetworkBehaviour
         UpdateLine();
     }
 
-
+    [Command]
     public void CmdReleaseControl()
     {
         positions = new Vector3[line.positionCount];
