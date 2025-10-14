@@ -63,7 +63,7 @@ public class LineFollow : NetworkBehaviour
     }
 
     [Command]
-    public void CmdUpdateLine(Vector3 mousePos, Vector3 raycastMousePos)
+    public void CmdUpdateLine(Vector3 raycastMousePos)
     {
         print("Update line");
         //Debug.DrawRay(Camera.main.ScreenToWorldPoint(mousePos), GetMousePosition(mousePos), Color.red);
@@ -116,10 +116,12 @@ public class LineFollow : NetworkBehaviour
         playerAuthorizer.CmdRequestAuthority(unitIdentity);
         print("check stats: isServer: " + isServer);
 
+        /*
         if (isServer || isOwned)
         {
             StartDrag();
         }
+        */
 
         //if (!NetworkClient.active || !isOwned) return;
         //isDragging = true;
@@ -304,9 +306,9 @@ public class LineFollow : NetworkBehaviour
     */
 
     [Command]
-    public void CmdRequestMove(Vector3 mousePos, Vector3 raycastMousePos)
+    public void CmdRequestMove(Vector3 raycastMousePos)
     {
-        CmdUpdateLine(mousePos, raycastMousePos);
+        CmdUpdateLine(raycastMousePos);
     }
 
     [Command]
@@ -342,7 +344,7 @@ public class LineFollow : NetworkBehaviour
         {
             if (Input.GetMouseButton(0))
             {
-                CmdRequestMove(Input.mousePosition, GetMousePosition());
+                CmdRequestMove(GetMousePosition());
                 Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red);
             }
             if (isCrashed)
