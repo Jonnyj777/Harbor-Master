@@ -435,7 +435,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
-  syncInterval: 0
+  syncInterval: 0.05
   layerMask:
     serializedVersion: 2
     m_Bits: 8
@@ -650,7 +650,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
-  syncInterval: 0
+  syncInterval: 0.05
   target: {fileID: 5466057443297664885}
   syncPosition: 1
   syncRotation: 1
@@ -684,7 +684,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
-  syncInterval: 0
+  syncInterval: 0.05
   target: {fileID: 5466057443297664885}
   syncPosition: 1
   syncRotation: 1

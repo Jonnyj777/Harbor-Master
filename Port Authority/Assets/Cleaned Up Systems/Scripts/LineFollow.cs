@@ -109,29 +109,9 @@ public class LineFollow : NetworkBehaviour
     private void OnMouseDown()
     {
         if (!NetworkClient.localPlayer) return;
-        print("On Mouse Down: " + NetworkClient.localPlayer);
-        if (!NetworkClient.localPlayer) return;
 
         NetworkAuthorizer playerAuthorizer = NetworkClient.localPlayer.GetComponent<NetworkAuthorizer>();
         playerAuthorizer.CmdRequestAuthority(unitIdentity);
-        print("check stats: isServer: " + isServer);
-
-        /*
-        if (isServer || isOwned)
-        {
-            StartDrag();
-        }
-        */
-
-        //if (!NetworkClient.active || !isOwned) return;
-        //isDragging = true;
-        /*
-        DeleteLine();
-        atPort = false;
-        lineFollowing = false;
-        drawingLine = true;
-        StartLine(transform.position);
-        */
     }
 
     public void StartDrag()
