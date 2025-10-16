@@ -122,11 +122,10 @@ public class SteamLobbyManager : MonoBehaviour
             return;
         }
 
-        await Task.Delay(5000);
+        //await Task.Delay(5000);
 
         NetworkManager.singleton.StartHost();
 
-        var lobbies = await SteamMatchmaking.LobbyList.WithSlotsAvailable(1).RequestAsync();
 
     }
 
@@ -136,22 +135,22 @@ public class SteamLobbyManager : MonoBehaviour
         ClearLobby();
 
         await Task.Delay(lobbyListDelayDuration);
+
         var LobbyList = SteamMatchmaking.LobbyList;
+
+        LobbyList = LobbyList.WithKeyValue("game", "PORTAUTH");
         var LobbyResult = await LobbyList.RequestAsync();
 
         foreach(var l in LobbyResult)
         {
-            //76561198053171908
             Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("HostAddress")}.");
-            if (l.GetData("game") == "PORTAUTH")
-            {
-                GameObject lobbyObj = Instantiate(lobbyTemplate, lobbyContent);
-                Debug.Log(l.GetData("name"));
-                lobbyObj.GetComponentInChildren<TextMeshProUGUI>().text = l.GetData("name");
-                lobbyObj.GetComponentInChildren<Button>().onClick.AddListener(() => AttemptJoin(l));
-                lobbyList.Add(l.Id, lobbyObj);
-                Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("name")}.");
-            }
+            GameObject lobbyObj = Instantiate(lobbyTemplate, lobbyContent);
+            Debug.Log(l.GetData("name"));
+            lobbyObj.GetComponentInChildren<TextMeshProUGUI>().text = l.GetData("name");
+            lobbyObj.GetComponentInChildren<Button>().onClick.AddListener(() => AttemptJoin(l));
+            lobbyList.Add(l.Id, lobbyObj);
+            Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("name")}.");
+            
         }
     }
 
