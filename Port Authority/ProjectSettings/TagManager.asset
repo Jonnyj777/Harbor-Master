@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Water
   - Terrain
+  - DockNode
   layers:
   - Default
   - TransparentFX

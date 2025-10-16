@@ -4,33 +4,31 @@ using UnityEngine.Serialization;
 
 public class PointFinder : MonoBehaviour
 {
-    public static PointFinder Instance { get; private set; }
-
-    [SerializeField] private float shoreDistance = 10f;
-    [SerializeField] private float shoreBuildingRadius = 25f;
-    [SerializeField] private float landBuildingRadius = 25f;
-    [SerializeField] private float landShoreClearance = 40f;
-
-    [SerializeField] private int maxAttemptsPerPoint = 50;
-    [SerializeField] private int shoreMaxAttempts = 500;
     [SerializeField] private float raycastHeight = 100f;
     [SerializeField] private Vector2 areaCenter = Vector2.zero;
     [SerializeField] private Vector2 areaSize = new Vector2(500f, 500f);
     [SerializeField] private int radialSamples = 16;
-    [SerializeField] private float cubeSize = 2f;
-    [SerializeField] private string terrainTag = "Terrain";
-    [SerializeField] private string waterTag = "Water";
-    [SerializeField] private LayerMask raycastMask = ~0;
+    public static PointFinder Instance { get; private set; }
+    private int shoreMaxAttempts;
+    private float shoreDistance;
+    private float shoreBuildingRadius;
+    
+    private float landBuildingRadius;
+    private float landShoreClearance;
+    private int landMaxAttempts;
+    
+    private float cubeSize = 10f;
+    private string terrainTag = "Terrain";
+    private string waterTag = "Water";
+    private LayerMask raycastMask = ~0;
 
     private readonly List<Vector3> landPoints = new List<Vector3>();
     private readonly List<Vector3> shorePoints = new List<Vector3>();
-    private readonly List<GameObject> landMarkers = new List<GameObject>();
-    private readonly List<GameObject> shoreMarkers = new List<GameObject>();
-
-    public Vector3 SetShorePoint(float distance, int maxAttempts)
+    public Vector3 FindShorePoint(float shoreDistance, int maxAttempts, float shoreBuildingRadius)
     {
-        shoreDistance = Mathf.Max(0f, distance);
-        shoreMaxAttempts = Mathf.Max(1, maxAttempts);
+        this.shoreDistance = Mathf.Max(0f, shoreDistance);
+        this.shoreMaxAttempts = Mathf.Max(1, maxAttempts);
+        this.shoreBuildingRadius = Mathf.Max(0f, shoreBuildingRadius);
 
         Vector3 point = FindShorePoint();
 
@@ -39,9 +37,12 @@ public class PointFinder : MonoBehaviour
 
         return point;
     }
-
-    public Vector3 FindLandPoint()
+    public Vector3 FindLandPoint(float landBuildingRadius, float landShoreClearance, int landMaxAttempts)
     {
+        this.landBuildingRadius = Mathf.Max(0f, landBuildingRadius);
+        this.landShoreClearance = Mathf.Max(0f, landShoreClearance);
+        this.landMaxAttempts = Mathf.Max(1, landMaxAttempts);
+        
         Vector3 point = FindLandPointInternal();
 
         if (point == Vector3.zero)
@@ -65,7 +66,7 @@ public class PointFinder : MonoBehaviour
     {
         int totalAttempts = 0;
 
-        while (totalAttempts < maxAttemptsPerPoint)
+        while (totalAttempts < landMaxAttempts)
         {
             totalAttempts++;
 
@@ -79,7 +80,6 @@ public class PointFinder : MonoBehaviour
                 continue;
 
             landPoints.Add(surfacePoint);
-            landMarkers.Add(SpawnMarker(surfacePoint));
             return surfacePoint;
         }
 
@@ -104,7 +104,6 @@ public class PointFinder : MonoBehaviour
                 continue;
 
             shorePoints.Add(surfacePoint);
-            shoreMarkers.Add(SpawnMarker(surfacePoint));
             return surfacePoint;
         }
 
@@ -206,15 +205,6 @@ public class PointFinder : MonoBehaviour
 
         return true;
     }
-
-    private GameObject SpawnMarker(Vector3 position)
-    {
-        GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        marker.transform.localScale = Vector3.one * cubeSize;
-        marker.transform.position = position + Vector3.up * (cubeSize * 0.5f);
-        return marker;
-    }
-
     private Vector2 GetRandomXZWithinArea()
     {
         Vector2 halfSize = new Vector2(Mathf.Max(0.1f, areaSize.x) * 0.5f, Mathf.Max(0.1f, areaSize.y) * 0.5f);
