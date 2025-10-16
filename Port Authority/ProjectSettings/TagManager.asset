@@ -7,6 +7,7 @@ TagManager:
   - Water
   - Terrain
   - DockNode
+  - ConnectPoint
   layers:
   - Default
   - TransparentFX
