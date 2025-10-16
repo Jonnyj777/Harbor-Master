@@ -1,6 +1,7 @@
 using UnityEngine;
 using Steamworks;
 using Mirror;
+using Mirror.FizzySteam;
 
 public class SteamManager : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class SteamManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             try
             {
-                SteamClient.Init(appId, true);
+                //SteamClient.Init(appId, true);
                 Debug.Log("Steam is working");
             }
             catch(System.Exception e)
@@ -28,7 +29,6 @@ public class SteamManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
 
     }
 

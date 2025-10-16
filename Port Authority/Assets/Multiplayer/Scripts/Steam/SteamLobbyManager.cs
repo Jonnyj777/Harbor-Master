@@ -7,10 +7,7 @@ using UnityEngine.Events;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
-using IO.Swagger.Model;
-using Mirror.Discovery;
 using Steamworks.Data;
-using System;
 
 public class SteamLobbyManager : MonoBehaviour
 {
@@ -116,6 +113,7 @@ public class SteamLobbyManager : MonoBehaviour
     }
     public async void Host()
     {
+        print("Hosting started...");
         var isSuccessful = await CreateLobby();
 
         if (!isSuccessful)
@@ -124,7 +122,11 @@ public class SteamLobbyManager : MonoBehaviour
             return;
         }
 
+        await Task.Delay(5000);
+
         NetworkManager.singleton.StartHost();
+
+        var lobbies = await SteamMatchmaking.LobbyList.WithSlotsAvailable(1).RequestAsync();
 
     }
 
@@ -139,7 +141,9 @@ public class SteamLobbyManager : MonoBehaviour
 
         foreach(var l in LobbyResult)
         {
-            if(l.GetData("game") == "PORTAUTH")
+            //76561198053171908
+            Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("HostAddress")}.");
+            if (l.GetData("game") == "PORTAUTH")
             {
                 GameObject lobbyObj = Instantiate(lobbyTemplate, lobbyContent);
                 Debug.Log(l.GetData("name"));
