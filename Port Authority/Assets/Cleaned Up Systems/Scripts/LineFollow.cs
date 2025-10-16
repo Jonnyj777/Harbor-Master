@@ -1,5 +1,7 @@
 using Mirror;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LineFollow : NetworkBehaviour
@@ -8,7 +10,7 @@ public class LineFollow : NetworkBehaviour
 
     [SerializeField]
     private LayerMask layerMask;
-    private List<Vector3> linePositions;
+    private SyncList<Vector3> linePositions = new SyncList<Vector3>();
     public float timerDelayBetweenLinePoints = 0.01f;
     public Color lineColor = Color.red;
     public float lineWidth = 1;
@@ -33,18 +35,20 @@ public class LineFollow : NetworkBehaviour
     private bool isDragging = false;
     private bool isDraggable = false;
     private NetworkIdentity unitIdentity;
+    private bool lineFinished = false;
 
 
 
     private void Start()
     {
         unitIdentity = GetComponent<NetworkIdentity>();
-        linePositions = new List<Vector3>();
         line = GetComponent<LineRenderer>();
         rb = GetComponent<Rigidbody>();
         timer = timerDelayBetweenLinePoints;
         Renderer rend = GetComponent<Renderer>();
         heightOffset = rend.bounds.size.y * 0.5f;
+
+        linePositions.Callback += OnLinePositionsChanged;
 
         if (CompareTag("Truck"))
         {
@@ -69,20 +73,28 @@ public class LineFollow : NetworkBehaviour
         //print("Update line");
         //Debug.DrawRay(Camera.main.ScreenToWorldPoint(mousePos), GetMousePosition(mousePos), Color.red);
         timer -= Time.deltaTime;
-        {
-            if (timer <= 0)
-                linePositions.Add(raycastMousePos);
-            line.positionCount = linePositions.Count;
-            line.SetPositions(linePositions.ToArray());
+            if (timer <= 0) { 
+            linePositions.Add(raycastMousePos);
+            //line.positionCount = linePositions.Count;
+            //line.SetPositions(linePositions.ToArray());
             timer = timerDelayBetweenLinePoints;
-        }
+            }
+    }
+
+    [Server]
+    private void ClearPositions()
+    {
+        linePositions.Clear();
     }
 
     public void DeleteLine()
     {
+        lineFinished = true;
         line.positionCount = 0;
-        linePositions.Clear();
+        ClearPositions();
+        line.SetPositions(linePositions.ToArray());
         lineFollowing = false;
+        lineFinished = false;
     }
 
     Vector3 GetMousePosition()
@@ -129,12 +141,6 @@ public class LineFollow : NetworkBehaviour
 
     private void OnMouseDrag()
     {
-        //print("ondrag: " + isDragging + " : " + isOwned + " : " + isDraggable);
-        //if (!isDragging || (!isServer && !isOwned) || !isDraggable) return;
-        //CmdRequestMove(Input.mousePosition, GetMousePosition(Input.mousePosition));
-        //Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(Input.mousePosition), Color.red);
-        //UpdateLine();
-
         if(!isOwned || !isDraggable) return;
 
         CmdRequestMove(GetMousePosition());
@@ -143,10 +149,6 @@ public class LineFollow : NetworkBehaviour
     private void OnMouseUp()
     {
         if (!isDragging || (!isServer && !isOwned) || !isDraggable) return;
-
-
-
-        //CmdReleaseControl();
 
         NetworkAuthorizer playerAuthorizer = NetworkClient.localPlayer.GetComponent<NetworkAuthorizer>();
         playerAuthorizer.CmdRemoveAuthority(unitIdentity);
@@ -201,7 +203,14 @@ public class LineFollow : NetworkBehaviour
 
         SnapToSurface();
 
+        RemoveLineTraveled();
         // remove the part of line already traveled on
+    }
+
+    [Server]
+    private void RemoveLineTraveled()
+    {
+
         if (line.positionCount > 1)
         {
             Vector3[] currentPositions = new Vector3[line.positionCount];
@@ -284,17 +293,12 @@ public class LineFollow : NetworkBehaviour
 
     }
 
-    /*
-    [Command(requiresAuthority = true)]
-    public void CmdRequestControl()
+    private void OnLinePositionsChanged(SyncList<Vector3>.Operation op, int index, Vector3 oldItem, Vector3 newItem)
     {
-        DeleteLine();
-        atPort = false;
-        lineFollowing = false;
-        drawingLine = true;
-        StartLine(transform.position);
+        if (lineFinished) return;
+        line.positionCount = linePositions.Count;
+        line.SetPositions(linePositions.ToArray());
     }
-    */
 
     [Command]
     public void CmdRequestMove(Vector3 raycastMousePos)
@@ -358,6 +362,7 @@ public class LineFollow : NetworkBehaviour
                 // remove line after following finishes
                 if (moveIndex > positions.Length - 1)
                 {
+                    print("finished");
                     DeleteLine();
                 }
             }
