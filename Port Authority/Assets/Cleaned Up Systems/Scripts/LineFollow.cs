@@ -162,6 +162,7 @@ public class LineFollow : NetworkBehaviour
         
     }
 
+    [Server]
     public void SnapToSurface()
     {
         if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, Mathf.Infinity, layerMask))
@@ -176,6 +177,7 @@ public class LineFollow : NetworkBehaviour
         }
     }
 
+    [Server]
     private void FollowLineTruck()
     {
         // update position, direction, and rotation of object
@@ -233,6 +235,7 @@ public class LineFollow : NetworkBehaviour
         }
     }
 
+    [Server]
     private void FollowLineBoat()
     {
         // update position and direction of object
