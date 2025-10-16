@@ -22,6 +22,7 @@ public class SpawnTrucks : NetworkBehaviour
     void SpawnTruck(Transform t)
     {
         GameObject newTruck = Instantiate(truck, t.position, t.rotation);
+        newTruck.AddComponent<AuthorityCheckerDebug>();
         NetworkServer.Spawn(newTruck);
     }
 

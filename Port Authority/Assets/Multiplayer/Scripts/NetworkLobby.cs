@@ -28,6 +28,13 @@ public class NetworkLobby : NetworkRoomManager
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         base.OnServerAddPlayer(conn);
+        
+        //NetworkRoomPlayer oldRoomPlayer = conn.identity.GetComponent<NetworkRoomPlayer>();
+
+        //if (oldRoomPlayer != null)
+        //{
+            //NetworkServer.Destroy(oldRoomPlayer.gameObject);
+        //}
     }
 
     public override void OnRoomClientEnter()
@@ -47,6 +54,5 @@ public class NetworkLobby : NetworkRoomManager
             ServerChangeScene(GameplayScene);
         }
     }
-
 
 }

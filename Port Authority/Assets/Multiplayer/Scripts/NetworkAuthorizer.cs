@@ -21,4 +21,16 @@ public class NetworkAuthorizer : NetworkBehaviour
         vehicle.AssignClientAuthority(connectionToClient);
         Debug.Log($"Authority granted to {connectionToClient.identity} for {vehicle.name}");
     }
+
+    [Command]
+    public void CmdRemoveAuthority(NetworkIdentity vehicle)
+    {
+        if (vehicle == null) return;
+
+        if (vehicle.connectionToClient == connectionToClient)
+        {
+            vehicle.RemoveClientAuthority();
+        }
+        Debug.Log($"Authority removed for {vehicle.name}");
+    }
 }
