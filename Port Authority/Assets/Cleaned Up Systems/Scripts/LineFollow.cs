@@ -65,7 +65,7 @@ public class LineFollow : NetworkBehaviour
     [Server]
     public void ServerUpdateLine(Vector3 raycastMousePos)
     {
-
+        print("serverupdateline");
         //print("Update line");
         //Debug.DrawRay(Camera.main.ScreenToWorldPoint(mousePos), GetMousePosition(mousePos), Color.red);
         timer -= Time.deltaTime;
@@ -299,6 +299,7 @@ public class LineFollow : NetworkBehaviour
     [Command]
     public void CmdRequestMove(Vector3 raycastMousePos)
     {
+        print("cmdrequestmove");
         ServerUpdateLine(raycastMousePos);
     }
 
