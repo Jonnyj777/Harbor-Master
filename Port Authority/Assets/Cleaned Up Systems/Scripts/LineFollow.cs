@@ -69,7 +69,6 @@ public class LineFollow : NetworkBehaviour
     [Server]
     public void ServerUpdateLine(Vector3 raycastMousePos)
     {
-        print("serverupdateline");
         //print("Update line");
         //Debug.DrawRay(Camera.main.ScreenToWorldPoint(mousePos), GetMousePosition(mousePos), Color.red);
         timer -= Time.deltaTime;
@@ -149,6 +148,8 @@ public class LineFollow : NetworkBehaviour
     private void OnMouseUp()
     {
         if (!isDragging || (!isServer && !isOwned) || !isDraggable) return;
+
+        CmdReleaseSettings();
 
         NetworkAuthorizer playerAuthorizer = NetworkClient.localPlayer.GetComponent<NetworkAuthorizer>();
         playerAuthorizer.CmdRemoveAuthority(unitIdentity);
@@ -311,13 +312,8 @@ public class LineFollow : NetworkBehaviour
     }
 
     [Command]
-    public void CmdReleaseControl()
+    public void CmdReleaseSettings()
     {
-        if (isServer)
-        {
-            unitIdentity.RemoveClientAuthority();
-        }
-
         PopulatePositions();
         lineFollowing = true;
         drawingLine = false;
