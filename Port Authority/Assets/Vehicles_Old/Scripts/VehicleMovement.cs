@@ -1,6 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections;
+using System;
 using UnityEngine.Rendering;
 
 public class VehicleMovement : MonoBehaviour
@@ -117,6 +118,7 @@ public class VehicleMovement : MonoBehaviour
         // Discuss cycling behavior in next call
     }
 
+    #region Collision Handling
     // Collision detection to set crash state
     private void OnCollisionEnter(Collision collision)
     {
@@ -141,9 +143,11 @@ public class VehicleMovement : MonoBehaviour
             other.EnterCrashState(CrashType.Boat);
         }
     }
+    #endregion
 
+    #region Crash Handling
     // Apply crash state behavior depending on vehicle type
-    private void EnterCrashState(CrashType type)
+    private void EnterCrashState(CrashType type, System.Action callback = null)
     {
         isCrashed = true;  // switches the vehicle to a crashed state
         crashType = type;  // helps depict what class of vehicle is crashed
@@ -166,6 +170,7 @@ public class VehicleMovement : MonoBehaviour
                     vehicleRenderer.material.color = landCrashedColor;
                 }
                 Debug.Log($"{gameObject.name} crashed into another land vehicle and is now an avoidable obstacle");
+                callback?.Invoke();
                 break;
 
             case CrashType.Boat:
@@ -174,13 +179,13 @@ public class VehicleMovement : MonoBehaviour
                     vehicleRenderer.material.color = boatCrashedColor;
                 }
                 Debug.Log($"{gameObject.name} crashed and will disappear after 3 seconds...");
-                StartCoroutine(SinkFadeOut());  // boat will sink, then fade away and disappear
+                StartCoroutine(SinkFadeOut(callback));  // boat will sink, then fade away and disappear
                 break;
         }
     }
 
     // function to make boats sink, fade, then destroyed after crashing into another boat vehicle
-    private IEnumerator SinkFadeOut()
+    private IEnumerator SinkFadeOut(System.Action callback = null)
     {
         // sinking
         Vector3 startPos = transform.position;
@@ -218,5 +223,55 @@ public class VehicleMovement : MonoBehaviour
         }
         // destroy game object
         Destroy(gameObject);
+
+        callback?.Invoke();
+    }
+    #endregion
+
+    #region Whirlpool Interaction
+    public void EnterWhirlpool(Transform whirlpoolCenter, float duration, System.Action<VehicleMovement> callback = null)
+    {
+        if (!isCrashed)
+        {
+            isCrashed = true;
+            crashType = CrashType.Boat;
+            StartCoroutine(SuckedInWhirlpool(whirlpoolCenter, duration, callback));
+        }
+    }
+
+    private IEnumerator SuckedInWhirlpool(Transform center, float duration, System.Action<VehicleMovement> callback)
+    {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.constraints = RigidbodyConstraints.FreezeRotation;
+        }
+
+        float elapsed = 0f;
+        Vector3 startPos = transform.position;
+        Vector3 endPos = new Vector3(center.position.x, center.position.y - sinkLength, center.position.z);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+
+            // move toward center while sinking
+            transform.position = Vector3.Lerp(startPos, endPos, t);
+
+            // rotate around center while moving inward
+            transform.RotateAround(center.position, Vector3.up, 360f * Time.deltaTime);
+
+            yield return null;
+        }
+
+        // once centered, trigger immediate crash for boat(s)
+        Destroy(gameObject);
+
+        // notify the whirlpool that this boat is done
+        callback?.Invoke(this);
     }
 }
+#endregion
