@@ -5,7 +5,8 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
-    private int score = 0;
+    private int totalScore = 0;
+    private int spendableScore = 0;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI popUpText;
     public TextMeshProUGUI losePopUpText;
@@ -22,11 +23,14 @@ public class ScoreManager : MonoBehaviour
 
     public void AddScore(int scoreUpdate, bool bonus)
     {
-        score += scoreUpdate;
-        scoreText.text = "$ " + score;
+        totalScore += scoreUpdate;
+        spendableScore += scoreUpdate;
+
+        scoreText.text = "$ " + spendableScore;
 
         StartCoroutine(ShowPopUp("+$ " + scoreUpdate, bonus));
     }
+
     private IEnumerator ShowPopUp(string text, bool bonus)
     {
         popUpText.text = text;
@@ -46,9 +50,21 @@ public class ScoreManager : MonoBehaviour
     {
         losePopUpText.text = "Great Work!\r\n" +
                              "You safely delivered\r\n" +
-                             "$" + score + "\r\n" +
+                             "$" + totalScore + "\r\n" +
                              "worth of goods\r\n" +
                              "this shift.";
         losePopUpText.gameObject.SetActive(true);
+    }
+
+    public void UpdateSpendableScore(int scoreUpdate)
+    {
+        spendableScore += scoreUpdate;
+
+        scoreText.text = "$ " + spendableScore;
+    }
+
+    public int GetSpendableScore()
+    {
+        return spendableScore;
     }
 }

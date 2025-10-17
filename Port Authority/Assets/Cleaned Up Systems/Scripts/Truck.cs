@@ -16,7 +16,7 @@ public class Truck : MonoBehaviour
     public Material crashedMaterial;
     public Color crashedColor = Color.magenta;  // Color to when truck vehicles crash
     private Renderer vehicleRenderer;
-    public float restartDelay = 3f;
+    public static float globalRestartDelay = 15f;
 
     private void Start()
     {
@@ -172,18 +172,23 @@ public class Truck : MonoBehaviour
     public void EnterCrashState()
     {
         vehicle.SetIsCrashed(true);
+        GameUIManager.Instance.AddCrashedTruck(this);
         if (vehicleRenderer != null)
         {
             vehicleRenderer.material = crashedMaterial;
             vehicleRenderer.material.color = crashedColor;
-
-            StartCoroutine(RestoreMaterialAfterDelay());
         }
+    }
+
+    public void RepairTruck()
+    {
+        GameUIManager.Instance.RemoveCrashedTruck(this);
+        StartCoroutine(RestoreMaterialAfterDelay());
     }
 
     private IEnumerator RestoreMaterialAfterDelay()
     {
-        yield return new WaitForSeconds(restartDelay);
+        yield return new WaitForSeconds(globalRestartDelay);
 
         vehicleRenderer.material = originalMaterial;
         vehicle.SetIsCrashed(false);
