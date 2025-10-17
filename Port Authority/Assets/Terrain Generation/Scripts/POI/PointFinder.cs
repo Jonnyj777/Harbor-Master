@@ -6,6 +6,9 @@ public class PointFinder : MonoBehaviour
 {
     [SerializeField] private float raycastHeight = 100f;
     [SerializeField] private int radialSamples = 16;
+    [SerializeField] private float shoreOrientationRadius = 15f;
+    [SerializeField, Range(8, 360)] private int shoreOrientationSamples = 72;
+    [SerializeField] private int shoreOrientationMinSequence = 2;
     public static PointFinder Instance { get; private set; }
     private int shoreMaxAttempts;
     private float shoreDistance;
@@ -34,6 +37,15 @@ public class PointFinder : MonoBehaviour
             Debug.LogWarning("Failed to find a valid shore point within the provided parameters.");
 
         return point;
+    }
+    
+    public Quaternion GetShoreFacingRotation(Vector3 shorePoint)
+    {
+        Vector3 facing = ComputeShoreFacingDirection(shorePoint, shoreOrientationSamples, shoreOrientationRadius, shoreOrientationMinSequence);
+        if (facing.sqrMagnitude <= Mathf.Epsilon)
+            return Quaternion.identity;
+
+        return Quaternion.LookRotation(facing, Vector3.up);
     }
     public Vector3 FindLandPoint(float landBuildingRadius, float landShoreClearance, int landMaxAttempts, Vector2 areaCenter, Vector2 areaSize)
     {
@@ -203,6 +215,118 @@ public class PointFinder : MonoBehaviour
 
         return true;
     }
+    
+    private Vector3 ComputeShoreFacingDirection(Vector3 shorePoint, int sampleCount, float surveyRadius, int minimumSequenceLength)
+    {
+        // Sample the area around the candidate point, cluster contiguous water samples, and
+        // average the large water segments to infer a stable outward-facing direction.
+        int samples = Mathf.Clamp(sampleCount, 8, 360);
+        float radius = Mathf.Max(1f, surveyRadius);
+        int minSequence = Mathf.Max(1, minimumSequenceLength);
+
+        if (samples <= 0)
+            return Vector3.zero;
+
+        float step = Mathf.PI * 2f / samples;
+
+        var segments = new List<ShoreSegment>();
+        bool hasInitialSegment = false;
+        ShoreSegment currentSegment = default;
+
+        for (int i = 0; i < samples; i++)
+        {
+            float angle = step * i;
+            Vector3 direction = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+            Vector3 samplePosition = shorePoint + direction * radius;
+
+            SurfaceType surface = GetSurfaceTypeAtPosition(samplePosition);
+            bool isWater = surface == SurfaceType.Water;
+
+            if (!hasInitialSegment)
+            {
+                currentSegment = new ShoreSegment
+                {
+                    IsWater = isWater,
+                    Sum = direction,
+                    Length = 1
+                };
+                hasInitialSegment = true;
+                continue;
+            }
+
+            if (currentSegment.IsWater == isWater)
+            {
+                currentSegment.Sum += direction;
+                currentSegment.Length += 1;
+            }
+            else
+            {
+                segments.Add(currentSegment);
+                currentSegment = new ShoreSegment
+                {
+                    IsWater = isWater,
+                    Sum = direction,
+                    Length = 1
+                };
+            }
+        }
+
+        if (hasInitialSegment)
+            segments.Add(currentSegment);
+
+        if (segments.Count == 0)
+            return Vector3.zero;
+
+        if (segments.Count > 1 && segments[0].IsWater == segments[segments.Count - 1].IsWater)
+        {
+            ShoreSegment merged = segments[0];
+            merged.Sum += segments[segments.Count - 1].Sum;
+            merged.Length += segments[segments.Count - 1].Length;
+            segments[0] = merged;
+            segments.RemoveAt(segments.Count - 1);
+        }
+
+        Vector3 waterAccumulator = Vector3.zero;
+        int waterSamples = 0;
+
+        for (int i = 0; i < segments.Count; i++)
+        {
+            ShoreSegment segment = segments[i];
+            if (!segment.IsWater)
+                continue;
+
+            if (segment.Length < minSequence)
+                continue;
+
+            Vector3 flattenedDirection = segment.Sum;
+            flattenedDirection.y = 0f;
+
+            if (flattenedDirection.sqrMagnitude <= Mathf.Epsilon)
+                continue;
+
+            waterAccumulator += flattenedDirection.normalized * segment.Length;
+            waterSamples += segment.Length;
+        }
+
+        if (waterSamples == 0 || waterAccumulator.sqrMagnitude <= Mathf.Epsilon)
+            return Vector3.zero;
+
+        return waterAccumulator.normalized;
+    }
+
+    private SurfaceType GetSurfaceTypeAtPosition(Vector3 position)
+    {
+        Vector3 origin = new Vector3(position.x, raycastHeight, position.z);
+        RaycastHit[] hits = Physics.RaycastAll(origin, Vector3.down, Mathf.Infinity, EffectiveRaycastMask);
+
+        if (!ValidateRaycasts(hits, out RaycastHit terrainHit, out RaycastHit waterHit))
+            return SurfaceType.Unknown;
+
+        if (waterHit.collider != null && waterHit.distance <= terrainHit.distance)
+            return SurfaceType.Water;
+
+        return SurfaceType.Terrain;
+    }
     private Vector2 GetRandomXZWithinArea(Vector2 areaCenter, Vector2 areaSize)
     {
         Vector2 halfSize = new Vector2(Mathf.Max(0.1f, areaSize.x) * 0.5f, Mathf.Max(0.1f, areaSize.y) * 0.5f);
@@ -212,4 +336,18 @@ public class PointFinder : MonoBehaviour
     }
 
     private int EffectiveRaycastMask => raycastMask.value == 0 ? Physics.DefaultRaycastLayers : raycastMask.value;
+
+    private enum SurfaceType
+    {
+        Unknown,
+        Terrain,
+        Water
+    }
+
+    private struct ShoreSegment
+    {
+        public bool IsWater;
+        public Vector3 Sum;
+        public int Length;
+    }
 }

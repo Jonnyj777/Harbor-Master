@@ -71,7 +71,7 @@ public class StructurePlacer : MonoBehaviour
         {
             Vector3 pos = PointFinder.Instance.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, areaCenter, landAreaSize);
             if (pos != Vector3.zero)
-                Instantiate(GetStorePrefab(), pos, Quaternion.identity);
+                Instantiate(GetStorePrefab(), pos, Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0));
             else 
                 Debug.LogWarning("Store Prefab Not Found or Invalid Position");
 
@@ -85,7 +85,7 @@ public class StructurePlacer : MonoBehaviour
             Vector3 pos = PointFinder.Instance.FindShorePoint(shoreDistance, shoreMaxAttempts, shoreBuildingRadius, dockAreaCenter, dockAreaSize);
             if (pos != Vector3.zero)
             {
-                Quaternion dockRotation = GetClosestDockNodeOrientation(pos);
+                Quaternion dockRotation = GetDockOrientation(pos);
                 Instantiate(GetDockPrefab(), pos, dockRotation);
             }
             else 
@@ -99,44 +99,19 @@ public class StructurePlacer : MonoBehaviour
         {
             Vector3 pos = PointFinder.Instance.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, areaCenter, landAreaSize);
             if (pos != Vector3.zero)
-                Instantiate(GetFactoryPrefab(), pos, Quaternion.identity);
+                Instantiate(GetFactoryPrefab(), pos, Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0));
             else 
                 Debug.LogWarning("Factory Prefab Not Found or Invalid Position");
         }
     }
 
-    private Quaternion GetClosestDockNodeOrientation(Vector3 spawnPosition)
+    private Quaternion GetDockOrientation(Vector3 spawnPosition)
     {
-        GameObject[] dockNodes = GameObject.FindGameObjectsWithTag("DockNode");
-        if (dockNodes == null || dockNodes.Length == 0)
+        if (PointFinder.Instance == null)
             return Quaternion.identity;
 
-        GameObject closestNode = null;
-        float closestDistanceSqr = float.MaxValue;
-
-        for (int i = 0; i < dockNodes.Length; i++)
-        {
-            if (dockNodes[i] == null)
-                continue;
-
-            float distanceSqr = (dockNodes[i].transform.position - spawnPosition).sqrMagnitude;
-            if (distanceSqr < closestDistanceSqr)
-            {
-                closestDistanceSqr = distanceSqr;
-                closestNode = dockNodes[i];
-            }
-        }
-
-        if (closestNode == null)
-            return Quaternion.identity;
-
-        Vector3 directionToNode = closestNode.transform.position - spawnPosition;
-        directionToNode.y = 0f;
-
-        if (directionToNode.sqrMagnitude <= Mathf.Epsilon)
-            return Quaternion.identity;
-
-        return Quaternion.LookRotation(directionToNode.normalized, Vector3.up);
+        Quaternion orientation = PointFinder.Instance.GetShoreFacingRotation(spawnPosition);
+        return orientation;
     }
 
     private GameObject GetStorePrefab()
