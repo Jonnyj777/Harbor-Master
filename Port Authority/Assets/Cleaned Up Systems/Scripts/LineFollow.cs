@@ -225,13 +225,14 @@ public class LineFollow : NetworkBehaviour
 
             if (Vector3.Distance(flatCurrent, flatNext) < 0.5f)
             {
-                List<Vector3> temp = new List<Vector3>(currentPositions);
-                temp.RemoveAt(0);
-                currentPositions = temp.ToArray();
+                //SyncList<Vector3> temp = new SyncList<Vector3>(currentPositions);
+                //temp.RemoveAt(0);
+                //currentPositions = temp.ToArray();
+                linePositions.RemoveAt(0);
             }
 
-            line.positionCount = currentPositions.Length;
-            line.SetPositions(currentPositions);
+            //line.positionCount = currentPositions.Length;
+            //line.SetPositions(currentPositions);
         }
     }
 
