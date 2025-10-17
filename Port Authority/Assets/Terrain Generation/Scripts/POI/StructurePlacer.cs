@@ -31,8 +31,8 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField] private int radialSamples = 16;
 
     // Area settings
-    [SerializeField] private Vector2 areaCenter = Vector2.zero;
-    [SerializeField] private Vector2 areaSize = new Vector2(500f, 500f);
+    [SerializeField] private Vector2 areaCenter = new Vector2(40, 42);
+    [SerializeField] private Vector2 areaSize = new Vector2(350f, 500f);
     
     HashSet<int> availableStoreIndices = new HashSet<int>();
     HashSet<int> availableDockIndices = new HashSet<int>();

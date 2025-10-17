@@ -8,6 +8,9 @@ TagManager:
   - Terrain
   - DockNode
   - ConnectPoint
+  - Commercial
+  - Factory
+  - Dock
   layers:
   - Default
   - TransparentFX
