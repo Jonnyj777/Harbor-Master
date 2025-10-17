@@ -26,7 +26,7 @@ public class LineFollow : NetworkBehaviour
     private bool drawingLine = false;
     private bool atPort = false;
     private bool isCrashed = false;
-    private Vector3[] positions;
+    private SyncList<Vector3> positions = new SyncList<Vector3>();
     private int moveIndex = 0;
     private float heightOffset = 0;
 
@@ -153,8 +153,7 @@ public class LineFollow : NetworkBehaviour
         NetworkAuthorizer playerAuthorizer = NetworkClient.localPlayer.GetComponent<NetworkAuthorizer>();
         playerAuthorizer.CmdRemoveAuthority(unitIdentity);
 
-        positions = new Vector3[line.positionCount];
-        line.GetPositions(positions);
+        PopulatePositions();
         lineFollowing = true;
         drawingLine = false;
         moveIndex = 0;
@@ -319,14 +318,27 @@ public class LineFollow : NetworkBehaviour
             unitIdentity.RemoveClientAuthority();
         }
 
-        positions = new Vector3[line.positionCount];
-        line.GetPositions(positions);
+        PopulatePositions();
         lineFollowing = true;
         drawingLine = false;
         moveIndex = 0;
         authorizedId = 0;
         isDraggable = false;
 
+    }
+
+    [Server]
+    private void PopulatePositions()
+    {
+        positions.Clear();
+
+        Vector3[] positionsArray = new Vector3[line.positionCount];
+        line.GetPositions(positionsArray);
+
+        for (int i = 0; i < positionsArray.Length; i++)
+        {
+            positions.Add(positionsArray[i]);
+        }
     }
 
     public override void OnStartAuthority()
@@ -372,7 +384,7 @@ public class LineFollow : NetworkBehaviour
                 }
 
                 // remove line after following finishes
-                if (moveIndex > positions.Length - 1)
+                if (moveIndex > positions.Count - 1)
                 {
                     print("finished");
                     DeleteLine();
