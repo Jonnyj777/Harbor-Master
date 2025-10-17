@@ -266,7 +266,7 @@ public class LineFollow : NetworkBehaviour
 
             if (Vector3.Distance(currentPositions[0], currentPositions[1]) < 0.05f)
             {
-                List<Vector3> temp = new List<Vector3>(currentPositions);
+                SyncList<Vector3> temp = new SyncList<Vector3>(currentPositions);
                 temp.RemoveAt(0);
                 currentPositions = temp.ToArray();
             }
@@ -339,6 +339,14 @@ public class LineFollow : NetworkBehaviour
 
     private void Update()
     {
+        if(isServer)
+        {
+            print("Server moving");
+        }
+        else if (isClient)
+        {
+            print("Client moving");
+        }
         if (isServer)
         {
             //if (Input.GetMouseButton(0))
