@@ -5,8 +5,6 @@ using UnityEngine.Serialization;
 public class PointFinder : MonoBehaviour
 {
     [SerializeField] private float raycastHeight = 100f;
-    [SerializeField] private Vector2 areaCenter = Vector2.zero;
-    [SerializeField] private Vector2 areaSize = new Vector2(500f, 500f);
     [SerializeField] private int radialSamples = 16;
     public static PointFinder Instance { get; private set; }
     private int shoreMaxAttempts;
@@ -24,26 +22,26 @@ public class PointFinder : MonoBehaviour
 
     private readonly List<Vector3> landPoints = new List<Vector3>();
     private readonly List<Vector3> shorePoints = new List<Vector3>();
-    public Vector3 FindShorePoint(float shoreDistance, int maxAttempts, float shoreBuildingRadius)
+    public Vector3 FindShorePoint(float shoreDistance, int maxAttempts, float shoreBuildingRadius, Vector2 areaCenter, Vector2 areaSize)
     {
         this.shoreDistance = Mathf.Max(0f, shoreDistance);
         this.shoreMaxAttempts = Mathf.Max(1, maxAttempts);
         this.shoreBuildingRadius = Mathf.Max(0f, shoreBuildingRadius);
 
-        Vector3 point = FindShorePoint();
+        Vector3 point = FindShorePoint( areaCenter, areaSize);
 
         if (point == Vector3.zero)
             Debug.LogWarning("Failed to find a valid shore point within the provided parameters.");
 
         return point;
     }
-    public Vector3 FindLandPoint(float landBuildingRadius, float landShoreClearance, int landMaxAttempts)
+    public Vector3 FindLandPoint(float landBuildingRadius, float landShoreClearance, int landMaxAttempts, Vector2 areaCenter, Vector2 areaSize)
     {
         this.landBuildingRadius = Mathf.Max(0f, landBuildingRadius);
         this.landShoreClearance = Mathf.Max(0f, landShoreClearance);
         this.landMaxAttempts = Mathf.Max(1, landMaxAttempts);
         
-        Vector3 point = FindLandPointInternal();
+        Vector3 point = FindLandPointInternal( areaCenter, areaSize);
 
         if (point == Vector3.zero)
             Debug.LogWarning("Failed to find a valid land point within the specified area and constraints.");
@@ -62,7 +60,7 @@ public class PointFinder : MonoBehaviour
         Instance = this;
     }
 
-    private Vector3 FindLandPointInternal()
+    private Vector3 FindLandPointInternal(Vector2 areaCenter, Vector2 areaSize)
     {
         int totalAttempts = 0;
 
@@ -70,7 +68,7 @@ public class PointFinder : MonoBehaviour
         {
             totalAttempts++;
 
-            if (!TryFindValidPoint(out Vector3 surfacePoint))
+            if (!TryFindValidPoint(out Vector3 surfacePoint, areaCenter, areaSize))
                 continue;
 
             if (!IsFarFromPoints(surfacePoint, landPoints, landBuildingRadius))
@@ -86,7 +84,7 @@ public class PointFinder : MonoBehaviour
         return Vector3.zero;
     }
 
-    private Vector3 FindShorePoint()
+    private Vector3 FindShorePoint(Vector2 areaCenter, Vector2 areaSize)
     {
         int totalAttempts = 0;
 
@@ -94,7 +92,7 @@ public class PointFinder : MonoBehaviour
         {
             totalAttempts++;
 
-            if (!TryFindValidPoint(out Vector3 surfacePoint))
+            if (!TryFindValidPoint(out Vector3 surfacePoint, areaCenter, areaSize))
                 continue;
 
             if (!IsFarFromPoints(surfacePoint, shorePoints, shoreBuildingRadius))
@@ -110,11 +108,11 @@ public class PointFinder : MonoBehaviour
         return Vector3.zero;
     }
 
-    private bool TryFindValidPoint(out Vector3 point)
+    private bool TryFindValidPoint(out Vector3 point, Vector2 areaCenter, Vector2 areaSize)
     {
         point = default;
 
-        Vector2 sampledPoint = GetRandomXZWithinArea();
+        Vector2 sampledPoint = GetRandomXZWithinArea( areaCenter, areaSize);
         Vector3 rayOrigin = new Vector3(sampledPoint.x, raycastHeight, sampledPoint.y);
         RaycastHit[] hits = Physics.RaycastAll(rayOrigin, Vector3.down, Mathf.Infinity, EffectiveRaycastMask);
 
@@ -205,7 +203,7 @@ public class PointFinder : MonoBehaviour
 
         return true;
     }
-    private Vector2 GetRandomXZWithinArea()
+    private Vector2 GetRandomXZWithinArea(Vector2 areaCenter, Vector2 areaSize)
     {
         Vector2 halfSize = new Vector2(Mathf.Max(0.1f, areaSize.x) * 0.5f, Mathf.Max(0.1f, areaSize.y) * 0.5f);
         float x = Random.Range(areaCenter.x - halfSize.x, areaCenter.x + halfSize.x);

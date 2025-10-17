@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class StructurePlacer : MonoBehaviour
 {
@@ -18,7 +19,6 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField] private float shoreDistance = 10f;
     [SerializeField] private float shoreBuildingRadius = 25f;
     [SerializeField] private float shoreSearchDistance = 10f;
-    [SerializeField] private int shoreSearchMaxAttempts = 1000;
     [SerializeField] private int shoreMaxAttempts = 500;
 
     // Land placement settings
@@ -32,7 +32,10 @@ public class StructurePlacer : MonoBehaviour
 
     // Area settings
     [SerializeField] private Vector2 areaCenter = new Vector2(40, 42);
-    [SerializeField] private Vector2 areaSize = new Vector2(350f, 500f);
+    [SerializeField] private Vector2 landAreaSize = new Vector2(350f, 500f);
+    
+    [SerializeField] private Vector2 dockAreaCenter = new Vector2(10, 28);
+    [SerializeField] private Vector2 dockAreaSize = new Vector2(400f, 400f);
     
     HashSet<int> availableStoreIndices = new HashSet<int>();
     HashSet<int> availableDockIndices = new HashSet<int>();
@@ -66,7 +69,7 @@ public class StructurePlacer : MonoBehaviour
     {
         for (int i = 0; i < commercialCount; i++)
         {
-            Vector3 pos = PointFinder.Instance.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint);
+            Vector3 pos = PointFinder.Instance.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, areaCenter, landAreaSize);
             if (pos != Vector3.zero)
                 Instantiate(GetStorePrefab(), pos, Quaternion.identity);
             else 
@@ -79,7 +82,7 @@ public class StructurePlacer : MonoBehaviour
     {
         for (int i = 0; i < dockCount; i++)
         {
-            Vector3 pos = PointFinder.Instance.FindShorePoint(shoreDistance, shoreMaxAttempts, shoreBuildingRadius);
+            Vector3 pos = PointFinder.Instance.FindShorePoint(shoreDistance, shoreMaxAttempts, shoreBuildingRadius, dockAreaCenter, dockAreaSize);
             if (pos != Vector3.zero)
             {
                 Quaternion dockRotation = GetClosestDockNodeOrientation(pos);
@@ -94,7 +97,7 @@ public class StructurePlacer : MonoBehaviour
     {
         for (int i = 0; i < factoryCount; i++)
         {
-            Vector3 pos = PointFinder.Instance.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint);
+            Vector3 pos = PointFinder.Instance.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, areaCenter, landAreaSize);
             if (pos != Vector3.zero)
                 Instantiate(GetFactoryPrefab(), pos, Quaternion.identity);
             else 
