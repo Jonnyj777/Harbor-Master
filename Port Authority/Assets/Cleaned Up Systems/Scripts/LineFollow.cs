@@ -352,13 +352,9 @@ public class LineFollow : NetworkBehaviour
 
     private void Update()
     {
-        if(isServer)
+        if(lineFollowing)
         {
-            print("Server moving");
-        }
-        else if (isClient)
-        {
-            print("Client moving");
+            print("linefollowing true");
         }
         if (isServer)
         {
