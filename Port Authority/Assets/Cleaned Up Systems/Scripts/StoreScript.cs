@@ -9,6 +9,7 @@ public class StoreScript : MonoBehaviour
     public TextMeshProUGUI repairSpeedText;
     public TextMeshProUGUI durabilityText;
     public TextMeshProUGUI speedText;
+    public TextMeshProUGUI biggerCargoShipText;
 
     [Header("Cost Multiplier")]
     public float costMultiplier = 1.75f;    // Price increase each upgrade
@@ -36,6 +37,11 @@ public class StoreScript : MonoBehaviour
     private int currentSpeedLevel = 0;
     private int currentSpeedCost;
 
+    [Header("New Ship Purchase Settings")]
+    public VehicleSpawnScript vehicleSpawnScript;
+    public int biggerCargoShipCost = 30000;
+    public GameObject biggerCargoShip;
+
     private void Start()
     {
         currentRepairSpeedCost = baseRepairSpeedCost;
@@ -45,6 +51,7 @@ public class StoreScript : MonoBehaviour
         UpdateRepairSpeedEntry();
         UpdateDurabilityEntry();
         UpdateSpeedEntry();
+        UpdateBiggerCargoShipEntry();
     }
 
     public void OpenStore()
@@ -118,6 +125,17 @@ public class StoreScript : MonoBehaviour
         }
     }
 
+    public void PurchaseBiggerCargoShip()
+    {
+        if (storePanel.activeSelf
+                && ScoreManager.Instance.GetSpendableScore() >= biggerCargoShipCost)
+        {
+            ScoreManager.Instance.UpdateSpendableScore(-biggerCargoShipCost);
+
+            vehicleSpawnScript.UnlockShip(biggerCargoShip);
+        }
+    }
+
     private void UpdateRepairSpeedEntry()
     {
         repairSpeedText.text = "Truck Repair Speed (Current Bonus: -" + (100 * repairSpeedMult * currentRepairSpeedLevel) + "%)\r\n" +
@@ -137,5 +155,12 @@ public class StoreScript : MonoBehaviour
         speedText.text = "Speed (Current Bonus: +" + (100 * speedMult * currentSpeedLevel) + "%)\r\n" +
                                "$" + currentSpeedCost + "\r\n" +
                                "Bonus: +" + (100 * speedMult) + "% Speed";
+    }
+
+    private void UpdateBiggerCargoShipEntry()
+    {
+        biggerCargoShipText.text = "Bigger Cargo Ship\r\n" +
+                                   "$" + biggerCargoShipCost + "\r\n" +
+                                   "Max Capacity: 10 Cargo";
     }
 }

@@ -378,7 +378,6 @@ MonoBehaviour:
   timerDelayBetweenLinePoints: 0.01
   lineColor: {r: 1, g: 0, b: 0, a: 1}
   lineWidth: 1.5
-  speed: 20
 --- !u!120 &1373061060865479387
 LineRenderer:
   serializedVersion: 2
