@@ -23,7 +23,6 @@ public class LivesManager : MonoBehaviour
     public void AddLife()
     {
         lives++;
-        Debug.Log("New Life");
         UpdateLivesEntry();
     }
 

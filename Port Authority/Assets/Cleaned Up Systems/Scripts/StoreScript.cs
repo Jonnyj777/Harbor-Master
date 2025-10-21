@@ -8,13 +8,14 @@ public class StoreScript : MonoBehaviour
     public GameObject storePanel;
     public TextMeshProUGUI repairSpeedText;
     public TextMeshProUGUI durabilityText;
+    public TextMeshProUGUI speedText;
 
     [Header("Cost Multiplier")]
     public float costMultiplier = 1.75f;    // Price increase each upgrade
 
     [Header("Repair Speed Upgrade Settings")]
     public int baseRepairSpeedCost = 150;
-    public float repairSpeedCostMult = 0.1f;  // Each upgrade reduces base cost by 10% of original
+    public float repairSpeedMult = 0.1f;  // Each upgrade reduces base repair speed by 10% of original
     public int maxRepairSpeedLevel = 5;
 
     private int currentRepairSpeedLevel = 0;
@@ -27,13 +28,23 @@ public class StoreScript : MonoBehaviour
     private int currentDurabilityLevel = 0;
     private int currentDurabilityCost;
 
+    [Header("Boat Speed Upgrade Settings")]
+    public int baseSpeedCost = 3000;
+    public float speedMult = 0.1f;  // Each upgrade increases boat speed by 10% of original
+    public int maxSpeedLevel = 5;
+
+    private int currentSpeedLevel = 0;
+    private int currentSpeedCost;
+
     private void Start()
     {
         currentRepairSpeedCost = baseRepairSpeedCost;
         currentDurabilityCost = baseDurabilityCost;
+        currentSpeedCost = baseSpeedCost;
 
         UpdateRepairSpeedEntry();
         UpdateDurabilityEntry();
+        UpdateSpeedEntry();
     }
 
     public void OpenStore()
@@ -58,7 +69,7 @@ public class StoreScript : MonoBehaviour
 
             currentRepairSpeedLevel++;
 
-            float reductionFactor = 1f - (repairSpeedCostMult * currentRepairSpeedLevel);
+            float reductionFactor = 1f - (repairSpeedMult * currentRepairSpeedLevel);
 
             Truck.globalRestartDelay = Truck.baseRestartDelay * reductionFactor;
 
@@ -86,11 +97,32 @@ public class StoreScript : MonoBehaviour
         }
     }
 
+    public void PurchaseSpeedUpgrade()
+    {
+        if (storePanel.activeSelf
+                && ScoreManager.Instance.GetSpendableScore() >= currentSpeedCost
+                && currentSpeedLevel <= maxSpeedLevel)
+        {
+            ScoreManager.Instance.UpdateSpendableScore(-currentSpeedCost);
+
+            currentSpeedLevel++;
+
+            float increaseFactor = 1f + (speedMult * currentSpeedLevel);
+
+            LineFollow.boatSpeed = LineFollow.speed * increaseFactor;
+
+            currentSpeedCost = Mathf.RoundToInt(baseSpeedCost * Mathf.Pow(costMultiplier, currentSpeedLevel));
+
+            Debug.Log(LineFollow.boatSpeed);
+            UpdateSpeedEntry();
+        }
+    }
+
     private void UpdateRepairSpeedEntry()
     {
-        repairSpeedText.text = "Truck Repair Speed (Current Bonus: -" + (100 * repairSpeedCostMult * currentRepairSpeedLevel) + "%)\r\n" +
+        repairSpeedText.text = "Truck Repair Speed (Current Bonus: -" + (100 * repairSpeedMult * currentRepairSpeedLevel) + "%)\r\n" +
                                "$" + currentRepairSpeedCost + "\r\n" +
-                               "Bonus: -" + (100 * repairSpeedCostMult) + "% Repair Speed";
+                               "Bonus: -" + (100 * repairSpeedMult) + "% Repair Speed";
     }
 
     private void UpdateDurabilityEntry()
@@ -98,5 +130,12 @@ public class StoreScript : MonoBehaviour
         durabilityText.text = "Durability (Current Bonus: +" + currentDurabilityLevel + ")\r\n" +
                               "$" + currentDurabilityCost + "\r\n" +
                               "Bonus: +1 Health";
+    }
+
+    private void UpdateSpeedEntry()
+    {
+        speedText.text = "Speed (Current Bonus: +" + (100 * speedMult * currentSpeedLevel) + "%)\r\n" +
+                               "$" + currentSpeedCost + "\r\n" +
+                               "Bonus: +" + (100 * speedMult) + "% Speed";
     }
 }

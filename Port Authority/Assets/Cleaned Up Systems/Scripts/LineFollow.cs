@@ -20,7 +20,8 @@ public class LineFollow : MonoBehaviour
     [Header("Line Following Settings")]
 
     //public float heightOffset;
-    public float speed = 5f;
+    public static float speed = 20f;
+    public static float boatSpeed;
     private Rigidbody rb;
     private bool lineFollowing = false;
     private bool drawingLine = false;
@@ -32,6 +33,7 @@ public class LineFollow : MonoBehaviour
 
     private void Start()
     {
+        boatSpeed = speed;
         linePositions = new List<Vector3>();
         line = GetComponent<LineRenderer>();
         rb = GetComponent<Rigidbody>();
@@ -194,7 +196,7 @@ public class LineFollow : MonoBehaviour
     {
         // update position and direction of object
         Vector3 currentPos = positions[moveIndex];
-        transform.position = Vector3.MoveTowards(transform.position, currentPos, speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, currentPos, boatSpeed * Time.deltaTime);
 
         Vector3 direction = (currentPos - transform.position).normalized;
 
@@ -276,7 +278,7 @@ public class LineFollow : MonoBehaviour
         }
         else if (!drawingLine && CompareTag("Boat") && !atPort)
         {
-            transform.position += transform.forward * speed * Time.deltaTime;
+            transform.position += transform.forward * boatSpeed * Time.deltaTime;
         }
     }
 }
