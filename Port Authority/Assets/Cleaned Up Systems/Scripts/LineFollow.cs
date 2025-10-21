@@ -111,7 +111,10 @@ public class LineFollow : MonoBehaviour
 
     private void OnMouseDrag()
     {
-        UpdateLine();
+        if (!isCrashed)
+        {
+            UpdateLine();
+        }
     }
 
     private void OnMouseUp()

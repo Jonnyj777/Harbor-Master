@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Truck : MonoBehaviour
 {
@@ -18,6 +19,10 @@ public class Truck : MonoBehaviour
     private Renderer vehicleRenderer;
     public static float globalRestartDelay = 15f;
 
+    public GameObject repairButtonPrefab;
+    public Canvas trucksUICanvas;
+    private GameObject repairButtonInstance;
+
     private void Start()
     {
         vehicle = GetComponent<LineFollow>();
@@ -31,9 +36,7 @@ public class Truck : MonoBehaviour
         // land crash state == stuck in place, no fade out
         if (other.CompareTag("Truck"))
         {
-            Truck otherTruck = other.GetComponent<Truck>();
             EnterCrashState();
-            otherTruck.EnterCrashState();
         }
         if (other.CompareTag("Port") && cargo.Count <= 3)
         {
@@ -172,7 +175,8 @@ public class Truck : MonoBehaviour
     public void EnterCrashState()
     {
         vehicle.SetIsCrashed(true);
-        GameUIManager.Instance.AddCrashedTruck(this);
+        ShowRepairButton();
+
         if (vehicleRenderer != null)
         {
             vehicleRenderer.material = crashedMaterial;
@@ -180,10 +184,28 @@ public class Truck : MonoBehaviour
         }
     }
 
+    private void ShowRepairButton()
+    {
+        repairButtonInstance = Instantiate(repairButtonPrefab, trucksUICanvas.transform);
+
+        // Position the repair button at the truck's position + offset
+        Vector3 buttonPosition = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
+        repairButtonInstance.transform.position = buttonPosition;
+
+        // Add a listener to the button
+        Button button = repairButtonInstance.GetComponent<Button>();
+        button.onClick.AddListener(RepairTruck);
+    }
+
     public void RepairTruck()
     {
-        GameUIManager.Instance.RemoveCrashedTruck(this);
-        StartCoroutine(RestoreMaterialAfterDelay());
+        int repairCost = 50;
+        if (ScoreManager.Instance.GetSpendableScore() >= repairCost)
+        {
+            StartCoroutine(RestoreMaterialAfterDelay());
+            ScoreManager.Instance.UpdateSpendableScore(-repairCost);
+            Destroy(repairButtonInstance);
+        }
     }
 
     private IEnumerator RestoreMaterialAfterDelay()

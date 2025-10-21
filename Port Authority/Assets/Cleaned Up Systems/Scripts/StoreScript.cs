@@ -4,7 +4,6 @@ public class StoreScript : MonoBehaviour
 {
     public GameObject storePanel;
 
-    private int repairCost = 50;
     private int repairSpeedCost = 150;
 
     public void OpenStore()
@@ -17,14 +16,6 @@ public class StoreScript : MonoBehaviour
     {
         storePanel.SetActive(false);
         Time.timeScale = 1f;
-    }
-
-    public void PurchaseRepair()
-    {
-        if (storePanel.activeSelf && ScoreManager.Instance.GetSpendableScore() >= repairCost)
-        {
-
-        }
     }
 
     public void PurchaseRepairSpeedUpgrade()
