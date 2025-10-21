@@ -17,11 +17,20 @@ public class Truck : MonoBehaviour
     public Material crashedMaterial;
     public Color crashedColor = Color.magenta;  // Color to when truck vehicles crash
     private Renderer vehicleRenderer;
-    public static float globalRestartDelay = 15f;
+    public static float baseRestartDelay = 15f;
+    public static float globalRestartDelay; // The current effective value (changes when upgraded)
 
     public GameObject repairButtonPrefab;
     public Canvas trucksUICanvas;
     private GameObject repairButtonInstance;
+
+    private void Awake()
+    {
+        if (globalRestartDelay == 0)
+        {
+            globalRestartDelay = baseRestartDelay;
+        }
+    }
 
     private void Start()
     {
