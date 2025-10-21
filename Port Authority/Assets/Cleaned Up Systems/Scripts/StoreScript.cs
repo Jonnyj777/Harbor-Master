@@ -7,6 +7,7 @@ public class StoreScript : MonoBehaviour
     [Header("UI")]
     public GameObject storePanel;
     public TextMeshProUGUI repairSpeedText;
+    public TextMeshProUGUI durabilityText;
 
     [Header("Cost Multiplier")]
     public float costMultiplier = 1.75f;    // Price increase each upgrade
@@ -19,11 +20,20 @@ public class StoreScript : MonoBehaviour
     private int currentRepairSpeedLevel = 0;
     private int currentRepairSpeedCost;
 
+    [Header("Durability Upgrade Settings")]
+    public int baseDurabilityCost = 15000;
+    public int maxDurabilityLevel = 2;
+
+    private int currentDurabilityLevel = 0;
+    private int currentDurabilityCost;
+
     private void Start()
     {
         currentRepairSpeedCost = baseRepairSpeedCost;
+        currentDurabilityCost = baseDurabilityCost;
 
         UpdateRepairSpeedEntry();
+        UpdateDurabilityEntry();
     }
 
     public void OpenStore()
@@ -55,7 +65,24 @@ public class StoreScript : MonoBehaviour
             currentRepairSpeedCost = Mathf.RoundToInt(baseRepairSpeedCost * Mathf.Pow(costMultiplier, currentRepairSpeedLevel));
 
             UpdateRepairSpeedEntry();
-            Debug.Log(Truck.globalRestartDelay);
+        }
+    }
+
+    public void PurchaseDurabilityUpgrade()
+    {
+        if (storePanel.activeSelf
+                && ScoreManager.Instance.GetSpendableScore() >= currentDurabilityCost
+                && currentDurabilityLevel <= maxDurabilityLevel)
+        {
+            ScoreManager.Instance.UpdateSpendableScore(-currentDurabilityCost);
+
+            currentDurabilityLevel++;
+
+            LivesManager.Instance.AddLife();
+
+            currentDurabilityCost += baseDurabilityCost;
+
+            UpdateDurabilityEntry();
         }
     }
 
@@ -64,5 +91,12 @@ public class StoreScript : MonoBehaviour
         repairSpeedText.text = "Truck Repair Speed (Current Bonus: -" + (100 * repairSpeedCostMult * currentRepairSpeedLevel) + "%)\r\n" +
                                "$" + currentRepairSpeedCost + "\r\n" +
                                "Bonus: -" + (100 * repairSpeedCostMult) + "% Repair Speed";
+    }
+
+    private void UpdateDurabilityEntry()
+    {
+        durabilityText.text = "Durability (Current Bonus: +" + currentDurabilityLevel + ")\r\n" +
+                              "$" + currentDurabilityCost + "\r\n" +
+                              "Bonus: +1 Health";
     }
 }

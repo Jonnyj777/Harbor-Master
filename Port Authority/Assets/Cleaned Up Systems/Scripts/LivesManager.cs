@@ -12,7 +12,7 @@ public class LivesManager : MonoBehaviour
 
     void Start()
     {
-        livesText.text = "Lives: " + lives;
+        UpdateLivesEntry();
     }
 
     void Awake()
@@ -20,10 +20,17 @@ public class LivesManager : MonoBehaviour
         Instance = this;
     }
 
+    public void AddLife()
+    {
+        lives++;
+        Debug.Log("New Life");
+        UpdateLivesEntry();
+    }
+
     public void LoseLife()
     {
         lives--;
-        livesText.text = "Lives: " + lives;
+        UpdateLivesEntry();
 
         if (lives < 1)
         {
@@ -39,5 +46,10 @@ public class LivesManager : MonoBehaviour
     {
         resetButton.gameObject.SetActive(true);
         menuButton.gameObject.SetActive(true);
+    }
+
+    private void UpdateLivesEntry()
+    {
+        livesText.text = "Lives: " + lives;
     }
 }

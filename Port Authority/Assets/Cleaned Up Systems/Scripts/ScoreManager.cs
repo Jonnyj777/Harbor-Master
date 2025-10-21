@@ -13,7 +13,7 @@ public class ScoreManager : MonoBehaviour
 
     private void Start()
     {
-        scoreText.text = "$ 0";
+        UpdateScoreEntry();
     }
 
     void Awake()
@@ -26,7 +26,7 @@ public class ScoreManager : MonoBehaviour
         totalScore += scoreUpdate;
         spendableScore += scoreUpdate;
 
-        scoreText.text = "$ " + spendableScore;
+        UpdateScoreEntry();
 
         StartCoroutine(ShowPopUp("+$ " + scoreUpdate, bonus));
     }
@@ -60,11 +60,16 @@ public class ScoreManager : MonoBehaviour
     {
         spendableScore += scoreUpdate;
 
-        scoreText.text = "$ " + spendableScore;
+        UpdateScoreEntry();
     }
 
     public int GetSpendableScore()
     {
         return spendableScore;
+    }
+
+    private void UpdateScoreEntry()
+    {
+        scoreText.text = "$ " + spendableScore;
     }
 }
