@@ -19,12 +19,14 @@ public class Boat : NetworkBehaviour
     public Color crashedColor = Color.cyan;  // Color to when boat vehicles crash
     private Renderer vehicleRenderer;
 
-    [Server]
     private void Start()
     {
-        AssignCargo();
-        vehicle = GetComponent<LineFollow>();
-        vehicleRenderer = GetComponent<Renderer>();
+        if (isServer)
+        {
+            AssignCargo();
+            vehicle = GetComponent<LineFollow>();
+            vehicleRenderer = GetComponent<Renderer>();
+        }
     }
 
     [Server]
@@ -61,12 +63,13 @@ public class Boat : NetworkBehaviour
         {
             if (i < cargoAmount)
             {
-                cargoBoxes[i].SetActive(true);
+                //cargoBoxes[i].SetActive(true);
 
                 // set random color
                 Color randomColor = new Color(Random.value, Random.value, Random.value);
-                Renderer rend = cargoBoxes[i].GetComponent<Renderer>();
-                rend.material.color = randomColor;
+                //Renderer rend = cargoBoxes[i].GetComponent<Renderer>();
+                //rend.material.color = randomColor;
+                RpcActivateCargo(i, randomColor);
 
                 // set type
                 Cargo c = new Cargo("Coffee", 1, new Vector3(randomColor.r, randomColor.g, randomColor.b), Time.time, 20);
@@ -75,10 +78,29 @@ public class Boat : NetworkBehaviour
             }
             else
             {
-                cargoBoxes[i].SetActive(false);
+                RpcDeactivateCargo(i);
             }
         }
     }
+
+    [ClientRpc]
+    private void RpcActivateCargo(int cargoIndex, Color randomColor)
+    {
+        print("activate cargo: " + cargoIndex + " : " + randomColor);
+        cargoBoxes[cargoIndex].SetActive(true);
+        Renderer rend = cargoBoxes[cargoIndex].GetComponent<Renderer>();
+        rend.material.color = randomColor;
+    }
+
+
+    [ClientRpc]
+    private void RpcDeactivateCargo(int cargoIndex)
+    {
+        print("deactivate cargo: " + cargoIndex);
+        cargoBoxes[cargoIndex].SetActive(false);
+    }
+
+
 
     [Server]
     void DeliverCargo()
