@@ -165,7 +165,8 @@ public class Truck : NetworkBehaviour
                 Renderer r = box.GetComponent<Renderer>();
                 if (r != null)
                 {
-                    r.material.color = tempCargo[i].color;
+                    Color color = new Color(tempCargo[i].colorData.x, tempCargo[i].colorData.y, tempCargo[i].colorData.z);
+                    r.material.color = color;
                 }
             }
         }

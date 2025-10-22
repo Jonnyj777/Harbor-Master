@@ -44,7 +44,8 @@ public class Port : NetworkBehaviour
 
         if (rend != null)
         {
-            rend.material.color = cargo.color;
+            Color color = new Color(cargo.colorData.x, cargo.colorData.y, cargo.colorData.z);
+            rend.material.color = color;
         }
 
         cargoBoxes.Add(box);

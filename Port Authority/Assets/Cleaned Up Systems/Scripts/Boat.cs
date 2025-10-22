@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Boat : NetworkBehaviour
@@ -18,6 +19,7 @@ public class Boat : NetworkBehaviour
     public Color crashedColor = Color.cyan;  // Color to when boat vehicles crash
     private Renderer vehicleRenderer;
 
+    [Server]
     private void Start()
     {
         AssignCargo();
@@ -67,7 +69,7 @@ public class Boat : NetworkBehaviour
                 rend.material.color = randomColor;
 
                 // set type
-                Cargo c = new Cargo("Coffee", 1, randomColor, Time.time, 20);
+                Cargo c = new Cargo("Coffee", 1, new Vector3(randomColor.r, randomColor.g, randomColor.b), Time.time, 20);
 
                 cargo.Add(c);
             }
