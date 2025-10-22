@@ -1,13 +1,13 @@
 using UnityEngine;
-
+using Mirror;
 
 [System.Serializable]
-public class Cargo
+public class Cargo : NetworkBehaviour
 {
-    public string type;
-    public int price;
-    public int amount;
-    public Color color;
-    public float timeLimit = 35f;
-    public float spawnTime;
+    [SyncVar] public string type;
+    [SyncVar] public int price;
+    [SyncVar] public int amount;
+    [SyncVar] public Color color;
+    [SyncVar] public float timeLimit = 35f;
+    [SyncVar] public float spawnTime;
 }
