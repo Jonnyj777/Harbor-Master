@@ -131,8 +131,7 @@ public class LineFollow : NetworkBehaviour
     {
         print("Start Drag");
         isDragging = true;
-        isDraggable = true;
-        DeleteLine();
+        isDraggable = true;;
         atPort = false;
         lineFollowing = false;
         drawingLine = true;
@@ -181,6 +180,7 @@ public class LineFollow : NetworkBehaviour
     [Server]
     private void FollowLineTruck()
     {
+        if (moveIndex >= positions.Count) return;
         // update position, direction, and rotation of object
         Vector3 currentPos = positions[moveIndex];
 
@@ -240,6 +240,7 @@ public class LineFollow : NetworkBehaviour
     [Server]
     private void FollowLineBoat()
     {
+        if (moveIndex >= positions.Count) return;
         // update position and direction of object
         Vector3 currentPos = positions[moveIndex];
         transform.position = Vector3.MoveTowards(transform.position, currentPos, speed * Time.deltaTime);
@@ -311,7 +312,6 @@ public class LineFollow : NetworkBehaviour
     [Command]
     public void CmdRequestMove(Vector3 raycastMousePos)
     {
-        print("cmdrequestmove");
         ServerUpdateLine(raycastMousePos);
     }
 
@@ -344,8 +344,8 @@ public class LineFollow : NetworkBehaviour
     public override void OnStartAuthority()
     {
         base.OnStartAuthority();
-        print("OnStartAuthority");
 
+        DeleteLine();
         StartDrag();
 
     }

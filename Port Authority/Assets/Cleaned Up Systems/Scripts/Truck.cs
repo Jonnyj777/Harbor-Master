@@ -1,9 +1,10 @@
+using Mirror;
 using System.Collections; 
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class Truck : MonoBehaviour
+public class Truck : NetworkBehaviour
 {
     public List<Cargo> cargo = new List<Cargo>();
     private Port port;
@@ -107,6 +108,7 @@ public class Truck : MonoBehaviour
         stallBuildingMovement = false;
     }
 
+    [Server]
     private void DeliverCargo()
     {
         if (cargo.Count > 0)

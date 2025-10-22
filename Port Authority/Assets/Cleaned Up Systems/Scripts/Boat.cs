@@ -1,8 +1,9 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boat : MonoBehaviour
+public class Boat : NetworkBehaviour
 {
     public List<Cargo> cargo = new List<Cargo>();
     private Port port;
@@ -23,6 +24,8 @@ public class Boat : MonoBehaviour
         vehicle = GetComponent<LineFollow>();
         vehicleRenderer = GetComponent<Renderer>();
     }
+
+    [Server]
     private void OnTriggerEnter(Collider other)
     {
         // boat vehicle crash state
@@ -47,6 +50,7 @@ public class Boat : MonoBehaviour
         }
     }
 
+    [Server]
     public void AssignCargo()
     {
         int cargoAmount = Random.Range(1, cargoBoxes.Count + 1);
@@ -81,6 +85,7 @@ public class Boat : MonoBehaviour
         }
     }
 
+    [Server]
     void DeliverCargo()
     {
         if (cargo.Count > 0)
@@ -95,6 +100,7 @@ public class Boat : MonoBehaviour
         }
     }
 
+    [Server]
     public void EnterCrashState()
     {
         vehicle.SetIsCrashed(true);
@@ -105,6 +111,7 @@ public class Boat : MonoBehaviour
         StartCoroutine(SinkFadeOut());
     }
 
+    [Server]
     // function to make boats sink, fade, then destroyed after crashing into another boat vehicle
     private IEnumerator SinkFadeOut()
     {

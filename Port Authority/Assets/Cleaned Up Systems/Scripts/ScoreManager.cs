@@ -20,7 +20,7 @@ public class ScoreManager : NetworkBehaviour
         Instance = this;
     }
 
-    [Command]
+    [Server]
     public void AddScore(int scoreUpdate, bool bonus)
     {
         score += scoreUpdate;
