@@ -26,6 +26,7 @@ public class VehicleMovement : MonoBehaviour
     private Vector3? targetPosition = null;
     private Renderer vehicleRenderer;
     private Color originalColor;  // used for a reset state later on (e.g., repairs on crashed vehicles)
+    private float truckSpeed = 30f;
 
     // enum for crash types
     public enum CrashType
@@ -79,13 +80,13 @@ public class VehicleMovement : MonoBehaviour
         // USED FOR TESTING PURPOSES ONLY - REMOVE LATER
         //if (Input.GetKeyDown(KeyCode.Space))
         //{
-            //SetTarget(new Vector3(10, 0, 10));
+        //SetTarget(new Vector3(10, 0, 10));
         //}
 
         // USED FOR TESTING PURPOSES ONLY - REMOVE LATER
         //if (Input.GetKeyDown(KeyCode.E))
         //{
-            //SetTarget(new Vector3(70, 0, 20));
+        //SetTarget(new Vector3(70, 0, 20));
         //}
     }
 
@@ -116,6 +117,11 @@ public class VehicleMovement : MonoBehaviour
     private void DefaultLandMovement()
     {
         // Discuss cycling behavior in next call
+        // TEST KEY USED FOR OBSTACLES SCENE (TREE FALLING)
+        if (Input.GetKey(KeyCode.D))
+        {
+            transform.position += transform.forward * truckSpeed * Time.deltaTime;
+        }
     }
 
     #region Collision Handling
@@ -147,7 +153,7 @@ public class VehicleMovement : MonoBehaviour
 
     #region Crash Handling
     // Apply crash state behavior depending on vehicle type
-    private void EnterCrashState(CrashType type, System.Action callback = null)
+    public void EnterCrashState(CrashType type, System.Action callback = null)
     {
         isCrashed = true;  // switches the vehicle to a crashed state
         crashType = type;  // helps depict what class of vehicle is crashed
