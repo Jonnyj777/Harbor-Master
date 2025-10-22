@@ -86,6 +86,7 @@ public class LineFollow : NetworkBehaviour
         linePositions.Clear();
     }
 
+    [Command]
     public void DeleteLine()
     {
         lineFinished = true;
@@ -351,10 +352,6 @@ public class LineFollow : NetworkBehaviour
 
     private void Update()
     {
-        if(lineFollowing)
-        {
-            print("linefollowing true");
-        }
         if (isServer)
         {
             //if (Input.GetMouseButton(0))
