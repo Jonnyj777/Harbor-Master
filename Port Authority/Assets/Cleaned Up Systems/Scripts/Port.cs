@@ -25,37 +25,35 @@ public class Port : NetworkBehaviour
         spawnOffset = cargoRend.bounds.size.y;
     }
 
+    [Server]
     public void ReceiveCargo(SyncList<Cargo> cargo)
     {
-        foreach(var c in cargo)
+        foreach (var c in cargo)
         {
             portCargo.Add(c);
             SpawnCargoBox(c);
         }
     }
 
+    [Server]
     private void SpawnCargoBox(Cargo cargo)
     {
         Vector3 spawnPos = new Vector3(Random.Range(minBounds.x + spawnOffset, maxBounds.x - spawnOffset), maxBounds.y + spawnOffset, Random.Range(minBounds.z + spawnOffset, maxBounds.z - spawnOffset));
 
         GameObject box = Instantiate(cargoPrefab, spawnPos, Quaternion.identity);
+        box.AddComponent<NetworkIdentity>();
         NetworkServer.Spawn(box);
-        Renderer rend = box.GetComponent<Renderer>();
-
-        if (rend != null)
-        {
-            Color color = new Color(cargo.colorData.x, cargo.colorData.y, cargo.colorData.z);
-            rend.material.color = color;
-        }
-
+        Color color = new Color(cargo.colorData.x, cargo.colorData.y, cargo.colorData.z);
+        RpcAddCargo(box, color);
         cargoBoxes.Add(box);
     }
 
+    [Server]
     public void RemoveCargoBox(Cargo cargo)
     {
         int index = portCargo.IndexOf(cargo);
 
-        if (index >= 0 )
+        if (index >= 0)
         {
             portCargo.RemoveAt(index);
             GameObject obj = cargoBoxes[index];
@@ -63,4 +61,16 @@ public class Port : NetworkBehaviour
             Destroy(obj);
         }
     }
+
+    [ClientRpc]
+    private void RpcAddCargo(GameObject box, Color color)
+    {
+        
+        if (box.TryGetComponent<Renderer>(out var rend))
+        {
+            rend.material.color = color;
+        }
+
+    }
 }
+

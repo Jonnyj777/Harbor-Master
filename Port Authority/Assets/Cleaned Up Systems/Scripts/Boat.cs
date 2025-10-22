@@ -29,7 +29,7 @@ public class Boat : NetworkBehaviour
         }
     }
 
-    [Server]
+    [ServerCallback]
     private void OnTriggerEnter(Collider other)
     {
         // boat vehicle crash state
