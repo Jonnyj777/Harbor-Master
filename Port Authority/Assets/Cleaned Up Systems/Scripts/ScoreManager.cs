@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-public class ScoreManager : MonoBehaviour
+using Mirror;
+public class ScoreManager : NetworkBehaviour
 {
     public static ScoreManager Instance;
-    private int score = 0;
+    [SyncVar] private int score = 0;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI popUpText;
 
@@ -19,6 +20,7 @@ public class ScoreManager : MonoBehaviour
         Instance = this;
     }
 
+    [Server]
     public void AddScore(int scoreUpdate, bool bonus)
     {
         score += scoreUpdate;

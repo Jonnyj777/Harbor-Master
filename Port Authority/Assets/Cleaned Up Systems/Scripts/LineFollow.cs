@@ -257,7 +257,9 @@ public class LineFollow : NetworkBehaviour
             moveIndex++;
         }
 
+        RemoveLineTraveled();
         // remove the part of line already traveled on
+        /*
         if (line.positionCount > 1)
         {
             Vector3[] currentPositions = new Vector3[line.positionCount];
@@ -275,6 +277,7 @@ public class LineFollow : NetworkBehaviour
             line.positionCount = currentPositions.Length;
             line.SetPositions(currentPositions);
         }
+        */
     }
 
     public void SetLineFollowing(bool value)
