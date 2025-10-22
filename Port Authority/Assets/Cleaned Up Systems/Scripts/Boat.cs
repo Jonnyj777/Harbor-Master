@@ -67,14 +67,7 @@ public class Boat : NetworkBehaviour
                 rend.material.color = randomColor;
 
                 // set type
-                Cargo c = new Cargo
-                {
-                    type = "Coffee",
-                    amount = 1,
-                    color = randomColor,
-                    spawnTime = Time.time,
-                    price = 20
-                };
+                Cargo c = new Cargo("Coffee", 1, randomColor, Time.time, 20);
 
                 cargo.Add(c);
             }
