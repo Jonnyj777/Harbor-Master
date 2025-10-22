@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Boat : NetworkBehaviour
 {
-    public List<Cargo> cargo = new List<Cargo>();
+    public SyncList<Cargo> cargo = new SyncList<Cargo>();
     private Port port;
     public List<GameObject> cargoBoxes;
 

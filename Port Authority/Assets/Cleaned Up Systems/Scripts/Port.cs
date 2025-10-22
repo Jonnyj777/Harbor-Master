@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using Mirror;
 
-public class Port : MonoBehaviour
+public class Port : NetworkBehaviour
 {
-    public List<Cargo> portCargo = new List<Cargo>();
-    public List<GameObject> cargoBoxes = new List<GameObject>();
+    public SyncList<Cargo> portCargo = new SyncList<Cargo>();
+    public SyncList<GameObject> cargoBoxes = new SyncList<GameObject>();
 
     public GameObject loadingArea;
     public GameObject cargoPrefab;
@@ -24,7 +25,7 @@ public class Port : MonoBehaviour
         spawnOffset = cargoRend.bounds.size.y;
     }
 
-    public void ReceiveCargo(List<Cargo> cargo)
+    public void ReceiveCargo(SyncList<Cargo> cargo)
     {
         foreach(var c in cargo)
         {
@@ -38,6 +39,7 @@ public class Port : MonoBehaviour
         Vector3 spawnPos = new Vector3(Random.Range(minBounds.x + spawnOffset, maxBounds.x - spawnOffset), maxBounds.y + spawnOffset, Random.Range(minBounds.z + spawnOffset, maxBounds.z - spawnOffset));
 
         GameObject box = Instantiate(cargoPrefab, spawnPos, Quaternion.identity);
+        NetworkServer.Spawn(box);
         Renderer rend = box.GetComponent<Renderer>();
 
         if (rend != null)
