@@ -9,13 +9,14 @@ public class StoreScript : MonoBehaviour
     public TextMeshProUGUI repairSpeedText;
     public TextMeshProUGUI durabilityText;
     public TextMeshProUGUI speedText;
+    public TextMeshProUGUI bigCargoShipText;
     public TextMeshProUGUI biggerCargoShipText;
 
     [Header("Cost Multiplier")]
     public float costMultiplier = 1.75f;    // Price increase each upgrade
 
     [Header("Repair Speed Upgrade Settings")]
-    public int baseRepairSpeedCost = 150;
+    public int baseRepairSpeedCost = 1;//150;
     public float repairSpeedMult = 0.1f;  // Each upgrade reduces base repair speed by 10% of original
     public int maxRepairSpeedLevel = 5;
 
@@ -23,14 +24,14 @@ public class StoreScript : MonoBehaviour
     private int currentRepairSpeedCost;
 
     [Header("Durability Upgrade Settings")]
-    public int baseDurabilityCost = 15000;
+    public int baseDurabilityCost = 1;//15000;
     public int maxDurabilityLevel = 2;
 
     private int currentDurabilityLevel = 0;
     private int currentDurabilityCost;
 
     [Header("Boat Speed Upgrade Settings")]
-    public int baseSpeedCost = 3000;
+    public int baseSpeedCost = 1; //3000;
     public float speedMult = 0.1f;  // Each upgrade increases boat speed by 10% of original
     public int maxSpeedLevel = 5;
 
@@ -39,7 +40,11 @@ public class StoreScript : MonoBehaviour
 
     [Header("New Ship Purchase Settings")]
     public VehicleSpawnScript vehicleSpawnScript;
-    public int biggerCargoShipCost = 30000;
+
+    public int bigCargoShipCost = 1;//12000
+    public GameObject bigCargoShip;
+
+    public int biggerCargoShipCost = 1;//30000;
     public GameObject biggerCargoShip;
 
     private void Start()
@@ -51,6 +56,7 @@ public class StoreScript : MonoBehaviour
         UpdateRepairSpeedEntry();
         UpdateDurabilityEntry();
         UpdateSpeedEntry();
+        UpdateBigCargoShipEntry();
         UpdateBiggerCargoShipEntry();
     }
 
@@ -125,6 +131,17 @@ public class StoreScript : MonoBehaviour
         }
     }
 
+    public void PurchaseBigCargoShip()
+    {
+        if (storePanel.activeSelf
+                && ScoreManager.Instance.GetSpendableScore() >= bigCargoShipCost)
+        {
+            ScoreManager.Instance.UpdateSpendableScore(-bigCargoShipCost);
+
+            vehicleSpawnScript.UnlockShip(bigCargoShip);
+        }
+    }
+
     public void PurchaseBiggerCargoShip()
     {
         if (storePanel.activeSelf
@@ -155,6 +172,13 @@ public class StoreScript : MonoBehaviour
         speedText.text = "Speed (Current Bonus: +" + (100 * speedMult * currentSpeedLevel) + "%)\r\n" +
                                "$" + currentSpeedCost + "\r\n" +
                                "Bonus: +" + (100 * speedMult) + "% Speed";
+    }
+
+    private void UpdateBigCargoShipEntry()
+    {
+        biggerCargoShipText.text = "Big Cargo Ship\r\n" +
+                                   "$" + bigCargoShipCost + "\r\n" +
+                                   "Max Capacity: 5 Cargo";
     }
 
     private void UpdateBiggerCargoShipEntry()
