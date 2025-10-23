@@ -10,6 +10,8 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField] private List<GameObject> storePrefabs = new List<GameObject>();
     [SerializeField] private List<GameObject> dockPrefabs = new List<GameObject>();
     [SerializeField] private List<GameObject> factoriesPrefabs = new List<GameObject>();
+
+    [SerializeField] private PointFinder pointFinder;
     
     [SerializeField] private int commercialCount = 4;
     [SerializeField] private int factoryCount = 4;
@@ -18,7 +20,6 @@ public class StructurePlacer : MonoBehaviour
     // Shore placement settingsq
     [SerializeField] private float shoreDistance = 10f;
     [SerializeField] private float shoreBuildingRadius = 25f;
-    [SerializeField] private float shoreSearchDistance = 10f;
     [SerializeField] private int shoreMaxAttempts = 500;
 
     // Land placement settings
@@ -31,12 +32,6 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField] private int radialSamples = 16;
 
     // Area settings
-    [SerializeField] private Vector2 areaCenter = new Vector2(40, 42);
-    [SerializeField] private Vector2 landAreaSize = new Vector2(350f, 500f);
-    
-    [SerializeField] private Vector2 dockAreaCenter = new Vector2(10, 28);
-    [SerializeField] private Vector2 dockAreaSize = new Vector2(400f, 400f);
-    
     HashSet<int> availableStoreIndices = new HashSet<int>();
     HashSet<int> availableDockIndices = new HashSet<int>();
     HashSet<int> availableFactoryIndices = new HashSet<int>();
@@ -45,8 +40,45 @@ public class StructurePlacer : MonoBehaviour
     private List<GameObject> factories = new List<GameObject>();
     private List<GameObject> docks = new List<GameObject>();
 
+    private const float MaxPlacementSize = 450f;
+    private const float MinPlacementSize = 25f;
+    private const float BoundsPadding = 8f;
+
+    private Vector2 landAreaCenter;
+    private Vector2 landAreaSize;
+    private Vector2 dockAreaCenter;
+    private Vector2 dockAreaSize;
+    private bool boundsInitialized;
+
+    private void Awake()
+    {
+        if (pointFinder == null)
+        {
+            pointFinder = GetComponent<PointFinder>();
+        }
+
+        if (pointFinder == null)
+        {
+            pointFinder = GetComponentInChildren<PointFinder>();
+        }
+    }
+
+    private void OnValidate()
+    {
+        boundsInitialized = false;
+    }
+
     private void Start()
     {
+        if (pointFinder == null)
+        {
+            Debug.LogError("StructurePlacer requires a PointFinder reference on the same prefab.", this);
+            enabled = false;
+            return;
+        }
+
+        EnsurePlacementBounds();
+
         InitializeIndices();
         StoreLoop();
         DockLoop();
@@ -65,11 +97,35 @@ public class StructurePlacer : MonoBehaviour
             availableFactoryIndices.Add(i);
     }
 
+    private void EnsurePlacementBounds()
+    {
+        if (boundsInitialized)
+            return;
+
+        Vector2 tileCenter = CalculateTileCenter();
+        landAreaCenter = tileCenter;
+        dockAreaCenter = tileCenter;
+
+        landAreaSize = new Vector2(MaxPlacementSize, MaxPlacementSize);
+        dockAreaSize = landAreaSize;
+
+        boundsInitialized = true;
+    }
+
+    private Vector2 CalculateTileCenter()
+    {
+        float tileMinX = Mathf.Floor(transform.position.x / MaxPlacementSize) * MaxPlacementSize;
+        float tileMinZ = Mathf.Floor(transform.position.z / MaxPlacementSize) * MaxPlacementSize;
+        return new Vector2(tileMinX + MaxPlacementSize * 0.5f, tileMinZ + MaxPlacementSize * 0.5f);
+    }
+
     private void StoreLoop()
     {
+        EnsurePlacementBounds();
+
         for (int i = 0; i < commercialCount; i++)
         {
-            Vector3 pos = PointFinder.Instance.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, areaCenter, landAreaSize);
+            Vector3 pos = pointFinder.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, landAreaCenter, landAreaSize);
             if (pos != Vector3.zero)
                 Instantiate(GetStorePrefab(), pos, Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0));
             else 
@@ -80,9 +136,11 @@ public class StructurePlacer : MonoBehaviour
 
     private void DockLoop()
     {
+        EnsurePlacementBounds();
+
         for (int i = 0; i < dockCount; i++)
         {
-            Vector3 pos = PointFinder.Instance.FindShorePoint(shoreDistance, shoreMaxAttempts, shoreBuildingRadius, dockAreaCenter, dockAreaSize);
+            Vector3 pos = pointFinder.FindShorePoint(shoreDistance, shoreMaxAttempts, shoreBuildingRadius, dockAreaCenter, dockAreaSize);
             if (pos != Vector3.zero)
             {
                 Quaternion dockRotation = GetDockOrientation(pos);
@@ -95,9 +153,11 @@ public class StructurePlacer : MonoBehaviour
     
     private void FactoryLoop()
     {
+        EnsurePlacementBounds();
+
         for (int i = 0; i < factoryCount; i++)
         {
-            Vector3 pos = PointFinder.Instance.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, areaCenter, landAreaSize);
+            Vector3 pos = pointFinder.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, landAreaCenter, landAreaSize);
             if (pos != Vector3.zero)
                 Instantiate(GetFactoryPrefab(), pos, Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0));
             else 
@@ -107,13 +167,13 @@ public class StructurePlacer : MonoBehaviour
 
     private Quaternion GetDockOrientation(Vector3 spawnPosition)
     {
-        if (PointFinder.Instance == null)
+        if (pointFinder == null)
             return Quaternion.identity;
 
-        Quaternion orientation = PointFinder.Instance.GetShoreFacingRotation(spawnPosition);
+        Quaternion orientation = pointFinder.GetShoreFacingRotation(spawnPosition);
         return orientation;
     }
-
+    
     private GameObject GetStorePrefab()
 {
     if (availableStoreIndices.Count == 0)

@@ -9,7 +9,6 @@ public class PointFinder : MonoBehaviour
     [SerializeField] private float shoreOrientationRadius = 15f;
     [SerializeField, Range(8, 360)] private int shoreOrientationSamples = 72;
     [SerializeField] private int shoreOrientationMinSequence = 2;
-    public static PointFinder Instance { get; private set; }
     private int shoreMaxAttempts;
     private float shoreDistance;
     private float shoreBuildingRadius;
@@ -61,15 +60,10 @@ public class PointFinder : MonoBehaviour
         return point;
     }
 
-    private void Awake()
+    private void OnEnable()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
+        landPoints.Clear();
+        shorePoints.Clear();
     }
 
     private Vector3 FindLandPointInternal(Vector2 areaCenter, Vector2 areaSize)
