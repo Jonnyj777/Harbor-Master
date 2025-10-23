@@ -168,5 +168,6 @@ public class Boat : NetworkBehaviour
         }
         // destroy game object
         Destroy(gameObject);
+        NetworkServer.Destroy(gameObject);
     }
 }

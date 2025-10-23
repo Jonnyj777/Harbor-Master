@@ -60,6 +60,7 @@ public class Port : NetworkBehaviour
             GameObject obj = cargoBoxes[index];
             cargoBoxes.RemoveAt(index);
             Destroy(obj);
+            NetworkServer.Destroy(obj);
         }
     }
 
