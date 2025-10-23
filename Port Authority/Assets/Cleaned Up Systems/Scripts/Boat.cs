@@ -86,7 +86,6 @@ public class Boat : NetworkBehaviour
     [ClientRpc]
     private void RpcActivateCargo(int cargoIndex, Color randomColor)
     {
-        print("activate cargo: " + cargoIndex + " : " + randomColor);
         cargoBoxes[cargoIndex].SetActive(true);
         Renderer rend = cargoBoxes[cargoIndex].GetComponent<Renderer>();
         rend.material.color = randomColor;
@@ -96,7 +95,6 @@ public class Boat : NetworkBehaviour
     [ClientRpc]
     private void RpcDeactivateCargo(int cargoIndex)
     {
-        print("deactivate cargo: " + cargoIndex);
         cargoBoxes[cargoIndex].SetActive(false);
     }
 
