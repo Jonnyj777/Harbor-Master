@@ -154,6 +154,12 @@ public class LineFollow : NetworkBehaviour
 
         NetworkAuthorizer playerAuthorizer = NetworkClient.localPlayer.GetComponent<NetworkAuthorizer>();
         playerAuthorizer.CmdRemoveAuthority(unitIdentity);
+
+        PopulatePositions();
+        lineFollowing = true;
+        drawingLine = false;
+        moveIndex = 0;
+        isDragging = false;
         
     }
 
