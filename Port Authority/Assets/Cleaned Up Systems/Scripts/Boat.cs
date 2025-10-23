@@ -110,9 +110,9 @@ public class Boat : NetworkBehaviour
             port.ReceiveCargo(cargo);
             cargo.Clear();
 
-            foreach (var box in cargoBoxes)
+            for(int i = 0; i < cargoBoxes.Count; i++)
             {
-                box.SetActive(false);
+                RpcDeactivateCargo(i);
             }
         }
     }
@@ -167,7 +167,7 @@ public class Boat : NetworkBehaviour
             }
         }
         // destroy game object
-        Destroy(gameObject);
+        //Destroy(gameObject);
         NetworkServer.Destroy(gameObject);
     }
 }

@@ -21,10 +21,14 @@ public class Truck : NetworkBehaviour
 
     private void Start()
     {
-        vehicle = GetComponent<LineFollow>();
-        vehicleRenderer = GetComponent<Renderer>();
+        if(isServer)
+        {
+            vehicle = GetComponent<LineFollow>();
+            vehicleRenderer = GetComponent<Renderer>();
+        }
     }
 
+    [ServerCallback]
     private void OnTriggerEnter(Collider other)
     {
         // land vehicle crash state
@@ -60,6 +64,7 @@ public class Truck : NetworkBehaviour
         }
     }
 
+    [Server]
     private void StopMovement()
     {
         LineFollow vehicle = GetComponent<LineFollow>();
@@ -67,6 +72,7 @@ public class Truck : NetworkBehaviour
         vehicle.DeleteLine();
     }
 
+    [ServerCallback]
     private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Port"))
@@ -83,6 +89,7 @@ public class Truck : NetworkBehaviour
         }
     }
 
+    [ServerCallback]
     private void OnTriggerExit(Collider other)
     {
         if (stallPortMovement)
@@ -95,6 +102,7 @@ public class Truck : NetworkBehaviour
         }
     }
 
+    [Server]
     private IEnumerator PortMovementDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -102,6 +110,7 @@ public class Truck : NetworkBehaviour
         
     }
 
+    [Server]
     private IEnumerator BuildingMovementDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -118,7 +127,7 @@ public class Truck : NetworkBehaviour
 
             for (int i = 0; i < cargoBoxes.Count; i++)
             {
-                RpcRemoveCargo(cargoBoxes[i]);
+                RpcDeactivateCargo(i);
             }
 
             foreach (Cargo c in cargo)
@@ -160,30 +169,31 @@ public class Truck : NetworkBehaviour
                 int boxIndex = cargo.Count;
                 cargo.Add(tempCargo[i]);
                 port.RemoveCargoBox(tempCargo[i]);
-                GameObject box = cargoBoxes[boxIndex];
+                //GameObject box = cargoBoxes[boxIndex];
                 Color color = new Color(tempCargo[i].colorData.x, tempCargo[i].colorData.y, tempCargo[i].colorData.z);
-                RpcAddCargo(box, color);
+                RpcActivateCargo(boxIndex, color);
             }
         }
     }
 
     [ClientRpc]
-    private void RpcAddCargo(GameObject box, Color color)
+    private void RpcActivateCargo(int cargoIndex, Color color)
     {
-        box.SetActive(true);
+        cargoBoxes[cargoIndex].SetActive(true);
 
-        if (box.TryGetComponent<Renderer>(out var r))
+        if (cargoBoxes[cargoIndex].TryGetComponent<Renderer>(out var r))
         {
             r.material.color = color;
         }
     }
 
     [ClientRpc]
-    private void RpcRemoveCargo(GameObject box)
+    private void RpcDeactivateCargo(int cargoIndex)
     {
-        box.SetActive(false);
+        cargoBoxes[cargoIndex].SetActive(false);
     }
 
+    [Server]
     public void EnterCrashState()
     {
         vehicle.SetIsCrashed(true);
@@ -196,6 +206,7 @@ public class Truck : NetworkBehaviour
         }
     }
 
+    [Server]
     private IEnumerator RestoreMaterialAfterDelay()
     {
         yield return new WaitForSeconds(restartDelay);
