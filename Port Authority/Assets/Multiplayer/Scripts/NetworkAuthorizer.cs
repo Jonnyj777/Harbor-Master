@@ -11,12 +11,12 @@ public class NetworkAuthorizer : NetworkBehaviour
     public void CmdRequestAuthority(NetworkIdentity vehicle)
     {
         if (vehicle == null) return;
-        if(vehicle.connectionToClient == connectionToClient) return;
+        if(vehicle.connectionToClient != null) return;
 
-        if(vehicle.connectionToClient != null)
-        {
-            vehicle.RemoveClientAuthority();
-        }
+        //if(vehicle.connectionToClient != null)
+        //{
+        //    vehicle.RemoveClientAuthority();
+       // }
 
         vehicle.AssignClientAuthority(connectionToClient);
         Debug.Log($"Authority granted to {connectionToClient.identity} for {vehicle.name}");

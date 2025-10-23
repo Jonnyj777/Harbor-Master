@@ -127,6 +127,7 @@ public class LineFollow : NetworkBehaviour
         playerAuthorizer.CmdRequestAuthority(unitIdentity);
     }
 
+    [Server]
     public void StartDrag()
     {
         print("Start Drag");
@@ -153,12 +154,6 @@ public class LineFollow : NetworkBehaviour
 
         NetworkAuthorizer playerAuthorizer = NetworkClient.localPlayer.GetComponent<NetworkAuthorizer>();
         playerAuthorizer.CmdRemoveAuthority(unitIdentity);
-
-        PopulatePositions();
-        lineFollowing = true;
-        drawingLine = false;
-        moveIndex = 0;
-        isDragging = false;
         
     }
 
