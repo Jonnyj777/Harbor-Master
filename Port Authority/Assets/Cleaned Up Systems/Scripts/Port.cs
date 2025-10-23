@@ -23,6 +23,8 @@ public class Port : NetworkBehaviour
 
         Renderer cargoRend = cargoPrefab.GetComponent<Renderer>();
         spawnOffset = cargoRend.bounds.size.y;
+
+        //NetworkClient.RegisterPrefab(cargoPrefab);
     }
 
     [Server]
@@ -41,7 +43,6 @@ public class Port : NetworkBehaviour
         Vector3 spawnPos = new Vector3(Random.Range(minBounds.x + spawnOffset, maxBounds.x - spawnOffset), maxBounds.y + spawnOffset, Random.Range(minBounds.z + spawnOffset, maxBounds.z - spawnOffset));
 
         GameObject box = Instantiate(cargoPrefab, spawnPos, Quaternion.identity);
-        box.AddComponent<NetworkIdentity>();
         NetworkServer.Spawn(box);
         Color color = new Color(cargo.colorData.x, cargo.colorData.y, cargo.colorData.z);
         RpcAddCargo(box, color);

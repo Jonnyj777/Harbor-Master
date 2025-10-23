@@ -127,7 +127,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   loadingArea: {fileID: 8409330209991396309}
-  cargoPrefab: {fileID: 3857715577458157709, guid: 08d4b5594f496fb4f906a8e5805c98b3, type: 3}
+  cargoPrefab: {fileID: 3857715577458157709, guid: 53297461e2227414f88998ba9e9ca778, type: 3}
 --- !u!114 &4780158387874651706
 MonoBehaviour:
   m_ObjectHideFlags: 0
