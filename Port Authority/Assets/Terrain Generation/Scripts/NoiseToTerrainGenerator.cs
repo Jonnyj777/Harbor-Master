@@ -40,10 +40,6 @@ public class NoiseToTerrainGenerator : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-    }
-
-    private void Update()
-    {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
@@ -53,7 +49,12 @@ public class NoiseToTerrainGenerator : MonoBehaviour
         SetVectorColors();
 
         waterPlaneTransform.position = new Vector3(waterPlaneTransform.position.x, waterLevel, waterPlaneTransform.position.z);
-        
+
+    }
+
+    private void Update()
+    {
+
     }
 
 
