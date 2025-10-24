@@ -4,40 +4,24 @@ using UnityEngine.UI;
 public class ColorChoice : MonoBehaviour
 {
     [Header("Color Info")]
-    public string colorName;         // e.g. "Red", "Blue"
-    public Image colorImage;         // the swatch or background image
-    public GameObject anchorIcon;    // the little icon that shows when selected
-
-    private ColorChoiceManager manager;
+    public string colorName;    
+    public Image colorImage;  
+    public GameObject selectedIcon;
+    public Color color;
 
     private void Awake()
     {
-        // Hide anchor by default
-        if (anchorIcon != null)
-            anchorIcon.SetActive(false);
+        selectedIcon.SetActive(false);
+        color = colorImage.color;
     }
 
-    private void Start()
+    public void Select()
     {
-        // Find parent manager in hierarchy
-        manager = GetComponentInParent<ColorChoiceManager>();
-
-        // Hook up button click
-        Button btn = GetComponent<Button>();
-        if (btn != null)
-            btn.onClick.AddListener(OnClickColor);
+        selectedIcon.SetActive(true);
     }
 
-    private void OnClickColor()
+    public void Unselect()
     {
-        if (manager != null)
-            manager.SelectColor(this);
-    }
-
-    // Called by manager when this color is selected or deselected
-    public void SetSelected(bool selected)
-    {
-        if (anchorIcon != null)
-            anchorIcon.SetActive(selected);
+        selectedIcon.SetActive(false);
     }
 }

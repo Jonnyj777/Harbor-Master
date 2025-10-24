@@ -239,4 +239,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorName: 
   colorImage: {fileID: 6221361634593990157}
-  anchorIcon: {fileID: 3374543500266968714}
+  selectedIcon: {fileID: 3374543500266968714}

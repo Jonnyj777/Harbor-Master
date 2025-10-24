@@ -25,35 +25,32 @@ public class LobbyEntry : MonoBehaviour
     private UnityEngine.Color countColor;
     private UnityEngine.Color countSelectedColor;
     private UnityEngine.Color countFullColor;
-
-    public bool isSelected = false;
-    public bool isFull = false;
+    private bool isFull = false;
 
     void Start()
     {
+        // get colors for lobby entries
         ColorUtility.TryParseHtmlString("#38BDF8", out countColor); // blue
         ColorUtility.TryParseHtmlString("#FFFFFF", out selectedTextColor); // white
-        ColorUtility.TryParseHtmlString("#FFFFFF20", out countSelectedColor); // white transparent
+        ColorUtility.TryParseHtmlString("#FFFFFF30", out countSelectedColor); // white transparent
         ColorUtility.TryParseHtmlString("#E90E12", out countFullColor); // red
         ColorUtility.TryParseHtmlString("#000000", out lobbyNameColor); // black
         ColorUtility.TryParseHtmlString("#9D9D9D", out hostTextColor); // gray
 
-        SetUnselected();
+        // set unselected as default
+        Unselect();
     }
 
-    public void SetSelected()
+    public void Select()
     {
-        isSelected = true;
         background.sprite = selectedBackground;
         countBackground.color = isFull ? countFullColor : countSelectedColor;
         lobbyNameText.color = selectedTextColor;
         hostText.color = selectedTextColor;
     }
 
-
-    public void SetUnselected()
+    public void Unselect()
     {
-        isSelected = false;
         background.sprite = unselectedBackground;
         countBackground.color = isFull ? countFullColor : countColor;
         lobbyNameText.color = lobbyNameColor;
