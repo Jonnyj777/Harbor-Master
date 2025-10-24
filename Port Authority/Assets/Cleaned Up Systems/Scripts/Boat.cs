@@ -4,28 +4,33 @@ using UnityEngine;
 
 public class Boat : MonoBehaviour
 {
-    public List<Cargo> cargo = new List<Cargo>();
-    private Port port;
+    [Header("Cargo Prefabs")]
     public List<GameObject> cargoBoxes;
+    public List<Cargo> cargo = new List<Cargo>();
 
-    // settings for boat collisions
+    private List<Cargo> unlockedCargo = new List<Cargo>();
+    private Port port;
+
+    [Header("Boat Collisions Settings")]
+    public Color crashedColor = Color.cyan;  // Color to when boat vehicles crash
+
     private bool hasCrashed = false;
     private float sinkDelay = 2f;
     private float sinkLength = 10f;  // distance the boat sinks down
     private float sinkDuration = 2f;  // time it takes to sink down to the desired length
     //private float fadeDelay = 1f;  // time to wait before fading starts
     //private float fadeDuration = 5f;  // how long to fully fade out
-    LineFollow vehicle;
-    public Color crashedColor = Color.cyan;  // Color to when boat vehicles crash
-    //private Renderer vehicleRenderer;
-    private List<Renderer> vehiclePartRenderers = new List<Renderer>();
 
-    // World bounds
-    float minX, maxX, minZ, maxZ;
+    [Header("Instance Settings")]
+    private LineFollow vehicle;
+    private List<Renderer> vehiclePartRenderers = new List<Renderer>();
+    private float minX, maxX, minZ, maxZ;   // World bounds
+
 
     private void Start()
     {
         AssignCargo();
+
         vehicle = GetComponent<LineFollow>();
         //vehicleRenderer = GetComponent<Renderer>();
         foreach (Renderer vehiclePartRenderer in GetComponentsInChildren<Renderer>())
@@ -56,18 +61,11 @@ public class Boat : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // boat vehicle crash state
-        // if boat vehicle collides into another boat vehicle, both boat vehicles enter boat crash state
-        // boat crash state = disappear off map after a few seconds (do NOT act as additional obstacles)
-        if (other.CompareTag("Terrain")) 
+        // Boat vehicle crash state:
+        // Disappear off map after a few seconds (do NOT act as additional obstacles)
+        if (other.CompareTag("Terrain") || other.CompareTag("Boat")) 
         {
             EnterCrashState();
-        }
-        if (other.CompareTag("Boat"))
-        {
-            Boat otherBoat = other.GetComponent<Boat>();
-            EnterCrashState();
-            otherBoat.EnterCrashState();
         }
         if (other.CompareTag("Port")) {
             vehicle.SetAtPort(true);
@@ -80,6 +78,12 @@ public class Boat : MonoBehaviour
 
     public void AssignCargo()
     {
+        List<CargoType> unlockedCargoTypes = CargoManager.Instance.GetUnlockedCargo();
+        if (unlockedCargoTypes.Count ==  0)
+        {
+            return;
+        }
+
         int cargoAmount = Random.Range(1, cargoBoxes.Count + 1);
 
         for (int i = 0; i < cargoBoxes.Count; i++)
@@ -88,19 +92,21 @@ public class Boat : MonoBehaviour
             {
                 cargoBoxes[i].SetActive(true);
 
-                // set random color
-                Color randomColor = new Color(Random.value, Random.value, Random.value);
-                Renderer rend = cargoBoxes[i].GetComponent<Renderer>();
-                rend.material.color = randomColor;
+                // Pick a random unlocked cargo type
+                CargoType selectedCargoType = unlockedCargoTypes[Random.Range(0, unlockedCargoTypes.Count)];
 
-                // set type
+                // Apply selected cargo color to the prefab
+                Renderer rend = cargoBoxes[i].GetComponent<Renderer>();
+                rend.material.color = selectedCargoType.color;
+
+                // Create a new Cargo instance
                 Cargo c = new Cargo
                 {
-                    type = "Coffee",
+                    type = selectedCargoType.cargoName,
+                    price = selectedCargoType.basePrice,
                     amount = 1,
-                    color = randomColor,
+                    color = selectedCargoType.color,
                     spawnTime = Time.time,
-                    price = 20
                 };
 
                 cargo.Add(c);

@@ -1,6 +1,7 @@
 using UnityEngine;
 
-
+// Runtime data:
+// A temporary object representing a specific piece of cargo currently being carried.
 [System.Serializable]
 public class Cargo
 {

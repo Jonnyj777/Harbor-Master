@@ -11,29 +11,32 @@ public class StoreScript : MonoBehaviour
     public TextMeshProUGUI speedText;
     public TextMeshProUGUI bigCargoShipText;
     public TextMeshProUGUI biggerCargoShipText;
+    public TextMeshProUGUI whiskeyText;
+    public TextMeshProUGUI furnitureText;
+    public TextMeshProUGUI industrialEquipmentText;
 
     [Header("Cost Multiplier")]
     public float costMultiplier = 1.75f;    // Price increase each upgrade
 
     [Header("Repair Speed Upgrade Settings")]
-    public int baseRepairSpeedCost = 1;//150;
+    public int baseRepairSpeedCost = 150;
     public float repairSpeedMult = 0.1f;  // Each upgrade reduces base repair speed by 10% of original
-    public int maxRepairSpeedLevel = 5;
+    public int maxRepairSpeedLevel = 4;
 
     private int currentRepairSpeedLevel = 0;
     private int currentRepairSpeedCost;
 
     [Header("Durability Upgrade Settings")]
-    public int baseDurabilityCost = 1;//15000;
+    public int baseDurabilityCost = 15000;
     public int maxDurabilityLevel = 2;
 
     private int currentDurabilityLevel = 0;
     private int currentDurabilityCost;
 
     [Header("Boat Speed Upgrade Settings")]
-    public int baseSpeedCost = 1; //3000;
+    public int baseSpeedCost = 3000;
     public float speedMult = 0.1f;  // Each upgrade increases boat speed by 10% of original
-    public int maxSpeedLevel = 5;
+    public int maxSpeedLevel = 4;
 
     private int currentSpeedLevel = 0;
     private int currentSpeedCost;
@@ -41,11 +44,29 @@ public class StoreScript : MonoBehaviour
     [Header("New Ship Purchase Settings")]
     public VehicleSpawnScript vehicleSpawnScript;
 
-    public int bigCargoShipCost = 1;//12000
+    public int bigCargoShipCost = 12000;
     public GameObject bigCargoShip;
 
-    public int biggerCargoShipCost = 1;//30000;
+    public int biggerCargoShipCost = 30000;
     public GameObject biggerCargoShip;
+
+    private bool bigCargoShipPurchased = false;
+    private bool biggerCargoShipPurchased = false;
+
+    [Header("New Cargo Purchase Settings")]
+    public int whiskeyCost = 1500;
+    public CargoType whiskey;
+
+    public int furnitureCost = 5000;
+    public CargoType furniture;
+
+    public int industrialEquipmentCost = 10000;
+    public CargoType industrialEquipment;
+
+    private bool whiskeyPurchased = false;
+    private bool furniturePurchased = false;
+    private bool industrialEquipmentPurchased = false;
+
 
     private void Start()
     {
@@ -58,6 +79,9 @@ public class StoreScript : MonoBehaviour
         UpdateSpeedEntry();
         UpdateBigCargoShipEntry();
         UpdateBiggerCargoShipEntry();
+        UpdateWhiskeyEntry();
+        UpdateFurnitureEntry();
+        UpdateIndustrialEquipmentEntry();
     }
 
     public void OpenStore()
@@ -122,11 +146,11 @@ public class StoreScript : MonoBehaviour
 
             float increaseFactor = 1f + (speedMult * currentSpeedLevel);
 
-            LineFollow.boatSpeed = LineFollow.speed * increaseFactor;
+            // Apply globally to all LineFollow boats
+            LineFollow.globalBoatSpeed = LineFollow.baseBoatSpeed * increaseFactor;
 
             currentSpeedCost = Mathf.RoundToInt(baseSpeedCost * Mathf.Pow(costMultiplier, currentSpeedLevel));
 
-            Debug.Log(LineFollow.boatSpeed);
             UpdateSpeedEntry();
         }
     }
@@ -134,22 +158,75 @@ public class StoreScript : MonoBehaviour
     public void PurchaseBigCargoShip()
     {
         if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= bigCargoShipCost)
+                && ScoreManager.Instance.GetSpendableScore() >= bigCargoShipCost
+                && !bigCargoShipPurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-bigCargoShipCost);
 
             vehicleSpawnScript.UnlockShip(bigCargoShip);
+
+            bigCargoShipPurchased = true;
+            UpdateBigCargoShipEntry();
         }
     }
 
     public void PurchaseBiggerCargoShip()
     {
         if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= biggerCargoShipCost)
+                && ScoreManager.Instance.GetSpendableScore() >= biggerCargoShipCost
+                && !biggerCargoShipPurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-biggerCargoShipCost);
 
             vehicleSpawnScript.UnlockShip(biggerCargoShip);
+
+            biggerCargoShipPurchased = true;
+            UpdateBiggerCargoShipEntry();
+        }
+    }
+
+    public void PurchaseWhiskey()
+    {
+        if (storePanel.activeSelf
+                && ScoreManager.Instance.GetSpendableScore() >= whiskeyCost
+                && !whiskeyPurchased)
+        {
+            ScoreManager.Instance.UpdateSpendableScore(-whiskeyCost);
+
+            CargoManager.Instance.UnlockCargo(whiskey);
+
+            whiskeyPurchased = true;
+            UpdateWhiskeyEntry();
+        }
+    }
+
+    public void PurchaseFurniture()
+    {
+        if (storePanel.activeSelf
+                && ScoreManager.Instance.GetSpendableScore() >= furnitureCost
+                && !furniturePurchased)
+        {
+            ScoreManager.Instance.UpdateSpendableScore(-furnitureCost);
+
+            CargoManager.Instance.UnlockCargo(furniture);
+
+            furniturePurchased = true;
+            UpdateFurnitureEntry();
+        }
+    }
+
+    public void PurchaseIndustrialEquipment()
+    {
+        if (storePanel.activeSelf
+                && ScoreManager.Instance.GetSpendableScore() >= industrialEquipmentCost
+                && !industrialEquipmentPurchased)
+        {
+            ScoreManager.Instance.UpdateSpendableScore(-industrialEquipmentCost);
+
+            CargoManager.Instance.UnlockCargo(industrialEquipment);
+
+            industrialEquipmentPurchased = true;
+            UpdateIndustrialEquipmentEntry();
         }
     }
 
@@ -176,15 +253,81 @@ public class StoreScript : MonoBehaviour
 
     private void UpdateBigCargoShipEntry()
     {
-        biggerCargoShipText.text = "Big Cargo Ship\r\n" +
-                                   "$" + bigCargoShipCost + "\r\n" +
-                                   "Max Capacity: 5 Cargo";
+        if (!bigCargoShipPurchased)
+        {
+            bigCargoShipText.text = "Big Cargo Ship\r\n" +
+                                    "$" + bigCargoShipCost + "\r\n" +
+                                    "Max Capacity: 5 Cargo";
+        }
+        else
+        {
+            bigCargoShipText.text = "Big Cargo Ship\r\n" +
+                                    "Purchased\r\n" +
+                                    "Max Capacity: 5 Cargo";
+        }
     }
 
     private void UpdateBiggerCargoShipEntry()
     {
-        biggerCargoShipText.text = "Bigger Cargo Ship\r\n" +
-                                   "$" + biggerCargoShipCost + "\r\n" +
-                                   "Max Capacity: 10 Cargo";
+        if (!biggerCargoShipPurchased)
+        {
+            biggerCargoShipText.text = "Bigger Cargo Ship\r\n" +
+                                       "$" + biggerCargoShipCost + "\r\n" +
+                                       "Max Capacity: 10 Cargo";
+        }
+        else
+        {
+            biggerCargoShipText.text = "Bigger Cargo Ship\r\n" +
+                                       "Purchased\r\n" +
+                                       "Max Capacity: 10 Cargo";
+        }
+    }
+
+    private void UpdateWhiskeyEntry()
+    {
+        if (!whiskeyPurchased)
+        {
+            whiskeyText.text = "Whiskey\r\n" +
+                               "$" + whiskeyCost + "\r\n" +
+                               "+200/Delivery";
+        }
+        else
+        {
+            whiskeyText.text = "Whiskey\r\n" +
+                               "Purchased\r\n" +
+                               "+200/Delivery";
+        }
+    }
+
+    private void UpdateFurnitureEntry()
+    {
+        if (!furniturePurchased)
+        {
+            furnitureText.text = "Furniture\r\n" +
+                                 "$" + furnitureCost + "\r\n" +
+                                 "+500/Delivery";
+        }
+        else
+        {
+            furnitureText.text = "Furniture\r\n" +
+                                 "Purchased\r\n" +
+                                 "+500/Delivery";
+        }
+    }
+
+    private void UpdateIndustrialEquipmentEntry()
+    {
+        if (!industrialEquipmentPurchased)
+        {
+            industrialEquipmentText.text = "Industrial Equipment\r\n" +
+                                           "$" + industrialEquipmentCost + "\r\n" +
+                                           "+1,700/Delivery";
+        }
+        else
+        {
+            industrialEquipmentText.text = "Industrial Equipment\r\n" +
+                                           "Purchased\r\n" +
+                                           "+1,700/Delivery";
+        }
     }
 }
