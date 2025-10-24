@@ -26,7 +26,10 @@ public class VehicleMovement : MonoBehaviour
     private Vector3? targetPosition = null;
     private Renderer vehicleRenderer;
     private Color originalColor;  // used for a reset state later on (e.g., repairs on crashed vehicles)
-    private float truckSpeed = 30f;
+
+    // settings for mud obstacle collisions with land vehicles
+    public bool mudEffected = false;
+    
 
     // enum for crash types
     public enum CrashType
@@ -120,7 +123,7 @@ public class VehicleMovement : MonoBehaviour
         // TEST KEY USED FOR OBSTACLES SCENE (TREE FALLING)
         if (Input.GetKey(KeyCode.D))
         {
-            transform.position += transform.forward * truckSpeed * Time.deltaTime;
+            transform.position += transform.forward * speed * Time.deltaTime;
         }
     }
 
