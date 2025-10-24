@@ -10,13 +10,15 @@ public class Boat : MonoBehaviour
 
     // settings for boat collisions
     private bool hasCrashed = false;
-    private float sinkLength = 0.5f;  // distance the boat sinks down
+    private float sinkDelay = 2f;
+    private float sinkLength = 10f;  // distance the boat sinks down
     private float sinkDuration = 2f;  // time it takes to sink down to the desired length
-    private float fadeDelay = 1f;  // time to wait before fading starts
-    private float fadeDuration = 2f;  // how long to fully fade out
+    //private float fadeDelay = 1f;  // time to wait before fading starts
+    //private float fadeDuration = 5f;  // how long to fully fade out
     LineFollow vehicle;
     public Color crashedColor = Color.cyan;  // Color to when boat vehicles crash
-    private Renderer vehicleRenderer;
+    //private Renderer vehicleRenderer;
+    private List<Renderer> vehiclePartRenderers = new List<Renderer>();
 
     // World bounds
     float minX, maxX, minZ, maxZ;
@@ -25,7 +27,14 @@ public class Boat : MonoBehaviour
     {
         AssignCargo();
         vehicle = GetComponent<LineFollow>();
-        vehicleRenderer = GetComponent<Renderer>();
+        //vehicleRenderer = GetComponent<Renderer>();
+        foreach (Renderer vehiclePartRenderer in GetComponentsInChildren<Renderer>())
+        {
+            if (vehiclePartRenderer.CompareTag("Boat"))
+            {
+                vehiclePartRenderers.Add(vehiclePartRenderer);
+            }
+        }
 
         // Teach the boat the world bounds so it can destroy itself
         GameObject terrain = GameObject.Find("TerrainGenerator");
@@ -129,17 +138,28 @@ public class Boat : MonoBehaviour
         LivesManager.Instance.LoseLife();
 
         vehicle.SetIsCrashed(true);
-        if (vehicleRenderer != null)
+
+        if (vehiclePartRenderers.Count != 0)
         {
-            vehicleRenderer.material.color = crashedColor;
+            foreach (Renderer vehiclePartRenderer in vehiclePartRenderers)
+            {
+                foreach (Material mat in vehiclePartRenderer.materials)
+                {
+                    mat.color = crashedColor;
+                }
+            }
         }
+
         StartCoroutine(SinkFadeOut());
     }
 
     // function to make boats sink, fade, then destroyed after crashing into another boat vehicle
     private IEnumerator SinkFadeOut()
     {
-        // sinking
+        // Wait before sinking
+        yield return new WaitForSeconds(sinkDelay);
+
+        // Sinking logic
         Vector3 startPos = transform.position;
         Vector3 endPos = new Vector3(startPos.x, startPos.y - sinkLength, startPos.z);
         float time = 0f;
@@ -151,31 +171,78 @@ public class Boat : MonoBehaviour
         }
         transform.position = endPos;
 
-        // wait before fade
-        yield return new WaitForSeconds(fadeDelay);
+        //TODO: Review Fadeout logic.
+        //// Wait before fade
+        //yield return new WaitForSeconds(fadeDelay);
 
-        // fade out
-        if (vehicleRenderer != null)
-        {
-            Material mat = vehicleRenderer.material;
-            Color fadeColor = mat.color;
-            float fadeElapsed = 0f;
+        //// Fade out logic
+        //if (vehiclePartRenderers.Count == 0)
+        //{
+        //    yield break;
+        //}
 
-            // ensure material supports transparency
-            mat.SetFloat("_Mode", 2);
-            mat.color = fadeColor;
+        //// Cache original material colors for all parts of a ship
+        //List<Color[]> originalMatColors = new List<Color[]>();
+        //foreach (Renderer vehiclePartRenderer in vehiclePartRenderers)
+        //{
+        //    Color[] colors = new Color[vehiclePartRenderer.materials.Length];
+        //    for (int i = 0; i < vehiclePartRenderer.materials.Length; i++)
+        //    {
+        //        colors[i] = vehiclePartRenderer.materials[i].color;
+        //    }
+        //    originalMatColors.Add(colors);
+        //}
 
-            while (fadeElapsed < fadeDuration)
-            {
-                float alpha = Mathf.Lerp(1f, 0f, fadeElapsed / fadeDuration);
-                mat.color = new Color(fadeColor.r, fadeColor.g, fadeColor.b, alpha);
-                fadeElapsed += Time.deltaTime;
-                yield return null;
-            }
-        }
-        // destroy game object
+        //float fadeElapsed = 0f;
+
+        //// Fade all materials over time
+        //while (fadeElapsed < fadeDuration)
+        //{
+        //    float ratioFaded = fadeElapsed / fadeDuration;
+
+        //    for (int r = 0; r < vehiclePartRenderers.Count; r++)
+        //    {
+        //        Renderer vehiclePartRenderer = vehiclePartRenderers[r];
+        //        for (int i = 0; i < vehiclePartRenderer.materials.Length; ++i)
+        //        {
+        //            // Ensure material supports transparency
+        //            MakeMaterialTransparent(vehiclePartRenderer.materials[i]);
+
+        //            Color startColor = originalMatColors[r][i];
+        //            Color targetColor = new Color(startColor.r, startColor.g, startColor.b, 0f);
+        //            vehiclePartRenderer.materials[i].color = Color.Lerp(startColor, targetColor, ratioFaded);
+        //        }
+        //    }
+
+        //    fadeElapsed += Time.deltaTime;
+        //    yield return null;
+        //}
+
+        //// Ensure that each material is fully transparent at the end
+        //foreach (Renderer vehiclePartRenderer in vehiclePartRenderers)
+        //{
+        //    foreach (Material mat in vehiclePartRenderer.materials)
+        //    {
+        //        Color c = mat.color;
+        //        c.a = 0f;
+        //        mat.color = c;
+        //    }
+        //}
+
         Destroy(gameObject);
     }
+
+    //private void MakeMaterialTransparent(Material mat)
+    //{
+    //    mat.SetFloat("_Mode", 3); // 3 = Transparent in Standard Shader
+    //    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+    //    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+    //    mat.SetInt("_ZWrite", 0);
+    //    mat.DisableKeyword("_ALPHATEST_ON");
+    //    mat.EnableKeyword("_ALPHABLEND_ON");
+    //    mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+    //    mat.renderQueue = 3000;
+    //}
 
     private void CheckBounds()
     {
