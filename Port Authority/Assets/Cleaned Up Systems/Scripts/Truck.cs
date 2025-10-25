@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Truck : NetworkBehaviour
 {
@@ -17,7 +18,20 @@ public class Truck : NetworkBehaviour
     public Material crashedMaterial;
     public Color crashedColor = Color.magenta;  // Color to when truck vehicles crash
     private Renderer vehicleRenderer;
-    public float restartDelay = 3f;
+    public static float baseRestartDelay = 15f;
+    public static float globalRestartDelay; // The current effective value (changes when upgraded)
+
+    public GameObject repairButtonPrefab;
+    public Canvas trucksUICanvas;
+    private GameObject repairButtonInstance;
+
+    private void Awake()
+    {
+        if (globalRestartDelay == 0)
+        {
+            globalRestartDelay = baseRestartDelay;
+        }
+    }
 
     private void Start()
     {
@@ -36,9 +50,7 @@ public class Truck : NetworkBehaviour
         // land crash state == stuck in place, no fade out
         if (other.CompareTag("Truck"))
         {
-            Truck otherTruck = other.GetComponent<Truck>();
             EnterCrashState();
-            otherTruck.EnterCrashState();
         }
         if (other.CompareTag("Port") && cargo.Count <= 3)
         {
@@ -197,19 +209,43 @@ public class Truck : NetworkBehaviour
     public void EnterCrashState()
     {
         vehicle.SetIsCrashed(true);
+        ShowRepairButton();
+
         if (vehicleRenderer != null)
         {
             vehicleRenderer.material = crashedMaterial;
             vehicleRenderer.material.color = crashedColor;
+        }
+    }
 
+    private void ShowRepairButton()
+    {
+        repairButtonInstance = Instantiate(repairButtonPrefab, trucksUICanvas.transform);
+
+        // Position the repair button at the truck's position + offset
+        Vector3 buttonPosition = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
+        repairButtonInstance.transform.position = buttonPosition;
+
+        // Add a listener to the button
+        Button button = repairButtonInstance.GetComponent<Button>();
+        button.onClick.AddListener(RepairTruck);
+    }
+
+    public void RepairTruck()
+    {
+        int repairCost = 50;
+        if (ScoreManager.Instance.GetSpendableScore() >= repairCost)
+        {
             StartCoroutine(RestoreMaterialAfterDelay());
+            ScoreManager.Instance.UpdateSpendableScore(-repairCost);
+            Destroy(repairButtonInstance);
         }
     }
 
     [Server]
     private IEnumerator RestoreMaterialAfterDelay()
     {
-        yield return new WaitForSeconds(restartDelay);
+        yield return new WaitForSeconds(globalRestartDelay);
 
         vehicleRenderer.material = originalMaterial;
         vehicle.SetIsCrashed(false);

@@ -2,20 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using Mirror;
-using static UnityEngine.PlayerLoop.EarlyUpdate;
-
-public class ScoreManager : NetworkBehaviour
+public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
-    [SyncVar(hook = nameof(OnScoreChanged))] private int score = 0;
+    private int totalScore = 0;
+    private int spendableScore = 0;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI popUpText;
-    public bool hasBonus = false;
+    public TextMeshProUGUI losePopUpText;
 
     private void Start()
     {
-        scoreText.text = "$ 0";
+        UpdateScoreEntry();
     }
 
     void Awake()
@@ -23,19 +21,16 @@ public class ScoreManager : NetworkBehaviour
         Instance = this;
     }
 
-
-    void OnScoreChanged(int oldVal, int newVal)
-    {
-        scoreText.text = "$ " + newVal;
-
-        StartCoroutine(ShowPopUp("+$ " + (newVal-oldVal), hasBonus));
-    }
-
     public void AddScore(int scoreUpdate, bool bonus)
     {
-        score += scoreUpdate;
-        hasBonus = bonus;
+        totalScore += scoreUpdate;
+        spendableScore += scoreUpdate;
+
+        UpdateScoreEntry();
+
+        StartCoroutine(ShowPopUp("+$ " + scoreUpdate, bonus));
     }
+
     private IEnumerator ShowPopUp(string text, bool bonus)
     {
         popUpText.text = text;
@@ -49,5 +44,32 @@ public class ScoreManager : NetworkBehaviour
         yield return new WaitForSeconds(1f); 
 
         popUpText.gameObject.SetActive(false);
+    }
+
+    public void ShowLosePopUp()
+    {
+        losePopUpText.text = "Great Work!\r\n" +
+                             "You safely delivered\r\n" +
+                             "$" + totalScore + "\r\n" +
+                             "worth of goods\r\n" +
+                             "this shift.";
+        losePopUpText.gameObject.SetActive(true);
+    }
+
+    public void UpdateSpendableScore(int scoreUpdate)
+    {
+        spendableScore += scoreUpdate;
+
+        UpdateScoreEntry();
+    }
+
+    public int GetSpendableScore()
+    {
+        return spendableScore;
+    }
+
+    private void UpdateScoreEntry()
+    {
+        scoreText.text = "$ " + spendableScore;
     }
 }

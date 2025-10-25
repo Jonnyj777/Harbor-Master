@@ -36,7 +36,9 @@ public class NoiseToTerrainGenerator : MonoBehaviour
     [SerializeField]
     private Gradient meshGradient;
 
-    
+    [SerializeField]
+    private List<Vector3> edgeVertices = new List<Vector3>();
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -61,13 +63,25 @@ public class NoiseToTerrainGenerator : MonoBehaviour
     private void CreateMeshStructure()
     {
         vertices = new Vector3[(xSize + 1) * (zSize + 1)];
+        edgeVertices.Clear();
+
         for (int i = 0, z = 0; z <= zSize; z++)
         {
             for(int x = 0; x <= xSize; x++)
             {
                 int xNormalized = Mathf.FloorToInt(x / ((float)xSize+1) * texture.width);
                 int yNormalized = Mathf.FloorToInt(z / ((float)zSize+1) * texture.height);
-                vertices[i] = new Vector3(x, texture.GetPixel(xNormalized, yNormalized).r * maxHeight, z);
+
+                float height = texture.GetPixel(xNormalized, yNormalized).r * maxHeight;
+                Vector3 vertex = new Vector3(x, height, z);
+                vertices[i] = vertex;
+
+                // Check if this vertex is on the edge
+                if ((x == 0 || z == 0 || x == xSize || z == zSize) && height <= waterLevel)
+                {
+                    edgeVertices.Add(transform.TransformPoint(vertex));
+                }
+
                 i++;
             }
         }
@@ -123,4 +137,8 @@ public class NoiseToTerrainGenerator : MonoBehaviour
         gameObject.transform.localScale = meshScale;
 
     }
+
+    public List<Vector3> GetOceanEdgeVertices() => edgeVertices;
+
+    public float GetWaterLevel() => waterLevel;
 }
