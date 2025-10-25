@@ -123,7 +123,7 @@ public class LineFollow : NetworkBehaviour
     {
         if (!NetworkClient.localPlayer) return;
 
-        NetworkAuthorizer playerAuthorizer = NetworkClient.localPlayer.GetComponent<NetworkAuthorizer>();
+        NetworkPlayer playerAuthorizer = NetworkClient.localPlayer.GetComponent<NetworkPlayer>();
         playerAuthorizer.CmdRequestAuthority(unitIdentity);
     }
 
@@ -151,8 +151,8 @@ public class LineFollow : NetworkBehaviour
 
         CmdReleaseSettings();
 
-        NetworkAuthorizer playerAuthorizer = NetworkClient.localPlayer.GetComponent<NetworkAuthorizer>();
-        playerAuthorizer.CmdRemoveAuthority(unitIdentity);
+        NetworkPlayer playerPlayer = NetworkClient.localPlayer.GetComponent<NetworkPlayer>();
+        playerPlayer.CmdRemoveAuthority(unitIdentity);
         
     }
 

@@ -2595,6 +2595,7 @@ MonoBehaviour:
   lobbyTemplate: {fileID: 126710076824631995, guid: 70f525232bba88048983cb1fcbea0787, type: 3}
   lobbyContent: {fileID: 1272379750}
   startButton: {fileID: 1437093642}
+  localNetworkPlayer: {fileID: 0}
 --- !u!1 &1129467815
 GameObject:
   m_ObjectHideFlags: 0

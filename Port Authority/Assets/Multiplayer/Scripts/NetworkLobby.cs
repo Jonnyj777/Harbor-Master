@@ -20,6 +20,7 @@ public class NetworkLobby : NetworkRoomManager
 
         if(!conn.isReady)
         {
+            print("client is readied now");
             NetworkServer.SetClientReady(conn);
         }
     

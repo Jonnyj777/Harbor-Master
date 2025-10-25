@@ -36,6 +36,8 @@ public class SteamLobbyManager : MonoBehaviour
 
     private bool isAllReady = false;
 
+    public NetworkPlayer localNetworkPlayer;
+
 
     private void Start()
     {
@@ -269,6 +271,11 @@ public class SteamLobbyManager : MonoBehaviour
         GameObject playerObj = Instantiate(playerTemplate, playerContent);
         playerObj.GetComponentInChildren<TextMeshProUGUI>().text = SteamClient.Name;
         playerObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(SteamClient.SteamId);
+        
+        Toggle toggle = playerObj.GetComponentInChildren<Toggle>(true);
+        toggle.gameObject.SetActive(true);
+        toggle.onValueChanged.AddListener(ReadyPlayer);
+
 
         inLobby.Add(SteamClient.SteamId, new PlayerInfo(playerObj));
 
@@ -299,6 +306,20 @@ public class SteamLobbyManager : MonoBehaviour
         {
             Debug.Log("We are the host; no need to connect as client.");
         }
+
+        print("Check IsAllReady status on joining: " + IsAllReady());
+    }
+    public void ReadyPlayer(bool status)
+    {
+        if(localNetworkPlayer == null)
+        {
+            localNetworkPlayer = NetworkClient.localPlayer.GetComponent<NetworkPlayer>();
+        }
+        //localNetworkPlayer.UpdateReady();
+
+        inLobby[SteamClient.SteamId].isReady = status;
+
+        print("check IsAllReady status on readying: " + IsAllReady());
     }
 
     public void LeaveLobby()
@@ -325,4 +346,5 @@ public class SteamLobbyManager : MonoBehaviour
     {
         Debug.Log($"{friend.Name} invited you to his/her game lobby");
     }
+
 }

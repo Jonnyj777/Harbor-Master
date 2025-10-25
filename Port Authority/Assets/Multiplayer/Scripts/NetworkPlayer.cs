@@ -1,8 +1,11 @@
 using UnityEngine;
 using Mirror;
+using System;
 
-public class NetworkAuthorizer : NetworkBehaviour
+public class NetworkPlayer : NetworkBehaviour
 {
+
+    [SyncVar(hook = nameof(Ready))] public bool isReady;
     private void Start()
     {
         print("Start function for authorizer called");
@@ -36,4 +39,32 @@ public class NetworkAuthorizer : NetworkBehaviour
         }
         Debug.Log($"Authority removed for {vehicle.name}");
     }
+
+    private void Ready(bool oldVal, bool newVal)
+    {
+        if(isServer)
+        {
+            this.isReady = newVal;
+        }
+
+        if (isClient)
+        {
+            //throw new NotImplementedException();
+        }
+    }
+
+    [Command]
+    private void CmdSetPlayerReady()
+    {
+        this.Ready(this.isReady, !this.isReady);
+    }
+
+    public void UpdateReady()
+    {
+        if (isOwned)
+        {
+            CmdSetPlayerReady();
+        }
+    }
+
 }
