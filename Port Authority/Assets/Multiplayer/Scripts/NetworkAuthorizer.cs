@@ -14,10 +14,12 @@ public class NetworkAuthorizer : NetworkBehaviour
         if (vehicle == null) return;
         if(vehicle.connectionToClient == connectionToClient) return;
 
-        if(vehicle.connectionToClient != null)
-        {
-            vehicle.RemoveClientAuthority();
-        }
+        if (vehicle.connectionToClient != null && vehicle.connectionToClient != connectionToClient) return;
+
+        //if(vehicle.connectionToClient != null)
+        //{
+        //    vehicle.RemoveClientAuthority();
+        //}
 
         vehicle.AssignClientAuthority(connectionToClient);
         Debug.Log($"Authority granted to {connectionToClient.identity} for {vehicle.name}");
