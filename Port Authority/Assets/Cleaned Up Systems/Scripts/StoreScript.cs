@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Mirror;
 
-public class StoreScript : MonoBehaviour
+public class StoreScript : NetworkBehaviour
 {
     [Header("UI")]
     public GameObject storePanel;
@@ -23,23 +24,23 @@ public class StoreScript : MonoBehaviour
     public float repairSpeedMult = 0.1f;  // Each upgrade reduces base repair speed by 10% of original
     public int maxRepairSpeedLevel = 4;
 
-    private int currentRepairSpeedLevel = 0;
-    private int currentRepairSpeedCost;
+    [SyncVar(hook = nameof(UpdateRepairSpeedEntry))] private int currentRepairSpeedLevel = 0;
+    [SyncVar(hook = nameof(UpdateRepairSpeedEntry))] private int currentRepairSpeedCost;
 
     [Header("Durability Upgrade Settings")]
     public int baseDurabilityCost = 15000;
     public int maxDurabilityLevel = 2;
 
-    private int currentDurabilityLevel = 0;
-    private int currentDurabilityCost;
+    [SyncVar(hook = nameof(UpdateDurabilityEntry))] private int currentDurabilityLevel = 0;
+    [SyncVar(hook = nameof(UpdateDurabilityEntry))] private int currentDurabilityCost;
 
     [Header("Boat Speed Upgrade Settings")]
     public int baseSpeedCost = 3000;
     public float speedMult = 0.1f;  // Each upgrade increases boat speed by 10% of original
     public int maxSpeedLevel = 4;
 
-    private int currentSpeedLevel = 0;
-    private int currentSpeedCost;
+    [SyncVar(hook = nameof(UpdateSpeedEntry))] private int currentSpeedLevel = 0;
+    [SyncVar(hook = nameof(UpdateSpeedEntry))] private int currentSpeedCost;
 
     [Header("New Ship Purchase Settings")]
     public VehicleSpawnScript vehicleSpawnScript;
@@ -50,8 +51,8 @@ public class StoreScript : MonoBehaviour
     public int biggerCargoShipCost = 30000;
     public GameObject biggerCargoShip;
 
-    private bool bigCargoShipPurchased = false;
-    private bool biggerCargoShipPurchased = false;
+    [SyncVar(hook = nameof(UpdateBigCargoShipEntry))] private bool bigCargoShipPurchased = false;
+    [SyncVar(hook = nameof(UpdateBiggerCargoShipEntry))] private bool biggerCargoShipPurchased = false;
 
     [Header("New Cargo Purchase Settings")]
     public int whiskeyCost = 1500;
@@ -63,9 +64,9 @@ public class StoreScript : MonoBehaviour
     public int industrialEquipmentCost = 10000;
     public CargoType industrialEquipment;
 
-    private bool whiskeyPurchased = false;
-    private bool furniturePurchased = false;
-    private bool industrialEquipmentPurchased = false;
+    [SyncVar(hook = nameof(UpdateWhiskeyEntry))] private bool whiskeyPurchased = false;
+    [SyncVar(hook = nameof(UpdateFurnitureEntry))] private bool furniturePurchased = false;
+    [SyncVar(hook = nameof(UpdateIndustrialEquipmentEntry))] private bool industrialEquipmentPurchased = false;
 
 
     private void Start()
