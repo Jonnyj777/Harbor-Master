@@ -14,6 +14,9 @@ GameObject:
   - component: {fileID: 7831684448136095357}
   - component: {fileID: 42639074413674844}
   - component: {fileID: 3431411028667430866}
+  - component: {fileID: 187457328356923016}
+  - component: {fileID: 2409304050537549700}
+  - component: {fileID: 369142842699578696}
   m_Layer: 0
   m_Name: Big Cargo Ship
   m_TagString: Boat
@@ -103,12 +106,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19a6dde95921c6b41ab625e4679cf986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 16
   timerDelayBetweenLinePoints: 0.01
   lineColor: {r: 1, g: 0, b: 0, a: 1}
   lineWidth: 1.5
+  truckSpeed: 20
 --- !u!120 &42639074413674844
 LineRenderer:
   serializedVersion: 2
@@ -228,7 +235,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f8525d1eac249f49bbbfcb80fd2ad02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cargo: []
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   cargoBoxes:
   - {fileID: 8537103523931033249}
   - {fileID: 4909156307934579845}
@@ -236,6 +245,91 @@ MonoBehaviour:
   - {fileID: 698397121116732186}
   - {fileID: 6626648013133955947}
   crashedColor: {r: 0, g: 1, b: 1, a: 1}
+--- !u!114 &187457328356923016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551903078520605625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 128176044
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &2409304050537549700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551903078520605625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 3838144727650569275}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  useFixedUpdate: 0
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
+--- !u!114 &369142842699578696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551903078520605625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b20dc110904e47f8a154cdcf6433eae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 3838144727650569275}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  useFixedUpdate: 0
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
 --- !u!1 &698397121116732186
 GameObject:
   m_ObjectHideFlags: 0
