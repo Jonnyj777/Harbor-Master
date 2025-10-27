@@ -75,6 +75,7 @@ public class StoreScript : NetworkBehaviour
         currentDurabilityCost = baseDurabilityCost;
         currentSpeedCost = baseSpeedCost;
 
+        /*
         UpdateRepairSpeedEntry();
         UpdateDurabilityEntry();
         UpdateSpeedEntry();
@@ -83,6 +84,7 @@ public class StoreScript : NetworkBehaviour
         UpdateWhiskeyEntry();
         UpdateFurnitureEntry();
         UpdateIndustrialEquipmentEntry();
+        */
     }
 
     public void OpenStore()
@@ -111,9 +113,10 @@ public class StoreScript : NetworkBehaviour
 
             Truck.globalRestartDelay = Truck.baseRestartDelay * reductionFactor;
 
+            int oldCost = currentRepairSpeedCost;
             currentRepairSpeedCost = Mathf.RoundToInt(baseRepairSpeedCost * Mathf.Pow(costMultiplier, currentRepairSpeedLevel));
 
-            UpdateRepairSpeedEntry();
+            UpdateRepairSpeedEntry(oldCost, currentRepairSpeedCost);
         }
     }
 
@@ -129,9 +132,10 @@ public class StoreScript : NetworkBehaviour
 
             LivesManager.Instance.AddLife();
 
+            int oldCost = currentDurabilityCost;
             currentDurabilityCost += baseDurabilityCost;
 
-            UpdateDurabilityEntry();
+            UpdateDurabilityEntry(oldCost, currentDurabilityCost);
         }
     }
 
@@ -150,9 +154,10 @@ public class StoreScript : NetworkBehaviour
             // Apply globally to all LineFollow boats
             LineFollow.globalBoatSpeed = LineFollow.baseBoatSpeed * increaseFactor;
 
+            int oldCost = currentSpeedCost;
             currentSpeedCost = Mathf.RoundToInt(baseSpeedCost * Mathf.Pow(costMultiplier, currentSpeedLevel));
 
-            UpdateSpeedEntry();
+            UpdateSpeedEntry(oldCost, currentSpeedCost);
         }
     }
 
@@ -166,8 +171,9 @@ public class StoreScript : NetworkBehaviour
 
             vehicleSpawnScript.UnlockShip(bigCargoShip);
 
+            bool oldStatus = bigCargoShipPurchased;
             bigCargoShipPurchased = true;
-            UpdateBigCargoShipEntry();
+            UpdateBigCargoShipEntry(oldStatus, bigCargoShipPurchased);
         }
     }
 
@@ -181,8 +187,9 @@ public class StoreScript : NetworkBehaviour
 
             vehicleSpawnScript.UnlockShip(biggerCargoShip);
 
+            bool oldStatus = biggerCargoShipPurchased;
             biggerCargoShipPurchased = true;
-            UpdateBiggerCargoShipEntry();
+            UpdateBiggerCargoShipEntry(oldStatus, biggerCargoShipPurchased);
         }
     }
 
@@ -196,8 +203,9 @@ public class StoreScript : NetworkBehaviour
 
             CargoManager.Instance.UnlockCargo(whiskey);
 
+            bool oldStatus = whiskeyPurchased;
             whiskeyPurchased = true;
-            UpdateWhiskeyEntry();
+            UpdateWhiskeyEntry(oldStatus, whiskeyPurchased);
         }
     }
 
@@ -211,8 +219,9 @@ public class StoreScript : NetworkBehaviour
 
             CargoManager.Instance.UnlockCargo(furniture);
 
+            bool oldStatus = furniturePurchased;
             furniturePurchased = true;
-            UpdateFurnitureEntry();
+            UpdateFurnitureEntry(oldStatus, furniturePurchased);
         }
     }
 
@@ -226,33 +235,34 @@ public class StoreScript : NetworkBehaviour
 
             CargoManager.Instance.UnlockCargo(industrialEquipment);
 
+            bool oldStatus = industrialEquipmentPurchased;
             industrialEquipmentPurchased = true;
-            UpdateIndustrialEquipmentEntry();
+            UpdateIndustrialEquipmentEntry(oldStatus, industrialEquipmentPurchased);
         }
     }
 
-    private void UpdateRepairSpeedEntry()
+    private void UpdateRepairSpeedEntry(int oldVal = 0, int newVal = 0)
     {
         repairSpeedText.text = "Truck Repair Speed (Current Bonus: -" + (100 * repairSpeedMult * currentRepairSpeedLevel) + "%)\r\n" +
                                "$" + currentRepairSpeedCost + "\r\n" +
                                "Bonus: -" + (100 * repairSpeedMult) + "% Repair Speed";
     }
 
-    private void UpdateDurabilityEntry()
+    private void UpdateDurabilityEntry(int oldVal = 0, int newVal = 0)
     {
         durabilityText.text = "Durability (Current Bonus: +" + currentDurabilityLevel + ")\r\n" +
                               "$" + currentDurabilityCost + "\r\n" +
                               "Bonus: +1 Health";
     }
 
-    private void UpdateSpeedEntry()
+    private void UpdateSpeedEntry(int oldVal = 0, int newVal = 0)
     {
         speedText.text = "Speed (Current Bonus: +" + (100 * speedMult * currentSpeedLevel) + "%)\r\n" +
                                "$" + currentSpeedCost + "\r\n" +
                                "Bonus: +" + (100 * speedMult) + "% Speed";
     }
 
-    private void UpdateBigCargoShipEntry()
+    private void UpdateBigCargoShipEntry(bool oldVal, bool newVal)
     {
         if (!bigCargoShipPurchased)
         {
@@ -268,7 +278,7 @@ public class StoreScript : NetworkBehaviour
         }
     }
 
-    private void UpdateBiggerCargoShipEntry()
+    private void UpdateBiggerCargoShipEntry(bool oldVal, bool newVal)
     {
         if (!biggerCargoShipPurchased)
         {
@@ -284,7 +294,7 @@ public class StoreScript : NetworkBehaviour
         }
     }
 
-    private void UpdateWhiskeyEntry()
+    private void UpdateWhiskeyEntry(bool oldVal, bool newVal)
     {
         if (!whiskeyPurchased)
         {
@@ -300,7 +310,7 @@ public class StoreScript : NetworkBehaviour
         }
     }
 
-    private void UpdateFurnitureEntry()
+    private void UpdateFurnitureEntry(bool oldVal, bool newVal)
     {
         if (!furniturePurchased)
         {
@@ -316,7 +326,7 @@ public class StoreScript : NetworkBehaviour
         }
     }
 
-    private void UpdateIndustrialEquipmentEntry()
+    private void UpdateIndustrialEquipmentEntry(bool oldVal, bool newVal)
     {
         if (!industrialEquipmentPurchased)
         {
