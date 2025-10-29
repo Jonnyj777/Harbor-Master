@@ -20,9 +20,17 @@ public class LineFollow : MonoBehaviour
     [Header("Line Following Settings")]
 
     //public float heightOffset;
-    public float truckSpeed = 20f;
-    public static float baseBoatSpeed = 20f;
-    public static float globalBoatSpeed; // The current effective value (changes when upgraded)
+    [SerializeField]
+    private float truckSpeed = 20f;
+
+    public static float globalBaseBoatSpeed = 20f;  // Modified by StoreScript.cs
+
+    [SerializeField]
+    // Determines how much each boat type's speed is scaled compared to the baseSpeed
+    protected float boatTypeSpeedMultiplier = 1f; // Set for each boat prefab
+
+    // The current effective value (changes per boat type; each type scales the same after speed upgrade)
+    protected float EffectiveBoatSpeed => globalBaseBoatSpeed * boatTypeSpeedMultiplier; 
 
     private Rigidbody rb;
     private bool lineFollowing = false;
@@ -32,15 +40,6 @@ public class LineFollow : MonoBehaviour
     private Vector3[] positions;
     private int moveIndex = 0;
     private float heightOffset = 0;
-
-
-    private void Awake()
-    {
-        if (globalBoatSpeed == 0)
-        {
-            globalBoatSpeed = baseBoatSpeed;
-        }
-    }
 
     private void Start()
     {
@@ -206,7 +205,7 @@ public class LineFollow : MonoBehaviour
     {
         // update position and direction of object
         Vector3 currentPos = positions[moveIndex];
-        transform.position = Vector3.MoveTowards(transform.position, currentPos, globalBoatSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, currentPos, EffectiveBoatSpeed * Time.deltaTime);
 
         Vector3 direction = (currentPos - transform.position).normalized;
 
@@ -288,7 +287,7 @@ public class LineFollow : MonoBehaviour
         }
         else if (!drawingLine && CompareTag("Boat") && !atPort)
         {
-            transform.position += transform.forward * globalBoatSpeed * Time.deltaTime;
+            transform.position += transform.forward * EffectiveBoatSpeed * Time.deltaTime;
         }
     }
 }
