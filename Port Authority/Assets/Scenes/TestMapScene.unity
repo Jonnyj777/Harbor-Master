@@ -470,6 +470,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   islandPrefabs:
   - {fileID: 3462743686429670340, guid: 9f6711aad291245089b9fe2fc15c924b, type: 3}
+  - {fileID: 7764644875279157028, guid: e7ce344e7f3d14a378b04252a113941c, type: 3}
+  - {fileID: 3462743686429670340, guid: 062281539779747c883a5656036a3253, type: 3}
+  - {fileID: 3462743686429670340, guid: 6a626ad574baa4cd1a78768e8704f65c, type: 3}
   gridSize: {x: 2, y: 2}
   tileSize: {x: 500, y: 500}
 --- !u!4 &1722117851

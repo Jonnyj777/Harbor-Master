@@ -3,38 +3,87 @@ using UnityEngine;
 
 public class IslandPlacer : MonoBehaviour
 {
-    [SerializeField] List<GameObject> islandPrefabs;
-    [SerializeField] Vector2 gridSize = new Vector2(2, 2);
-    [SerializeField] Vector2 tileSize = new Vector2(500, 500);
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private List<GameObject> islandPrefabs = new List<GameObject>();
+    [SerializeField] private Vector2 gridSize = new Vector2(2f, 2f);
+    [SerializeField] private Vector2 tileSize = new Vector2(500f, 500f);
+
+    private readonly HashSet<int> availableIslandIndices = new HashSet<int>();
+
+    private void Start()
     {
-        for (int x = 0; x < gridSize.x; x++)
+        if (islandPrefabs == null || islandPrefabs.Count == 0)
         {
-            for (int z = 0; z < gridSize.y; z++)
-            {
-                GameObject island = Instantiate(islandPrefabs[Random.Range(0, islandPrefabs.Count)]);
-                island.transform.position = new Vector3(x * tileSize.x, 0, z * tileSize.y);
-            }
+            Debug.LogWarning("IslandPlacer requires at least one island prefab assigned.", this);
+            return;
         }
-        /*
-        GameObject island = Instantiate(islandPrefabs[0]);
-        island.transform.position = new Vector3(0, 0, 0);
-        
-        GameObject island2 = Instantiate(islandPrefabs[0]);
-        island2.transform.position = new Vector3(500, 0, 0);
-        
-        GameObject island3 = Instantiate(islandPrefabs[0]);
-        island3.transform.position = new Vector3(0 ,0, 500);
-        
-        GameObject island4 = Instantiate(islandPrefabs[0]);
-        island4.transform.position = new Vector3(500, 0, 500);
-        */
+
+        InitializeIndices();
+        SpawnIslands();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void SpawnIslands()
     {
-        
+        int gridWidth = Mathf.Max(0, Mathf.RoundToInt(gridSize.x));
+        int gridHeight = Mathf.Max(0, Mathf.RoundToInt(gridSize.y));
+
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int z = 0; z < gridHeight; z++)
+            {
+                GameObject prefab = GetIslandPrefab();
+                if (prefab == null)
+                {
+                    Debug.LogWarning("IslandPlacer could not retrieve an island prefab.", this);
+                    return;
+                }
+
+                GameObject island = Instantiate(prefab);
+                island.transform.position = new Vector3(x * tileSize.x, 0f, z * tileSize.y);
+            }
+        }
+    }
+
+    private void InitializeIndices()
+    {
+        availableIslandIndices.Clear();
+
+        for (int i = 0; i < islandPrefabs.Count; i++)
+            availableIslandIndices.Add(i);
+    }
+
+    private GameObject GetIslandPrefab()
+    {
+        if (availableIslandIndices.Count == 0)
+        {
+            InitializeIndices();
+        }
+
+        if (availableIslandIndices.Count == 0)
+        {
+            return null;
+        }
+
+        int randomIndex = Random.Range(0, availableIslandIndices.Count);
+        int selectedIndex = -1;
+        int currentIndex = 0;
+
+        foreach (int index in availableIslandIndices)
+        {
+            if (currentIndex == randomIndex)
+            {
+                selectedIndex = index;
+                break;
+            }
+
+            currentIndex++;
+        }
+
+        if (selectedIndex == -1)
+        {
+            return null;
+        }
+
+        availableIslandIndices.Remove(selectedIndex);
+        return islandPrefabs[selectedIndex];
     }
 }
