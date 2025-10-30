@@ -50,7 +50,7 @@ public class NetworkLobby : NetworkRoomManager
             Debug.Log($"RoomSlot: conn={p.connectionToClient.connectionId} ready={p.readyToBegin}");
         }
 
-        if(NetworkServer.active && NetworkServer.connections.Count > 0)
+        if(NetworkServer.active && NetworkServer.connections.Count > 0 && SteamLobbyManager.instance.IsAllReady())
         {
             ServerChangeScene(GameplayScene);
         }

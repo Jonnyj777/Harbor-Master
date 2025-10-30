@@ -8,9 +8,11 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 using Steamworks.Data;
+using System;
 
 public class SteamLobbyManager : MonoBehaviour
 {
+    public static SteamLobbyManager instance;
     public static Steamworks.Data.Lobby Lobby { get; private set; }
 
     public static bool isLobbySet = false;
@@ -41,6 +43,15 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void Start()
     {
+        if(instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+
         DontDestroyOnLoad(this);
 
         Request = new Steamworks.ServerList.Internet();
@@ -61,12 +72,12 @@ public class SteamLobbyManager : MonoBehaviour
 
     }
 
-    private bool IsAllReady()
+    public bool IsAllReady()
     {
         foreach (PlayerInfo playerInfo in inLobby.Values)
         {
-            print(playerInfo.isReady);
-            if (!playerInfo.isReady)
+            print(playerInfo.IsReady);
+            if (!playerInfo.IsReady)
             {
                 return false;
             }
@@ -279,12 +290,35 @@ public class SteamLobbyManager : MonoBehaviour
 
         inLobby.Add(SteamClient.SteamId, new PlayerInfo(playerObj));
 
+        inLobby[SteamClient.SteamId].onValueChanged.AddListener((bool readyStatus) =>
+        {
+            if (readyStatus)
+            {
+                playerObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.green;
+            }
+            else
+            {
+                playerObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.grey;
+            }
+        });
+
         print("member Count: " + lobby.MemberCount);
         foreach (var friend in lobby.Members)
         {
             if (friend.Id != SteamClient.SteamId)
             {
                 GameObject friendObj = Instantiate(playerTemplate, playerContent);
+                inLobby[friend.Id].onValueChanged.AddListener((bool readyStatus) =>
+                {
+                    if(readyStatus)
+                    {
+                        friendObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.green;
+                    }
+                    else
+                    {
+                        friendObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.grey;
+                    }
+                });
                 friendObj.GetComponentInChildren<TextMeshProUGUI>().text = friend.Name;
                 friendObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
                 inLobby.Add(friend.Id, new PlayerInfo(friendObj));
@@ -316,8 +350,8 @@ public class SteamLobbyManager : MonoBehaviour
             localNetworkPlayer = NetworkClient.localPlayer.GetComponent<NetworkPlayer>();
         }
         //localNetworkPlayer.UpdateReady();
-
-        inLobby[SteamClient.SteamId].isReady = status;
+        print("status: " + status);
+        inLobby[SteamClient.SteamId].IsReady = status;
 
         print("check IsAllReady status on readying: " + IsAllReady());
     }
