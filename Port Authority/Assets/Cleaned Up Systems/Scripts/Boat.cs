@@ -141,7 +141,8 @@ public class Boat : MonoBehaviour
         }
         hasCrashed = true;
 
-        LivesManager.Instance.LoseLife();
+        if(LivesManager.Instance != null)   //Added for unit testing purposes.
+            LivesManager.Instance.LoseLife();
 
         vehicle.SetIsCrashed(true);
 
@@ -254,7 +255,7 @@ public class Boat : MonoBehaviour
     {
         Vector3 pos = transform.position;
 
-        // Small buffer to prevent boats from being deleted too early if their model origin isn’t centered
+        // Small buffer to prevent boats from being deleted too early if their model origin isnï¿½t centered
         float buffer = 5f;
 
         if (pos.x < minX - buffer || pos.x > maxX + buffer ||
