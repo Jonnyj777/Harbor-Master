@@ -11,6 +11,7 @@ TagManager:
   - Commercial
   - Factory
   - Dock
+  - TerrainTile
   layers:
   - Default
   - TransparentFX

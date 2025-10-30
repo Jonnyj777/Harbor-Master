@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-public class StructurePlacerPlayTests
+public class StructurePlacerRepeatLoadTest
 {
     private const string SceneName = "TestMapScene";
     private const string StructurePlacerTypeName = "StructurePlacer";
@@ -34,8 +34,6 @@ public class StructurePlacerPlayTests
         for (int i = 0; i < Iterations; i++)
         {
             yield return LoadScene(SceneName);
-
-            // Allow Start methods and physics-related callbacks to finish.
             yield return null;
             yield return new WaitForFixedUpdate();
 

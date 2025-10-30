@@ -11,6 +11,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestMapScene.unity
     guid: fb0f6f2c1e6b76e409dfac25a0fef332
+  - enabled: 1
+    path: Assets/Terrain Generation/Tests/Scenes/IslandPlacerTest.unity
+    guid: b2f838c066beb4cbcbe9735a83829a5c
+  - enabled: 1
+    path: Assets/Terrain Generation/Tests/Scenes/BuildingTypesTest.unity
+    guid: 5491479bc92ab4142b42eccc18a9e329
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

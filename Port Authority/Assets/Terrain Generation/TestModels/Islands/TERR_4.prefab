@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 1681427898111283358}
   m_Layer: 0
   m_Name: TERR_4
-  m_TagString: Terrain
+  m_TagString: TerrainTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
