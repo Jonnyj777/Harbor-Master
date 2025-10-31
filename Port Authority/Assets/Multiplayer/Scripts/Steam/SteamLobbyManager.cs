@@ -304,25 +304,10 @@ public class SteamLobbyManager : MonoBehaviour
         Toggle toggle = playerObj.GetComponentInChildren<Toggle>(true);
         toggle.gameObject.SetActive(true);
         toggle.onValueChanged.AddListener(ReadyPlayer);
-        Lobby.SetMemberData("isReady", "false");
 
 
         inLobby.Add(SteamClient.SteamId, new PlayerInfo(playerObj));
-
-        
-        inLobby[SteamClient.SteamId].onValueChanged.AddListener((bool readyStatus) =>
-        {
-            if (readyStatus)
-            {
-                playerObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.green;
-            }
-            else
-            {
-                playerObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.grey;
-            }
-        });
-        
-
+       
         print("member Count: " + lobby.MemberCount);
         foreach (var friend in lobby.Members)
         {
@@ -332,19 +317,6 @@ public class SteamLobbyManager : MonoBehaviour
                 friendObj.GetComponentInChildren<TextMeshProUGUI>().text = friend.Name;
                 friendObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
                 inLobby.Add(friend.Id, new PlayerInfo(friendObj));
-
-                inLobby[friend.Id].onValueChanged.AddListener((bool readyStatus) =>
-                {
-                    if (readyStatus)
-                    {
-                        friendObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.green;
-                    }
-                    else
-                    {
-                       friendObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.grey;
-                    }
-                });
-
             }
         }
 
