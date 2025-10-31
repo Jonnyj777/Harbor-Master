@@ -33,4 +33,10 @@ public class PlayerInfo
         //    isReady = !isReady;
         //});
     }
+
+    public PlayerInfo()
+    {
+        playerObj = null;
+        IsReady = false;
+    }
 }

@@ -10,7 +10,7 @@ using UnityEngine.UI;
 using Steamworks.Data;
 using System;
 
-public class SteamLobbyManager : MonoBehaviour
+public class SteamLobbyManager : NetworkBehaviour
 {
     public static SteamLobbyManager instance;
     public static Steamworks.Data.Lobby Lobby { get; private set; }
@@ -32,9 +32,9 @@ public class SteamLobbyManager : MonoBehaviour
 
     private readonly int lobbyListDelayDuration = 3000;
 
-    public Dictionary<SteamId, PlayerInfo> inLobby = new Dictionary<SteamId, PlayerInfo>();
+    public SyncDictionary<SteamId, PlayerInfo> inLobby = new SyncDictionary<SteamId, PlayerInfo>();
 
-    public Dictionary<SteamId, GameObject> lobbyList = new Dictionary<SteamId, GameObject>();
+    public SyncDictionary<SteamId, GameObject> lobbyList = new SyncDictionary<SteamId, GameObject>();
 
     private bool isAllReady = false;
 
