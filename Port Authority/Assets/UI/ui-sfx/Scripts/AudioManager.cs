@@ -78,6 +78,6 @@ public class AudioManager : MonoBehaviour
     public void ToggleSFX(bool enabled)
     {
         sfxEnabled = enabled;
-        Debug.Log("SFX Enabled: " + sfxEnabled);
+        //Debug.Log("SFX Enabled: " + sfxEnabled);
     }
 }
