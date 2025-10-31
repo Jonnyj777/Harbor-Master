@@ -18,9 +18,10 @@ public class PlayerCard : MonoBehaviour
     public TMP_Text readyButtonText;         
     public Image readyButtonBackground;
 
-    private bool isReady = false;
+    public bool isReady = false;
     private Color readyColor;
     private Color notReadyColor;
+    public string id;
 
     private void Start()
     {
@@ -28,13 +29,14 @@ public class PlayerCard : MonoBehaviour
         ColorUtility.TryParseHtmlString("#9D9D9D", out notReadyColor); // gray
     }
 
-    public void SetPlayerInfo(string name, string colorName, Color color, bool isHost = false, bool showReadyButton = false, Sprite steamProfilePicture = null)
+    public void SetPlayerInfo(string name, string colorName, Color color, string memberId, bool isHost = false, Sprite steamProfilePicture = null)
     {
         // set player text and color
         playerNameText.text = name;
         colorNameText.text = colorName;
         colorCircle.color = color;
         outline.color = color;
+        id = memberId;
 
 
         // set profile picture, or colored circle with initial if no picture
@@ -56,23 +58,18 @@ public class PlayerCard : MonoBehaviour
 
         // set host icon
         if (isHost)
-        { 
+        {
             hostIcon.SetActive(true);
+            if (readyButton != null)
+                readyButton.gameObject.SetActive(false);
         }
         else
         {
             hostIcon.SetActive(false);
+            if (readyButton != null)
+                readyButton.gameObject.SetActive(true);
         }
 
-        // toggle ready button
-        if (readyButton != null)
-        {
-            readyButton.gameObject.SetActive(showReadyButton);
-            if (showReadyButton)
-            {
-                UpdateReadyButton();
-            }
-        }
     }
 
     private void UpdateReadyButton()
@@ -94,13 +91,4 @@ public class PlayerCard : MonoBehaviour
         isReady = !isReady;
         UpdateReadyButton();
     }
-
-    public void SetReadyButtonVisible(bool visible)
-    {
-        if (readyButton != null)
-        {
-            readyButton.gameObject.SetActive(visible);
-        }
-    }
-
 }
