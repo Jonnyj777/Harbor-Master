@@ -10,7 +10,7 @@ using UnityEngine.UI;
 using Steamworks.Data;
 using System;
 
-public class SteamLobbyManager : NetworkBehaviour
+public class SteamLobbyManager : MonoBehaviour
 {
     public static SteamLobbyManager instance;
     public static Steamworks.Data.Lobby Lobby { get; private set; }
@@ -32,13 +32,14 @@ public class SteamLobbyManager : NetworkBehaviour
 
     private readonly int lobbyListDelayDuration = 3000;
 
-    public SyncDictionary<SteamId, PlayerInfo> inLobby = new SyncDictionary<SteamId, PlayerInfo>();
+    public Dictionary<SteamId, PlayerInfo> inLobby = new Dictionary<SteamId, PlayerInfo>();
 
-    public SyncDictionary<SteamId, GameObject> lobbyList = new SyncDictionary<SteamId, GameObject>();
+    public Dictionary<SteamId, GameObject> lobbyList = new Dictionary<SteamId, GameObject>();
 
     private bool isAllReady = false;
 
     public NetworkPlayer localNetworkPlayer;
+
 
 
     private void Start()
@@ -67,9 +68,15 @@ public class SteamLobbyManager : NetworkBehaviour
         SteamMatchmaking.OnLobbyGameCreated += OnLobbyGameCreated;
         SteamFriends.OnGameLobbyJoinRequested += OnGameLobbyJoinRequest;
         SteamMatchmaking.OnLobbyInvite += OnLobbyInvite;
+        SteamMatchmaking.OnLobbyMemberDataChanged += SetReadyStatus;
 
         GetLobbyInfo();
 
+    }
+
+    private void SetReadyStatus(Steamworks.Data.Lobby lobby, Friend friend)
+    {
+        inLobby[friend.Id].IsReady = bool.Parse(Lobby.GetMemberData(friend, "isReady"));
     }
 
     public bool IsAllReady()
@@ -286,10 +293,12 @@ public class SteamLobbyManager : NetworkBehaviour
         Toggle toggle = playerObj.GetComponentInChildren<Toggle>(true);
         toggle.gameObject.SetActive(true);
         toggle.onValueChanged.AddListener(ReadyPlayer);
+        Lobby.SetMemberData("isReady", "false");
 
 
         inLobby.Add(SteamClient.SteamId, new PlayerInfo(playerObj));
 
+        
         inLobby[SteamClient.SteamId].onValueChanged.AddListener((bool readyStatus) =>
         {
             if (readyStatus)
@@ -301,6 +310,7 @@ public class SteamLobbyManager : NetworkBehaviour
                 playerObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.grey;
             }
         });
+        
 
         print("member Count: " + lobby.MemberCount);
         foreach (var friend in lobby.Members)
@@ -311,17 +321,19 @@ public class SteamLobbyManager : NetworkBehaviour
                 friendObj.GetComponentInChildren<TextMeshProUGUI>().text = friend.Name;
                 friendObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
                 inLobby.Add(friend.Id, new PlayerInfo(friendObj));
-                inLobby[friend.Id].onValueChanged.AddListener((bool readyStatus) =>
+
+                inLobby[SteamClient.SteamId].onValueChanged.AddListener((bool readyStatus) =>
                 {
-                    if(readyStatus)
+                    if (readyStatus)
                     {
                         friendObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.green;
                     }
                     else
                     {
-                        friendObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.grey;
+                       friendObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.grey;
                     }
                 });
+
             }
         }
 
@@ -351,7 +363,8 @@ public class SteamLobbyManager : NetworkBehaviour
         }
         //localNetworkPlayer.UpdateReady();
         print("status: " + status);
-        inLobby[SteamClient.SteamId].IsReady = status;
+        //inLobby[SteamClient.SteamId].IsReady = status;
+        Lobby.SetMemberData("isReady", status.ToString());
 
         print("check IsAllReady status on readying: " + IsAllReady());
     }
