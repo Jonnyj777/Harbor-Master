@@ -15,11 +15,11 @@ public class Boat : MonoBehaviour
     public Color crashedColor = Color.cyan;  // Color to when boat vehicles crash
 
     private bool hasCrashed = false;
-    private float sinkDelay = 2f;
-    private float sinkLength = 10f;  // distance the boat sinks down
+    private float sinkDelay = 1f;
+    private float sinkLength = 5f;  // distance the boat sinks down
     private float sinkDuration = 2f;  // time it takes to sink down to the desired length
-    //private float fadeDelay = 1f;  // time to wait before fading starts
-    //private float fadeDuration = 5f;  // how long to fully fade out
+    private float fadeDelay = 1f;  // time to wait before fading starts
+    private float fadeDuration = 5f;  // how long to fully fade out
 
     [Header("Instance Settings")]
     private LineFollow vehicle;
@@ -38,6 +38,19 @@ public class Boat : MonoBehaviour
             if (vehiclePartRenderer.CompareTag("Boat"))
             {
                 vehiclePartRenderers.Add(vehiclePartRenderer);
+            }
+        }
+
+        // cargo renderers
+        foreach (GameObject box in cargoBoxes)
+        {
+            if (box.activeSelf)
+            {
+                Renderer rend = box.GetComponent<Renderer>();
+                if (rend != null)
+                {
+                    vehiclePartRenderers.Add(rend);
+                }
             }
         }
 
@@ -179,76 +192,115 @@ public class Boat : MonoBehaviour
 
         //TODO: Review Fadeout logic.
         //// Wait before fade
-        //yield return new WaitForSeconds(fadeDelay);
+        yield return new WaitForSeconds(fadeDelay);
 
         //// Fade out logic
-        //if (vehiclePartRenderers.Count == 0)
-        //{
-        //    yield break;
-        //}
+        if (vehiclePartRenderers.Count == 0)
+        {
+            yield break;
+        }
 
         //// Cache original material colors for all parts of a ship
-        //List<Color[]> originalMatColors = new List<Color[]>();
-        //foreach (Renderer vehiclePartRenderer in vehiclePartRenderers)
-        //{
-        //    Color[] colors = new Color[vehiclePartRenderer.materials.Length];
-        //    for (int i = 0; i < vehiclePartRenderer.materials.Length; i++)
-        //    {
-        //        colors[i] = vehiclePartRenderer.materials[i].color;
-        //    }
-        //    originalMatColors.Add(colors);
-        //}
+        List<Color[]> originalMatColors = new List<Color[]>();
+        foreach (Renderer vehiclePartRenderer in vehiclePartRenderers)
+        {
+            Color[] colors = new Color[vehiclePartRenderer.materials.Length];
+            for (int i = 0; i < vehiclePartRenderer.materials.Length; i++)
+            {
+                colors[i] = vehiclePartRenderer.materials[i].color;
+                MakeMaterialTransparent(vehiclePartRenderer.materials[i]);
+            }
+            originalMatColors.Add(colors);
+        }
 
-        //float fadeElapsed = 0f;
+        float fadeElapsed = 0f;
 
         //// Fade all materials over time
-        //while (fadeElapsed < fadeDuration)
-        //{
-        //    float ratioFaded = fadeElapsed / fadeDuration;
+        while (fadeElapsed < fadeDuration)
+        {
+            float ratioFaded = fadeElapsed / fadeDuration;
 
-        //    for (int r = 0; r < vehiclePartRenderers.Count; r++)
-        //    {
-        //        Renderer vehiclePartRenderer = vehiclePartRenderers[r];
-        //        for (int i = 0; i < vehiclePartRenderer.materials.Length; ++i)
-        //        {
-        //            // Ensure material supports transparency
-        //            MakeMaterialTransparent(vehiclePartRenderer.materials[i]);
+            for (int r = 0; r < vehiclePartRenderers.Count; r++)
+            {
+                Renderer vehiclePartRenderer = vehiclePartRenderers[r];
+                for (int i = 0; i < vehiclePartRenderer.materials.Length; ++i)
+                {
+                    // Ensure material supports transparency
+                    //MakeMaterialTransparent(vehiclePartRenderer.materials[i]);
 
-        //            Color startColor = originalMatColors[r][i];
-        //            Color targetColor = new Color(startColor.r, startColor.g, startColor.b, 0f);
-        //            vehiclePartRenderer.materials[i].color = Color.Lerp(startColor, targetColor, ratioFaded);
-        //        }
-        //    }
+                    Color startColor = originalMatColors[r][i];
+                    Color targetColor = new Color(startColor.r, startColor.g, startColor.b, 0f);
+                    
+                    // Lerp using _BaseColor for URP Lit Mats
+                    if (vehiclePartRenderer.materials[i].shader.name.Contains("Universal Render Pipeline/Lit"))
+                    {
+                        vehiclePartRenderer.materials[i].SetColor("_BaseColor", Color.Lerp(startColor, targetColor, ratioFaded));
+                    }
+                    else
+                    {
+                        vehiclePartRenderer.materials[i].color = Color.Lerp(startColor, targetColor, ratioFaded);
+                    }
+                }
+            }
 
-        //    fadeElapsed += Time.deltaTime;
-        //    yield return null;
-        //}
+            fadeElapsed += Time.deltaTime;
+            yield return null;
+        }
 
         //// Ensure that each material is fully transparent at the end
-        //foreach (Renderer vehiclePartRenderer in vehiclePartRenderers)
-        //{
-        //    foreach (Material mat in vehiclePartRenderer.materials)
-        //    {
-        //        Color c = mat.color;
-        //        c.a = 0f;
-        //        mat.color = c;
-        //    }
-        //}
+        foreach (Renderer vehiclePartRenderer in vehiclePartRenderers)
+        {
+            foreach (Material mat in vehiclePartRenderer.materials)
+            {
+                if (mat.shader.name.Contains("Universal Render Pipeline/Lit"))
+                {
+                    Color c = mat.GetColor("_BaseColor");
+                    c.a = 0f;
+                    mat.SetColor("_BaseColor", c);
+                }
+                else
+                {
+                    Color c = mat.color;
+                    c.a = 0f;
+                    mat.color = c;
+                }
+            }
+        }
 
         Destroy(gameObject);
     }
 
-    //private void MakeMaterialTransparent(Material mat)
-    //{
-    //    mat.SetFloat("_Mode", 3); // 3 = Transparent in Standard Shader
-    //    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-    //    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-    //    mat.SetInt("_ZWrite", 0);
-    //    mat.DisableKeyword("_ALPHATEST_ON");
-    //    mat.EnableKeyword("_ALPHABLEND_ON");
-    //    mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-    //    mat.renderQueue = 3000;
-    //}
+    private void MakeMaterialTransparent(Material mat)
+    {
+        if (mat == null)
+        {
+            return;
+        }
+
+        // URP Lit Shader support
+        if (mat.shader.name.Contains("Universal Render Pipeline/Lit"))
+        {
+            mat.SetFloat("_Surface", 1f);  // 1 = Transparent
+            mat.SetFloat("_Blend", 0f);  // 0 = Alpha Blend
+            mat.SetOverrideTag("RenderType", "Transparent");
+            mat.SetInt("SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetInt("_ZWrite", 0);
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+        }
+        else  // fallback statement for non-URP materials
+        {
+            mat.SetFloat("_Mode", 3); // 3 = Transparent in Standard Shader
+            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetInt("_ZWrite", 0);
+            mat.DisableKeyword("_ALPHATEST_ON");
+            mat.EnableKeyword("_ALPHABLEND_ON");
+            mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            mat.renderQueue = 3000;
+        }
+    }
 
     private void CheckBounds()
     {
