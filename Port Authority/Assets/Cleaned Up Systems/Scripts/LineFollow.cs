@@ -20,7 +20,10 @@ public class LineFollow : MonoBehaviour
     [Header("Line Following Settings")]
 
     //public float heightOffset;
-    public float speed = 5f;
+    public float truckSpeed = 20f;
+    public static float baseBoatSpeed = 20f;
+    public static float globalBoatSpeed; // The current effective value (changes when upgraded)
+
     private Rigidbody rb;
     private bool lineFollowing = false;
     private bool drawingLine = false;
@@ -29,6 +32,15 @@ public class LineFollow : MonoBehaviour
     private Vector3[] positions;
     private int moveIndex = 0;
     private float heightOffset = 0;
+
+
+    private void Awake()
+    {
+        if (globalBoatSpeed == 0)
+        {
+            globalBoatSpeed = baseBoatSpeed;
+        }
+    }
 
     private void Start()
     {
@@ -111,7 +123,10 @@ public class LineFollow : MonoBehaviour
 
     private void OnMouseDrag()
     {
-        UpdateLine();
+        if (!isCrashed)
+        {
+            UpdateLine();
+        }
     }
 
     private void OnMouseUp()
@@ -143,7 +158,7 @@ public class LineFollow : MonoBehaviour
         Vector3 currentPos = positions[moveIndex];
 
         Vector3 targetPos = new Vector3(currentPos.x, transform.position.y, currentPos.z);
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, truckSpeed * Time.deltaTime);
 
         Vector3 direction = (targetPos - transform.position);
         direction.y = 0f;
@@ -191,7 +206,7 @@ public class LineFollow : MonoBehaviour
     {
         // update position and direction of object
         Vector3 currentPos = positions[moveIndex];
-        transform.position = Vector3.MoveTowards(transform.position, currentPos, speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, currentPos, globalBoatSpeed * Time.deltaTime);
 
         Vector3 direction = (currentPos - transform.position).normalized;
 
@@ -273,7 +288,7 @@ public class LineFollow : MonoBehaviour
         }
         else if (!drawingLine && CompareTag("Boat") && !atPort)
         {
-            transform.position += transform.forward * speed * Time.deltaTime;
+            transform.position += transform.forward * globalBoatSpeed * Time.deltaTime;
         }
     }
 }
