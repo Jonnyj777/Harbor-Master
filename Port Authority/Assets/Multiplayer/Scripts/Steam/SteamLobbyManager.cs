@@ -308,6 +308,9 @@ public class SteamLobbyManager : MonoBehaviour
             if (friend.Id != SteamClient.SteamId)
             {
                 GameObject friendObj = Instantiate(playerTemplate, playerContent);
+                friendObj.GetComponentInChildren<TextMeshProUGUI>().text = friend.Name;
+                friendObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
+                inLobby.Add(friend.Id, new PlayerInfo(friendObj));
                 inLobby[friend.Id].onValueChanged.AddListener((bool readyStatus) =>
                 {
                     if(readyStatus)
@@ -319,9 +322,6 @@ public class SteamLobbyManager : MonoBehaviour
                         friendObj.GetComponent<UnityEngine.UI.Image>().color = UnityEngine.Color.grey;
                     }
                 });
-                friendObj.GetComponentInChildren<TextMeshProUGUI>().text = friend.Name;
-                friendObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
-                inLobby.Add(friend.Id, new PlayerInfo(friendObj));
             }
         }
 
