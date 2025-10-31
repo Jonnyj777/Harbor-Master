@@ -8,6 +8,7 @@ public class Boat : MonoBehaviour
     public List<GameObject> cargoBoxes;
     public List<Cargo> cargo = new List<Cargo>();
 
+    [SerializeField]
     private List<Cargo> unlockedCargo = new List<Cargo>();
     private Port port;
 
@@ -122,14 +123,23 @@ public class Boat : MonoBehaviour
     {
         if (cargo.Count > 0)
         {
-            port.ReceiveCargo(cargo);
-            cargo.Clear();
-
-            foreach (var box in cargoBoxes)
-            {
-                box.SetActive(false);
-            }
+            StartCoroutine(DeliverCargoRoutine());
         }
+    }
+
+    private IEnumerator DeliverCargoRoutine()
+    {
+        vehicle.SetIsMovingCargo(true);
+        for (int i = 0; i < cargo.Count; i++)
+        {
+            yield return new WaitForSeconds(vehicle.delayPerCargo);
+            
+            port.ReceiveCargoBox(cargo[i]);
+            cargoBoxes[i].SetActive(false);
+        }
+
+        cargo.Clear();
+        vehicle.SetIsMovingCargo(false);
     }
 
     public void EnterCrashState()

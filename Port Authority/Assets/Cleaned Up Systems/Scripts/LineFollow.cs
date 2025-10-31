@@ -35,11 +35,17 @@ public class LineFollow : MonoBehaviour
     private Rigidbody rb;
     private bool lineFollowing = false;
     private bool drawingLine = false;
-    private bool atPort = false;
     private bool isCrashed = false;
     private Vector3[] positions;
     private int moveIndex = 0;
     private float heightOffset = 0;
+
+    [Header("Delivery Settings")]
+    // To be shared across child classes
+    public float delayPerCargo = 2.0f;
+
+    private bool atPort = false;
+    private bool isMovingCargo = false;
 
     private void Start()
     {
@@ -122,7 +128,7 @@ public class LineFollow : MonoBehaviour
 
     private void OnMouseDrag()
     {
-        if (!isCrashed)
+        if (!isCrashed && !isMovingCargo)
         {
             UpdateLine();
         }
@@ -258,12 +264,20 @@ public class LineFollow : MonoBehaviour
             DeleteLine();
         }
         isCrashed = value;
-        
+    }
+
+    public void SetIsMovingCargo(bool value)
+    {
+        if (value)
+        {
+            DeleteLine();
+        }
+        isMovingCargo = value;
     }
 
     private void Update()
     {
-        if (isCrashed)
+        if (isCrashed || isMovingCargo)
         {
             return;
         }

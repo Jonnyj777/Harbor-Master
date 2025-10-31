@@ -24,13 +24,10 @@ public class Port : MonoBehaviour
         spawnOffset = cargoRend.bounds.size.y;
     }
 
-    public void ReceiveCargo(List<Cargo> cargo)
+    public void ReceiveCargoBox(Cargo cargo)
     {
-        foreach(var c in cargo)
-        {
-            portCargo.Add(c);
-            SpawnCargoBox(c);
-        }
+        portCargo.Add(cargo);
+        SpawnCargoBox(cargo);
     }
 
     private void SpawnCargoBox(Cargo cargo)
