@@ -14,7 +14,7 @@ public class Boat : MonoBehaviour
     [Header("Boat Collisions Settings")]
     public Color crashedColor = Color.cyan;  // Color to when boat vehicles crash
 
-    private bool hasCrashed = false;
+    public bool hasCrashed = false;
     private float sinkDelay = 2f;
     private float sinkLength = 10f;  // distance the boat sinks down
     private float sinkDuration = 2f;  // time it takes to sink down to the desired length
@@ -132,8 +132,11 @@ public class Boat : MonoBehaviour
         }
     }
 
+    // EDIT: REGISTERED LAST LIFE/GAME END AFTER BOAT EFFECTS TRIGGERED
     public void EnterCrashState()
     {
+
+        Debug.Log("Boat has crashed");
         // Prevent multiple triggers
         if (hasCrashed)
         {
@@ -141,8 +144,6 @@ public class Boat : MonoBehaviour
         }
         hasCrashed = true;
         
-        LivesManager.Instance.LoseLife();
-
         vehicle.SetIsCrashed(true);
 
         if (vehiclePartRenderers.Count != 0)
@@ -155,8 +156,9 @@ public class Boat : MonoBehaviour
                 }
             }
         }
-
+        
         StartCoroutine(SinkFadeOut());
+        LivesManager.Instance.LoseLife();
     }
 
     // function to make boats sink, fade, then destroyed after crashing into another boat vehicle
@@ -275,5 +277,4 @@ public class Boat : MonoBehaviour
         //Debug.Log($"Boat {name} went out of bounds and was destroyed.");
         Destroy(gameObject);
     }
-    
 }
