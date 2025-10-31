@@ -57,6 +57,7 @@ public class SteamLobbyManager : MonoBehaviour
 
         Request = new Steamworks.ServerList.Internet();
         Request.RunQueryAsync(30);
+        startButton.interactable = false;
 
         //attach functions to event listeners
 
@@ -76,7 +77,16 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void SetReadyStatus(Steamworks.Data.Lobby lobby, Friend friend)
     {
-        print("member data changed: " + bool.Parse(Lobby.GetMemberData(friend, "isReady")));
+        if (!inLobby.ContainsKey(friend.Id)) return;
+
+        bool readyStatus = bool.Parse(Lobby.GetMemberData(friend, "isReady"));
+        inLobby[friend.Id].IsReady = readyStatus;
+        inLobby[friend.Id].playerObj.GetComponent<UnityEngine.UI.Image>().color = readyStatus ? UnityEngine.Color.green : UnityEngine.Color.gray;
+        isAllReady = IsAllReady();
+        startButton.interactable = isAllReady;
+
+
+        print("member data changed: " + readyStatus);
         inLobby[friend.Id].IsReady = bool.Parse(Lobby.GetMemberData(friend, "isReady"));
     }
 
@@ -358,14 +368,9 @@ public class SteamLobbyManager : MonoBehaviour
     }
     public void ReadyPlayer(bool status)
     {
-        if(localNetworkPlayer == null)
-        {
-            localNetworkPlayer = NetworkClient.localPlayer.GetComponent<NetworkPlayer>();
-        }
-        //localNetworkPlayer.UpdateReady();
-        print("status: " + status);
-        //inLobby[SteamClient.SteamId].IsReady = status;
+
         Lobby.SetMemberData("isReady", status.ToString());
+        inLobby[SteamClient.SteamId].IsReady = status;
 
         print("check IsAllReady status on readying: " + IsAllReady());
     }
