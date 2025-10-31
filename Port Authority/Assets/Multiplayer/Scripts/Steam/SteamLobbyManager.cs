@@ -76,6 +76,7 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void SetReadyStatus(Steamworks.Data.Lobby lobby, Friend friend)
     {
+        print("member data changed: " + bool.Parse(Lobby.GetMemberData(friend, "isReady")));
         inLobby[friend.Id].IsReady = bool.Parse(Lobby.GetMemberData(friend, "isReady"));
     }
 
@@ -322,7 +323,7 @@ public class SteamLobbyManager : MonoBehaviour
                 friendObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
                 inLobby.Add(friend.Id, new PlayerInfo(friendObj));
 
-                inLobby[SteamClient.SteamId].onValueChanged.AddListener((bool readyStatus) =>
+                inLobby[friend.Id].onValueChanged.AddListener((bool readyStatus) =>
                 {
                     if (readyStatus)
                     {
