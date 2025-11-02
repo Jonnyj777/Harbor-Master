@@ -79,15 +79,20 @@ public class SteamLobbyManager : MonoBehaviour
     {
         if (!inLobby.ContainsKey(friend.Id)) return;
 
-        bool readyStatus = bool.Parse(Lobby.GetMemberData(friend, "isReady"));
-        inLobby[friend.Id].IsReady = readyStatus;
-        inLobby[friend.Id].playerObj.GetComponent<UnityEngine.UI.Image>().color = readyStatus ? UnityEngine.Color.green : UnityEngine.Color.gray;
-        isAllReady = IsAllReady();
-        startButton.interactable = isAllReady;
+        string readyString = Lobby.GetMemberData(friend, "isReady");
+        if (!string.IsNullOrEmpty(readyString))
+        {
+            bool readyStatus = bool.Parse(readyString);
+            inLobby[friend.Id].IsReady = readyStatus;
+            inLobby[friend.Id].playerObj.GetComponent<UnityEngine.UI.Image>().color = readyStatus ? UnityEngine.Color.green : UnityEngine.Color.gray;
+            isAllReady = IsAllReady();
+            startButton.interactable = isAllReady;
 
 
-        print("member data changed: " + readyStatus);
-        inLobby[friend.Id].IsReady = bool.Parse(Lobby.GetMemberData(friend, "isReady"));
+            print("member data changed: " + readyStatus);
+            inLobby[friend.Id].IsReady = bool.Parse(Lobby.GetMemberData(friend, "isReady"));
+        }
+
     }
 
     public bool IsAllReady()
@@ -238,6 +243,20 @@ public class SteamLobbyManager : MonoBehaviour
         playerObj.GetComponentInChildren<TextMeshProUGUI>().text = friend.Name;
         playerObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
         inLobby.Add(friend.Id, new PlayerInfo(playerObj));
+
+        string readyString = Lobby.GetMemberData(friend, "isReady");
+        if (!string.IsNullOrEmpty(readyString))
+        {
+            bool readyStatus = bool.Parse(readyString);
+
+
+            inLobby[friend.Id].IsReady = readyStatus;
+
+            inLobby[friend.Id].playerObj.GetComponent<UnityEngine.UI.Image>().color = readyStatus ? UnityEngine.Color.green : UnityEngine.Color.gray;
+        }
+
+        isAllReady = IsAllReady();
+        startButton.interactable = isAllReady;
     }
 
     void OnLobbyMemberDisconnected(Steamworks.Data.Lobby lobby, Friend friend)
@@ -288,6 +307,7 @@ public class SteamLobbyManager : MonoBehaviour
 
     async void OnLobbyEntered(Steamworks.Data.Lobby lobby)
     {
+        SetLobby(lobby);
         Debug.Log("Client joined the lobby");
 
         foreach (var friend in inLobby.Values)
@@ -340,7 +360,7 @@ public class SteamLobbyManager : MonoBehaviour
     }
     public void ReadyPlayer(bool status)
     {
-
+        if (!isLobbySet) return;
         Lobby.SetMemberData("isReady", status.ToString());
         inLobby[SteamClient.SteamId].IsReady = status;
 
