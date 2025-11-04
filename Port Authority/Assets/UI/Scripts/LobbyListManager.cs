@@ -58,6 +58,8 @@ public class LobbyListManager : MonoBehaviour
     [Header("Color Choice UI")]
     public Transform colorChoicesContainer;
     public List<ColorChoice> colorChoices;
+    public Transform newLobbyColorChoicesContainer;
+    public List<ColorChoice> newLobbyColorChoices;
 
     [Header("Joined Lobby UI")]
     public Button joinedLobbyReadyButton;
@@ -72,12 +74,13 @@ public class LobbyListManager : MonoBehaviour
     private LobbyEntry selectedLobbyEntry = null;
     private LobbyData selectedLobbyData = null;
     private ColorChoice selectedColorChoice = null;
+    private ColorChoice newLobbyColorChoice = null;
     private float fadeDuration = 0.2f;
     private float popInDuration = 0.2f;
     private Color readyColor;
     private Color notReadyColor;
     private int currentIndex = 11;
-    
+    private bool joiningCreatedLobby = false;
 
     void Awake()
     {
@@ -87,11 +90,20 @@ public class LobbyListManager : MonoBehaviour
         foreach (var colorChoice in colorChoices)
         {
             Button btn = colorChoice.GetComponent<Button>();
-            btn.onClick.AddListener(() => OnColorClicked(colorChoice));
+            btn.onClick.AddListener(() => OnColorClicked(colorChoice, false));
         }
 
         selectedColorChoice = colorChoices[0];
-        OnColorClicked(colorChoices[0]);
+
+        newLobbyColorChoices = new List<ColorChoice>(newLobbyColorChoicesContainer.GetComponentsInChildren<ColorChoice>());
+
+        foreach (var colorChoice in newLobbyColorChoices)
+        {
+            Button btn = colorChoice.GetComponent<Button>();
+            btn.onClick.AddListener(() => OnColorClicked(colorChoice, true));
+        }
+
+        newLobbyColorChoice = newLobbyColorChoices[0];
 
         // ui colors
         UnityEngine.ColorUtility.TryParseHtmlString("#16DA23", out readyColor); // green
@@ -229,13 +241,19 @@ public class LobbyListManager : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(SetDefaultColors());
         MenuOpened();
+    }
+
+    private IEnumerator SetDefaultColors()
+    {
+        yield return null;
+        OnColorClicked(newLobbyColorChoices[0], true);
+        OnColorClicked(colorChoices[0], false);
     }
 
     public void MenuOpened()
     {
-        StartCoroutine(WaitForFrame());
-
         CanvasGroup listCg = lobbyListContainer.GetComponent<CanvasGroup>();
         CanvasGroup selectedCg = selectedLobbyContainer.GetComponent<CanvasGroup>();
 
@@ -251,17 +269,10 @@ public class LobbyListManager : MonoBehaviour
         yield return StartCoroutine(FadeIn(listCg, selectedCg));
     }
 
-
-    private IEnumerator WaitForFrame()
-    {
-        yield return null;
-    }
-
     private string GenerateId()
     {
         return System.Guid.NewGuid().ToString("N").Substring(0, 8);
     }
-
 
     public void RefreshList()
     {
@@ -532,7 +543,15 @@ public class LobbyListManager : MonoBehaviour
 
     public void JoinLobby()
     {
-        player.colorChoice = selectedColorChoice;
+        if (joiningCreatedLobby)
+        {
+            player.colorChoice = newLobbyColorChoice;
+            joiningCreatedLobby = false;
+        }
+        else
+        {
+            player.colorChoice = selectedColorChoice;
+        }
         selectedLobbyData.members.Add(player);
     }
 
@@ -595,21 +614,38 @@ public class LobbyListManager : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(card.GetComponent<RectTransform>());
     }
 
-    private void OnColorClicked(ColorChoice color)
+    private void OnColorClicked(ColorChoice color, bool inCreateLobby)
     {
-        // unselect previous entry
-        if (selectedColorChoice != null)
+        if (inCreateLobby)
         {
-            selectedColorChoice.Unselect();
-        }
+            // unselect previous entry
+            if (newLobbyColorChoice != null)
+            {
+                newLobbyColorChoice.Unselect();
+            }
 
-        // select new entry and display lobby
-        selectedColorChoice = color;
-        selectedColorChoice.Select();
+            // select new entry and display lobby
+            newLobbyColorChoice = color;
+            newLobbyColorChoice.Select();
+        }
+        else
+        {
+            // unselect previous entry
+            if (selectedColorChoice != null)
+            {
+                selectedColorChoice.Unselect();
+            }
+
+            // select new entry and display lobby
+            selectedColorChoice = color;
+            selectedColorChoice.Select();
+        }
     }
 
     public void CreateAndJoinLobby()
     {
+        joiningCreatedLobby = true; 
+
         // validate lobby name
         string lobbyName = lobbyNameInput.text.Trim();
         if (string.IsNullOrEmpty(lobbyName))
@@ -623,11 +659,6 @@ public class LobbyListManager : MonoBehaviour
         {
             Debug.LogWarning("Invalid lobby size!");
             return;
-        }
-
-        if (maxMembers < 2)
-        {
-            maxMembers = 2; 
         }
 
         // create new lobby data

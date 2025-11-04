@@ -1,19 +1,13 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using System.Collections;
 
 public class StoreScript : MonoBehaviour
 {
-    [Header("UI")]
-    public GameObject storePanel;
-    public TextMeshProUGUI repairSpeedText;
-    public TextMeshProUGUI durabilityText;
-    public TextMeshProUGUI speedText;
-    public TextMeshProUGUI bigCargoShipText;
-    public TextMeshProUGUI biggerCargoShipText;
-    public TextMeshProUGUI whiskeyText;
-    public TextMeshProUGUI furnitureText;
-    public TextMeshProUGUI industrialEquipmentText;
+    [Header("Menus")]
+    public CanvasGroup truckUpgradeMenu;
+    public CanvasGroup boatUpgradeMenu;
+    public CanvasGroup cargoShopMenu;
+    private CanvasGroup currentUpgradeMenu;
 
     [Header("Cost Multiplier")]
     public float costMultiplier = 1.75f;    // Price increase each upgrade
@@ -67,9 +61,24 @@ public class StoreScript : MonoBehaviour
     private bool furniturePurchased = false;
     private bool industrialEquipmentPurchased = false;
 
+    [Header("Stat Upgrade Cards")]
+    public StatUpgradeCard repairSpeedCard;
+    public StatUpgradeCard durabilityCard;
+    public StatUpgradeCard speedCard;
 
+    [Header("New Vehicle Cards")]
+    public NewVehicleCard bigCargoShipCard;
+    public NewVehicleCard biggerCargoShipCard;
+
+    [Header("Product Cards")]
+    public ProductCard whiskeyCard;
+    public ProductCard furnitureCard;
+    public ProductCard industrialEquipmentCard;
+
+    float fadeDuration = 0.2f;
     private void Start()
     {
+        currentUpgradeMenu = boatUpgradeMenu;
         currentRepairSpeedCost = baseRepairSpeedCost;
         currentDurabilityCost = baseDurabilityCost;
         currentSpeedCost = baseSpeedCost;
@@ -77,29 +86,19 @@ public class StoreScript : MonoBehaviour
         UpdateRepairSpeedEntry();
         UpdateDurabilityEntry();
         UpdateSpeedEntry();
+
         UpdateBigCargoShipEntry();
         UpdateBiggerCargoShipEntry();
+
         UpdateWhiskeyEntry();
         UpdateFurnitureEntry();
         UpdateIndustrialEquipmentEntry();
     }
 
-    public void OpenStore()
-    {
-        storePanel.SetActive(true);
-        Time.timeScale = 0f;
-    }
-
-    public void CloseStore()
-    {
-        storePanel.SetActive(false);
-        Time.timeScale = 1f;
-    }
-
+    // stat upgrades
     public void PurchaseRepairSpeedUpgrade()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= currentRepairSpeedCost
+        if (ScoreManager.Instance.GetSpendableScore() >= currentRepairSpeedCost
                 && currentRepairSpeedLevel <= maxRepairSpeedLevel)
         {
             ScoreManager.Instance.UpdateSpendableScore(-currentRepairSpeedCost);
@@ -118,8 +117,7 @@ public class StoreScript : MonoBehaviour
 
     public void PurchaseDurabilityUpgrade()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= currentDurabilityCost
+        if (ScoreManager.Instance.GetSpendableScore() >= currentDurabilityCost
                 && currentDurabilityLevel <= maxDurabilityLevel)
         {
             ScoreManager.Instance.UpdateSpendableScore(-currentDurabilityCost);
@@ -136,8 +134,7 @@ public class StoreScript : MonoBehaviour
 
     public void PurchaseSpeedUpgrade()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= currentSpeedCost
+        if (ScoreManager.Instance.GetSpendableScore() >= currentSpeedCost
                 && currentSpeedLevel <= maxSpeedLevel)
         {
             ScoreManager.Instance.UpdateSpendableScore(-currentSpeedCost);
@@ -155,10 +152,10 @@ public class StoreScript : MonoBehaviour
         }
     }
 
+    // boat purchases
     public void PurchaseBigCargoShip()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= bigCargoShipCost
+        if (ScoreManager.Instance.GetSpendableScore() >= bigCargoShipCost
                 && !bigCargoShipPurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-bigCargoShipCost);
@@ -169,11 +166,10 @@ public class StoreScript : MonoBehaviour
             UpdateBigCargoShipEntry();
         }
     }
-
+   
     public void PurchaseBiggerCargoShip()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= biggerCargoShipCost
+        if (ScoreManager.Instance.GetSpendableScore() >= biggerCargoShipCost
                 && !biggerCargoShipPurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-biggerCargoShipCost);
@@ -185,10 +181,10 @@ public class StoreScript : MonoBehaviour
         }
     }
 
+    // product purchases
     public void PurchaseWhiskey()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= whiskeyCost
+        if (ScoreManager.Instance.GetSpendableScore() >= whiskeyCost
                 && !whiskeyPurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-whiskeyCost);
@@ -202,8 +198,7 @@ public class StoreScript : MonoBehaviour
 
     public void PurchaseFurniture()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= furnitureCost
+        if (ScoreManager.Instance.GetSpendableScore() >= furnitureCost
                 && !furniturePurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-furnitureCost);
@@ -217,8 +212,7 @@ public class StoreScript : MonoBehaviour
 
     public void PurchaseIndustrialEquipment()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= industrialEquipmentCost
+        if (ScoreManager.Instance.GetSpendableScore() >= industrialEquipmentCost
                 && !industrialEquipmentPurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-industrialEquipmentCost);
@@ -230,104 +224,170 @@ public class StoreScript : MonoBehaviour
         }
     }
 
+    // update stat upgrades
     private void UpdateRepairSpeedEntry()
     {
-        repairSpeedText.text = "Truck Repair Speed (Current Bonus: -" + (100 * repairSpeedMult * currentRepairSpeedLevel) + "%)\r\n" +
-                               "$" + currentRepairSpeedCost + "\r\n" +
-                               "Bonus: -" + (100 * repairSpeedMult) + "% Repair Speed";
+        string title = "Repair Speed";
+        string current = $"(Current Effect: -{100 * repairSpeedMult * currentRepairSpeedLevel}%)";
+        string price = $"${currentRepairSpeedCost}";
+        string effect = $"Bonus: -{100 * repairSpeedMult}% Repair Speed";
+
+        repairSpeedCard.SetUpgradeInfo(
+            title, 
+            current, 
+            price, 
+            effect, 
+            currentRepairSpeedLevel, 
+            maxRepairSpeedLevel, 
+            PurchaseRepairSpeedUpgrade
+        );
     }
 
     private void UpdateDurabilityEntry()
     {
-        durabilityText.text = "Durability (Current Bonus: +" + currentDurabilityLevel + ")\r\n" +
-                              "$" + currentDurabilityCost + "\r\n" +
-                              "Bonus: +1 Health";
+        string title = "Durability";
+        string current = $"(Current Effect: +{currentDurabilityLevel})";
+        string price = $"${currentDurabilityCost}";
+        string effect = "Bonus: +1 Health";
+
+        durabilityCard.SetUpgradeInfo(
+            title, 
+            current, 
+            price, 
+            effect, 
+            currentDurabilityLevel, 
+            maxDurabilityLevel, 
+            PurchaseDurabilityUpgrade
+        );
     }
 
     private void UpdateSpeedEntry()
     {
-        speedText.text = "Speed (Current Bonus: +" + (100 * speedMult * currentSpeedLevel) + "%)\r\n" +
-                               "$" + currentSpeedCost + "\r\n" +
-                               "Bonus: +" + (100 * speedMult) + "% Speed";
+        string title = "Speed";
+        string current = $"(Current Effect: +{100 * speedMult * currentSpeedLevel}%)";
+        string price = $"${currentSpeedCost}";
+        string effect = $"Bonus: +{100 * speedMult}% Speed";
+
+        speedCard.SetUpgradeInfo(
+            title, 
+            current, 
+            price, 
+            effect, 
+            currentSpeedLevel, 
+            maxSpeedLevel,  
+            PurchaseSpeedUpgrade
+        );
     }
 
+    // update boat purchases
     private void UpdateBigCargoShipEntry()
     {
-        if (!bigCargoShipPurchased)
-        {
-            bigCargoShipText.text = "Big Cargo Ship\r\n" +
-                                    "$" + bigCargoShipCost + "\r\n" +
-                                    "Max Capacity: 5 Cargo";
-        }
-        else
-        {
-            bigCargoShipText.text = "Big Cargo Ship\r\n" +
-                                    "Purchased\r\n" +
-                                    "Max Capacity: 5 Cargo";
-        }
+        bigCargoShipCard.SetUpgradeInfo(
+            "Big Cargo Ship",
+            $"${bigCargoShipCost}",
+            "Max Cargo: 5",
+            PurchaseBigCargoShip,
+            isPurchased: bigCargoShipPurchased
+        );
     }
 
     private void UpdateBiggerCargoShipEntry()
     {
-        if (!biggerCargoShipPurchased)
-        {
-            biggerCargoShipText.text = "Bigger Cargo Ship\r\n" +
-                                       "$" + biggerCargoShipCost + "\r\n" +
-                                       "Max Capacity: 10 Cargo";
-        }
-        else
-        {
-            biggerCargoShipText.text = "Bigger Cargo Ship\r\n" +
-                                       "Purchased\r\n" +
-                                       "Max Capacity: 10 Cargo";
-        }
+        biggerCargoShipCard.SetUpgradeInfo(
+            "Bigger Cargo Ship",
+            $"${biggerCargoShipCost}",
+            "Max Cargo: 10",
+            PurchaseBiggerCargoShip,
+            isPurchased: biggerCargoShipPurchased
+        );
     }
 
+    // update product purchases
     private void UpdateWhiskeyEntry()
     {
-        if (!whiskeyPurchased)
-        {
-            whiskeyText.text = "Whiskey\r\n" +
-                               "$" + whiskeyCost + "\r\n" +
-                               "+200/Delivery";
-        }
-        else
-        {
-            whiskeyText.text = "Whiskey\r\n" +
-                               "Purchased\r\n" +
-                               "+200/Delivery";
-        }
+        whiskeyCard.SetUpgradeInfo(
+            "Whiskey",
+            $"${whiskeyCost}",
+            "+200/Delivery",
+            PurchaseWhiskey,
+            isPurchased: whiskeyPurchased
+        );
     }
 
     private void UpdateFurnitureEntry()
     {
-        if (!furniturePurchased)
-        {
-            furnitureText.text = "Furniture\r\n" +
-                                 "$" + furnitureCost + "\r\n" +
-                                 "+500/Delivery";
-        }
-        else
-        {
-            furnitureText.text = "Furniture\r\n" +
-                                 "Purchased\r\n" +
-                                 "+500/Delivery";
-        }
+        furnitureCard.SetUpgradeInfo(
+            "Furniture",
+            $"${furnitureCost}",
+            "+500/Delivery",
+            PurchaseFurniture,
+            isPurchased: furniturePurchased
+        );
     }
 
     private void UpdateIndustrialEquipmentEntry()
     {
-        if (!industrialEquipmentPurchased)
+        industrialEquipmentCard.SetUpgradeInfo(
+            "Industrial Equipment",
+            $"${industrialEquipmentCost}",
+            "+1,700/Delivery",
+            PurchaseIndustrialEquipment,
+            isPurchased: industrialEquipmentPurchased
+        );
+    }
+
+    public void OpenCargoShop()
+    {
+        cargoShopMenu.gameObject.SetActive(true);
+    }
+
+    public void OpenCurrentUpgradeMenu()
+    {
+        currentUpgradeMenu.gameObject.SetActive(true);
+    }
+
+    public void OpenBoatUpgradeMenu()
+    {
+        currentUpgradeMenu = boatUpgradeMenu;
+        boatUpgradeMenu.alpha = 0;
+        boatUpgradeMenu.gameObject.SetActive(true);
+        StartCoroutine(FadeMenuInAndOut(boatUpgradeMenu, truckUpgradeMenu));
+    }
+
+    public void OpenTruckUpgradeMenu()
+    {
+        currentUpgradeMenu = truckUpgradeMenu;
+        truckUpgradeMenu.alpha = 0;
+        truckUpgradeMenu.gameObject.SetActive(true);
+        StartCoroutine(FadeMenuInAndOut(truckUpgradeMenu, boatUpgradeMenu));
+    }
+
+    private IEnumerator FadeMenuInAndOut(CanvasGroup cg1, CanvasGroup cg2)
+    {
+
+        yield return StartCoroutine(FadeOut(cg2));
+        yield return StartCoroutine(FadeIn(cg1));
+    }
+
+    private IEnumerator FadeIn(CanvasGroup cg)
+    {
+        for (float t = 0; t < fadeDuration; t += Time.deltaTime)
         {
-            industrialEquipmentText.text = "Industrial Equipment\r\n" +
-                                           "$" + industrialEquipmentCost + "\r\n" +
-                                           "+1,700/Delivery";
+            cg.alpha = Mathf.Lerp(0f, 1f, t / fadeDuration);
+            yield return null;
         }
-        else
+        cg.alpha = 1f;
+    }
+
+    private IEnumerator FadeOut(CanvasGroup cg)
+    {
+        for (float t = 0; t < fadeDuration; t += Time.deltaTime)
         {
-            industrialEquipmentText.text = "Industrial Equipment\r\n" +
-                                           "Purchased\r\n" +
-                                           "+1,700/Delivery";
+            cg.alpha = Mathf.Lerp(1f, 0f, t / fadeDuration);
+            yield return null;
         }
+        cg.alpha = 0f;
+
+        cg.gameObject.SetActive(false);
     }
 }
