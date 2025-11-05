@@ -66,7 +66,7 @@ MonoBehaviour:
   - {fileID: 100000, guid: 52f969fb493f02248ba2e0ab07d6d81f, type: 3}
   - {fileID: 100000, guid: c3e95e72d6dba334594c3c5c37fcf18a, type: 3}
   dockPrefabs:
-  - {fileID: 5122774900237303407, guid: b8c02466a340343c19ea215f7963f868, type: 3}
+  - {fileID: 2220100466157476232, guid: b8c02466a340343c19ea215f7963f868, type: 3}
   factoriesPrefabs:
   - {fileID: 100000, guid: f6674c1362ba984468bc1e71a2323d66, type: 3}
   pointFinder: {fileID: 0}
