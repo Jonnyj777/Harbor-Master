@@ -109,6 +109,7 @@ MonoBehaviour:
   timerDelayBetweenLinePoints: 0.01
   lineColor: {r: 1, g: 0, b: 0, a: 1}
   lineWidth: 1.5
+  truckSpeed: 20
 --- !u!120 &42639074413674844
 LineRenderer:
   serializedVersion: 2
@@ -228,13 +229,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f8525d1eac249f49bbbfcb80fd2ad02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cargo: []
   cargoBoxes:
   - {fileID: 8537103523931033249}
   - {fileID: 4909156307934579845}
   - {fileID: 4630332910636134517}
   - {fileID: 698397121116732186}
   - {fileID: 6626648013133955947}
+  cargo: []
   crashedColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!1 &698397121116732186
 GameObject:
@@ -408,8 +409,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1732576191044460831, guid: 1415a644ff1bd2a42b8d409e4bfef3e9, type: 3}
-  - {fileID: -4974903464421335904, guid: 1415a644ff1bd2a42b8d409e4bfef3e9, type: 3}
+  - {fileID: 2100000, guid: 3ace81457230a3942813e263513864d4, type: 2}
+  - {fileID: 2100000, guid: eb6bfdd4f9a8be54cb0f09eca4b2366a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
