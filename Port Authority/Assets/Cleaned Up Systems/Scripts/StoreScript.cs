@@ -90,13 +90,13 @@ public class StoreScript : NetworkBehaviour
     public void OpenStore()
     {
         storePanel.SetActive(true);
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
     }
 
     public void CloseStore()
     {
         storePanel.SetActive(false);
-        Time.timeScale = 1f;
+        //Time.timeScale = 1f;
     }
 
     public void PurchaseRepairSpeedUpgrade()
