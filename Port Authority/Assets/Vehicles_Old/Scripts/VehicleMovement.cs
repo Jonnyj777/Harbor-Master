@@ -48,6 +48,7 @@ public class VehicleMovement : MonoBehaviour
         }
     }
 
+    /*
     void Update()
     {
         // If the vehicle is crashed, do not process movement
@@ -79,7 +80,7 @@ public class VehicleMovement : MonoBehaviour
                 DefaultLandMovement();
             }
         }
-
+        
         // USED FOR TESTING PURPOSES ONLY - REMOVE LATER
         //if (Input.GetKeyDown(KeyCode.Space))
         //{
@@ -92,7 +93,7 @@ public class VehicleMovement : MonoBehaviour
         //SetTarget(new Vector3(70, 0, 20));
         //}
     }
-
+    */
     // Sets a new destination for this vehicle
     // Sade can call this function for path-drawing(?)
     public void SetTarget(Vector3 newTarget)
