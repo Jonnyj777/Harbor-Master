@@ -6,7 +6,7 @@ using Mirror;
 public class ScoreManager : NetworkBehaviour
 {
     public static ScoreManager Instance;
-    [SyncVar(hook = nameof(OnScoreChanged))] private int totalScore = 0;
+    [SyncVar] private int totalScore = 0;
     [SyncVar(hook = nameof(OnScoreChanged))] private int spendableScore = 0;
     public TextMeshProUGUI losePopUpText;
     public TextMeshProUGUI scoreText;
@@ -65,6 +65,7 @@ public class ScoreManager : NetworkBehaviour
         losePopUpText.gameObject.SetActive(true);
     }
 
+    [Server]
     public void UpdateSpendableScore(int scoreUpdate)
     {
         spendableScore += scoreUpdate;
