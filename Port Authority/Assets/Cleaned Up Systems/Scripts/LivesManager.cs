@@ -1,18 +1,21 @@
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
+using Mirror;
+using System;
 
-public class LivesManager : MonoBehaviour
+public class LivesManager : NetworkBehaviour
 {
     public static LivesManager Instance;
-    private int lives = 6;
+    [SyncVar(hook = nameof(UpdateLivesEntry))] private int lives = 6;
     public TextMeshProUGUI livesText;
     public Button resetButton;
     public Button menuButton;
 
+
     void Start()
     {
-        UpdateLivesEntry();
+        UpdateLivesEntry(lives, lives);
     }
 
     void Awake()
@@ -20,16 +23,20 @@ public class LivesManager : MonoBehaviour
         Instance = this;
     }
 
+    [Server]
     public void AddLife()
     {
+        int oldLives = lives;
         lives++;
-        UpdateLivesEntry();
+        UpdateLivesEntry(oldLives, lives);
     }
 
+    [Server]
     public void LoseLife()
     {
+        int oldLives = lives;
         lives--;
-        UpdateLivesEntry();
+        UpdateLivesEntry(oldLives, lives);
 
         if (lives < 1)
         {
@@ -47,8 +54,8 @@ public class LivesManager : MonoBehaviour
         menuButton.gameObject.SetActive(true);
     }
 
-    private void UpdateLivesEntry()
+    private void UpdateLivesEntry(int oldVal, int newVal)
     {
-        livesText.text = "Lives: " + lives;
+        livesText.text = "Lives: " + newVal;
     }
 }

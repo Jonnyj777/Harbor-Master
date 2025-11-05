@@ -278,7 +278,8 @@ public class VehicleMovement : MonoBehaviour
         }
 
         // once centered, trigger immediate crash for boat(s)
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        gameObject.GetComponent<Boat>().EnterCrashState();
 
         // notify the whirlpool that this boat is done
         callback?.Invoke(this);
