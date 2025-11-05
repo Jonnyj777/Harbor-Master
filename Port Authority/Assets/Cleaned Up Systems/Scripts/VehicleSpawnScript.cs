@@ -98,6 +98,8 @@ public class VehicleSpawnScript : MonoBehaviour
         spawnPos.y = waterLevel + spawnHeightOffset;
 
         Vector3 shipDirection = (terrainCenter - spawnPos).normalized;
+        shipDirection.y = 0f;
+        shipDirection.Normalize();
 
         Quaternion rotation = Quaternion.LookRotation(shipDirection);
         rotation *= Quaternion.Euler(0, Random.Range(-maxSpawnAngle, maxSpawnAngle), 0);
