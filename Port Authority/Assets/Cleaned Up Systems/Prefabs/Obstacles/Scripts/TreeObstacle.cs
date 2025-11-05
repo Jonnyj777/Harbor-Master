@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using TMPro;
@@ -64,6 +65,7 @@ public class TreeObstacle : MonoBehaviour
         {
             fallenRotation = Quaternion.Euler(fallAngle, transform.eulerAngles.y, transform.eulerAngles.z);
         }
+
     }
 
     private void Update()
@@ -144,9 +146,12 @@ public class TreeObstacle : MonoBehaviour
     {
         if (!fallen) return;
 
+        if (other.tag != "Truck") return;
         VehicleMovement vehicle = other.GetComponent<VehicleMovement>();
+        print("trigger truck tree: " + vehicle);
         if (vehicle != null && vehicle.vehicleType == VehicleType.Land)
         {
+            print("entering error truck tree");
             vehicle.EnterCrashState(VehicleMovement.CrashType.Land);
         }
     }

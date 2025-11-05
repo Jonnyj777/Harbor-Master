@@ -375,7 +375,7 @@ public class LineFollow : NetworkBehaviour
                 return;
             }
 
-            print("line Following: " + lineFollowing + " : drawingLine: " + drawingLine + " : Tag: " + CompareTag("Boat") + " : atPort: " + atPort);
+            //print("line Following: " + lineFollowing + " : drawingLine: " + drawingLine + " : Tag: " + CompareTag("Boat") + " : atPort: " + atPort);
             if (lineFollowing)
             {
                 if (CompareTag("Boat"))

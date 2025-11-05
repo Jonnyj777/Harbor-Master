@@ -343,6 +343,7 @@ GameObject:
   - component: {fileID: 5944097012463583766}
   - component: {fileID: 5267347697263191900}
   - component: {fileID: 8495928239553291404}
+  - component: {fileID: 3905600037577711915}
   m_Layer: 0
   m_Name: Truck
   m_TagString: Truck
@@ -493,7 +494,7 @@ MonoBehaviour:
   timerDelayBetweenLinePoints: 0.01
   lineColor: {r: 1, g: 0, b: 0, a: 1}
   lineWidth: 1.5
-  speed: 20
+  truckSpeed: 20
 --- !u!120 &8097109745329419055
 LineRenderer:
   serializedVersion: 2
@@ -661,6 +662,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43dcab711537ef40a5c00c7f4d52a39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   cargo: []
   cargoBoxes:
   - {fileID: 5705480630328028832}
@@ -669,7 +673,8 @@ MonoBehaviour:
   originalMaterial: {fileID: 2100000, guid: 4174b7015dd69354d9ddf1e53f8dccca, type: 2}
   crashedMaterial: {fileID: 2100000, guid: 8323cb55a4ee1b54e86d565266062d98, type: 2}
   crashedColor: {r: 1, g: 0, b: 0.9537916, a: 1}
-  restartDelay: 3
+  repairButtonPrefab: {fileID: 0}
+  trucksUICanvas: {fileID: 0}
 --- !u!114 &8495928239553291404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -704,3 +709,26 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &3905600037577711915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8945887001801322491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50624098b02c06648bc09c8021582190, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vehicleType: 0
+  speed: 0
+  isCrashed: 0
+  crashType: 0
+  landCrashedColor: {r: 1, g: 0, b: 0.98960686, a: 1}
+  boatCrashedColor: {r: 0, g: 1, b: 1, a: 1}
+  sinkLength: 0.5
+  sinkDuration: 2
+  fadeDelay: 1
+  fadeDuration: 2
+  mudEffected: 0
