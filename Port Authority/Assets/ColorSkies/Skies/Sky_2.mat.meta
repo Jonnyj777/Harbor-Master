@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3a8c5fa081c5a974b9fffa93e4230ece
+timeCreated: 1495834687
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 91541
+  packageName: ColorSkies
+  packageVersion: 1.0
+  assetPath: Assets/ColorSkies/Skies/Sky_2.mat
+  uploadId: 181983
