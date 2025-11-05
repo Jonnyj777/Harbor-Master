@@ -16,7 +16,7 @@ public class NoiseToTerrainGenerator : MonoBehaviour
     [SerializeField]
     private int[] triangles;
 
-    private Mesh mesh;
+    public Mesh mesh;
 
     [SerializeField]
     private Texture2D texture;
