@@ -5,8 +5,8 @@ using Mirror;
 
 public class Port : NetworkBehaviour
 {
-    public SyncList<Cargo> portCargo = new SyncList<Cargo>();
-    public SyncList<GameObject> cargoBoxes = new SyncList<GameObject>();
+    public List<Cargo> portCargo = new List<Cargo>();
+    public List<GameObject> cargoBoxes = new List<GameObject>();
 
     public GameObject loadingArea;
     public GameObject cargoPrefab;
@@ -28,7 +28,7 @@ public class Port : NetworkBehaviour
     }
 
     [Server]
-    public void ReceiveCargo(SyncList<Cargo> cargo)
+    public void ReceiveCargo(List<Cargo> cargo)
     {
         foreach (var c in cargo)
         {
@@ -41,11 +41,12 @@ public class Port : NetworkBehaviour
     private void SpawnCargoBox(Cargo cargo)
     {
         Vector3 spawnPos = new Vector3(Random.Range(minBounds.x + spawnOffset, maxBounds.x - spawnOffset), maxBounds.y + spawnOffset, Random.Range(minBounds.z + spawnOffset, maxBounds.z - spawnOffset));
-
         GameObject box = Instantiate(cargoPrefab, spawnPos, Quaternion.identity);
         NetworkServer.Spawn(box);
         Color color = new Color(cargo.colorData.x, cargo.colorData.y, cargo.colorData.z);
-        RpcAddCargo(box, color);
+        print("box: " + box + " : color: " + color);
+        box.GetComponent<Renderer>().material.color = color;
+        //RpcAddCargo(box, color);
         cargoBoxes.Add(box);
     }
 

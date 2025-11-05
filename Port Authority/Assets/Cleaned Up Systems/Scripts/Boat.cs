@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Boat : NetworkBehaviour
 {
-    public SyncList<Cargo> cargo = new SyncList<Cargo>();
+    //public List<Cargo> cargo = new List<Cargo>();
     private Port port;
     public List<GameObject> cargoBoxes;
 
@@ -72,9 +72,14 @@ public class Boat : NetworkBehaviour
                 RpcActivateCargo(i, randomColor);
 
                 // set type
-                Cargo c = new Cargo("Coffee", 1, new Vector3(randomColor.r, randomColor.g, randomColor.b), Time.time, 20);
+                //Cargo c = gameObject.AddComponent<Cargo>();
+                //c.type = "Coffee";
+                //c.amount = 1;
+                //c.colorData = new Vector3(randomColor.r, randomColor.g, randomColor.b);
+                //c.spawnTime = Time.time;
+                //c.price = 20;
 
-                cargo.Add(c);
+                //cargo.Add(c);
             }
             else
             {
@@ -89,6 +94,13 @@ public class Boat : NetworkBehaviour
         cargoBoxes[cargoIndex].SetActive(true);
         Renderer rend = cargoBoxes[cargoIndex].GetComponent<Renderer>();
         rend.material.color = randomColor;
+
+        Cargo c = cargoBoxes[cargoIndex].AddComponent<Cargo>();
+        c.type = "Coffee";
+        c.amount = 1;
+        c.colorData = new Vector3(randomColor.r, randomColor.g, randomColor.b);
+        c.spawnTime = Time.time;
+        c.price = 20;
     }
 
 
@@ -103,10 +115,19 @@ public class Boat : NetworkBehaviour
     [Server]
     void DeliverCargo()
     {
-        if (cargo.Count > 0)
+        List<Cargo> cargo = new List<Cargo>();
+
+        foreach(GameObject gameObject in cargoBoxes)
         {
+            if (!gameObject.activeSelf) continue;
+            if(gameObject.TryGetComponent<Cargo>(out Cargo c))
+            {
+                cargo.Add(c);
+            }
+        }
+
+        if(cargo.Count > 0) { 
             port.ReceiveCargo(cargo);
-            cargo.Clear();
 
             for(int i = 0; i < cargoBoxes.Count; i++)
             {
