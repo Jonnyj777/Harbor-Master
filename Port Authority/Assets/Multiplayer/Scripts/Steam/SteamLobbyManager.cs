@@ -337,6 +337,17 @@ public class SteamLobbyManager : MonoBehaviour
                 friendObj.GetComponentInChildren<TextMeshProUGUI>().text = friend.Name;
                 friendObj.GetComponentInChildren<RawImage>().texture = await SteamProfileManager.GetTextureFromId(friend.Id);
                 inLobby.Add(friend.Id, new PlayerInfo(friendObj));
+
+                string readyString = Lobby.GetMemberData(friend, "isReady");
+                if (!string.IsNullOrEmpty(readyString))
+                {
+                    bool readyStatus = bool.Parse(readyString);
+
+
+                    inLobby[friend.Id].IsReady = readyStatus;
+
+                    inLobby[friend.Id].playerObj.GetComponent<UnityEngine.UI.Image>().color = readyStatus ? UnityEngine.Color.green : UnityEngine.Color.gray;
+                }
             }
         }
 
