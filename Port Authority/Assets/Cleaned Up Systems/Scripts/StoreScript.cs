@@ -87,13 +87,11 @@ public class StoreScript : MonoBehaviour
     public void OpenStore()
     {
         storePanel.SetActive(true);
-        Time.timeScale = 0f;
     }
 
     public void CloseStore()
     {
         storePanel.SetActive(false);
-        Time.timeScale = 1f;
     }
 
     public void PurchaseRepairSpeedUpgrade()
