@@ -6,46 +6,78 @@ using UnityEngine;
 
 public class Boat : NetworkBehaviour
 {
-    //public List<Cargo> cargo = new List<Cargo>();
-    private Port port;
+    [Header("Cargo Prefabs")]
     public List<GameObject> cargoBoxes;
 
-    // settings for boat collisions
-    private float sinkLength = 0.5f;  // distance the boat sinks down
-    private float sinkDuration = 2f;  // time it takes to sink down to the desired length
-    private float fadeDelay = 1f;  // time to wait before fading starts
-    private float fadeDuration = 2f;  // how long to fully fade out
-    LineFollow vehicle;
+    private List<Cargo> unlockedCargo = new List<Cargo>();
+    private Port port;
+
+    [Header("Boat Collisions Settings")]
     public Color crashedColor = Color.cyan;  // Color to when boat vehicles crash
-    private Renderer vehicleRenderer;
+
+    private bool hasCrashed = false;
+    private float sinkDelay = 2f;
+    private float sinkLength = 10f;  // distance the boat sinks down
+    private float sinkDuration = 2f;  // time it takes to sink down to the desired length
+    //private float fadeDelay = 1f;  // time to wait before fading starts
+    //private float fadeDuration = 5f;  // how long to fully fade out
+
+    [Header("Instance Settings")]
+    private LineFollow vehicle;
+    private List<Renderer> vehiclePartRenderers = new List<Renderer>();
+    private float minX, maxX, minZ, maxZ;   // World bounds
 
     private void Start()
     {
         if (isServer)
         {
+            //AssignCargo();
+            //vehicle = GetComponent<LineFollow>();
+            //vehicleRenderer = GetComponent<Renderer>();
             AssignCargo();
+
             vehicle = GetComponent<LineFollow>();
-            vehicleRenderer = GetComponent<Renderer>();
+            //vehicleRenderer = GetComponent<Renderer>();
+            foreach (Renderer vehiclePartRenderer in GetComponentsInChildren<Renderer>())
+            {
+                if (vehiclePartRenderer.CompareTag("Boat"))
+                {
+                    vehiclePartRenderers.Add(vehiclePartRenderer);
+                }
+            }
+
+            // Teach the boat the world bounds so it can destroy itself
+            GameObject terrain = GameObject.Find("TerrainGenerator");
+            MeshFilter terrainMeshFilter = terrain.GetComponent<MeshFilter>();
+            Bounds terrainMeshBounds = terrainMeshFilter.mesh.bounds;
+            Vector3 terrainUnscaledSize = terrainMeshBounds.size;
+            Vector3 terrainScaledSize = Vector3.Scale(terrainUnscaledSize, terrain.transform.localScale);
+
+            minX = terrain.transform.position.x;
+            maxX = minX + terrainScaledSize.x;
+            minZ = terrain.transform.position.z;
+            maxZ = minZ + terrainScaledSize.z;
+        }
+    }
+
+    private void Update()
+    {
+        if(isServer)
+        {
+            CheckBounds();
         }
     }
 
     [ServerCallback]
     private void OnTriggerEnter(Collider other)
     {
-        // boat vehicle crash state
-        // if boat vehicle collides into another boat vehicle, both boat vehicles enter boat crash state
-        // boat crash state = disappear off map after a few seconds (do NOT act as additional obstacles)
-        if (other.CompareTag("Terrain")) 
+
+        if (other.CompareTag("Terrain") || other.CompareTag("Boat"))
         {
             EnterCrashState();
         }
-        if (other.CompareTag("Boat"))
+        if (other.CompareTag("Port"))
         {
-            Boat otherBoat = other.GetComponent<Boat>();
-            EnterCrashState();
-            otherBoat.EnterCrashState();
-        }
-        if (other.CompareTag("Port")) {
             vehicle.SetAtPort(true);
             vehicle.DeleteLine();
             port = other.GetComponent<Port>();
@@ -57,29 +89,29 @@ public class Boat : NetworkBehaviour
     [Server]
     public void AssignCargo()
     {
+        List<CargoType> unlockedCargoTypes = CargoManager.Instance.GetUnlockedCargo();
+        if (unlockedCargoTypes.Count == 0)
+        {
+            return;
+        }
+
         int cargoAmount = Random.Range(1, cargoBoxes.Count + 1);
 
         for (int i = 0; i < cargoBoxes.Count; i++)
         {
             if (i < cargoAmount)
             {
-                //cargoBoxes[i].SetActive(true);
+                cargoBoxes[i].SetActive(true);
 
-                // set random color
-                Color randomColor = new Color(Random.value, Random.value, Random.value);
-                //Renderer rend = cargoBoxes[i].GetComponent<Renderer>();
-                //rend.material.color = randomColor;
-                RpcActivateCargo(i, randomColor);
+                // Pick a random unlocked cargo type
+                CargoType selectedCargoType = unlockedCargoTypes[Random.Range(0, unlockedCargoTypes.Count)];
 
-                // set type
-                //Cargo c = gameObject.AddComponent<Cargo>();
-                //c.type = "Coffee";
-                //c.amount = 1;
-                //c.colorData = new Vector3(randomColor.r, randomColor.g, randomColor.b);
-                //c.spawnTime = Time.time;
-                //c.price = 20;
+                // Apply selected cargo color to the prefab
+                Renderer rend = cargoBoxes[i].GetComponent<Renderer>();
+                rend.material.color = selectedCargoType.color;
 
-                //cargo.Add(c);
+                // Create a new Cargo instance
+                RpcActivateCargo(i, selectedCargoType.color);
             }
             else
             {
@@ -139,11 +171,28 @@ public class Boat : NetworkBehaviour
     [Server]
     public void EnterCrashState()
     {
-        vehicle.SetIsCrashed(true);
-        if (vehicleRenderer != null)
+        // Prevent multiple triggers
+        if (hasCrashed)
         {
-            vehicleRenderer.material.color = crashedColor;
+            return;
         }
+        hasCrashed = true;
+
+        LivesManager.Instance.LoseLife();
+
+        vehicle.SetIsCrashed(true);
+
+        if (vehiclePartRenderers.Count != 0)
+        {
+            foreach (Renderer vehiclePartRenderer in vehiclePartRenderers)
+            {
+                foreach (Material mat in vehiclePartRenderer.materials)
+                {
+                    mat.color = crashedColor;
+                }
+            }
+        }
+
         StartCoroutine(SinkFadeOut());
     }
 
@@ -151,7 +200,10 @@ public class Boat : NetworkBehaviour
     // function to make boats sink, fade, then destroyed after crashing into another boat vehicle
     private IEnumerator SinkFadeOut()
     {
-        // sinking
+        // Wait before sinking
+        yield return new WaitForSeconds(sinkDelay);
+
+        // Sinking logic
         Vector3 startPos = transform.position;
         Vector3 endPos = new Vector3(startPos.x, startPos.y - sinkLength, startPos.z);
         float time = 0f;
@@ -162,31 +214,32 @@ public class Boat : NetworkBehaviour
             yield return null;
         }
         transform.position = endPos;
+        Destroy(gameObject);
+    }
 
-        // wait before fade
-        yield return new WaitForSeconds(fadeDelay);
+    private void CheckBounds()
+    {
+        Vector3 pos = transform.position;
 
-        // fade out
-        if (vehicleRenderer != null)
+        // Small buffer to prevent boats from being deleted too early if their model origin isn’t centered
+        float buffer = 5f;
+
+        if (pos.x < minX - buffer || pos.x > maxX + buffer ||
+            pos.z < minZ - buffer || pos.z > maxZ + buffer)
         {
-            Material mat = vehicleRenderer.material;
-            Color fadeColor = mat.color;
-            float fadeElapsed = 0f;
-
-            // ensure material supports transparency
-            mat.SetFloat("_Mode", 2);
-            mat.color = fadeColor;
-
-            while (fadeElapsed < fadeDuration)
-            {
-                float alpha = Mathf.Lerp(1f, 0f, fadeElapsed / fadeDuration);
-                mat.color = new Color(fadeColor.r, fadeColor.g, fadeColor.b, alpha);
-                fadeElapsed += Time.deltaTime;
-                yield return null;
-            }
+            DestroyBoatOutOfBounds();
         }
-        // destroy game object
-        //Destroy(gameObject);
-        NetworkServer.Destroy(gameObject);
+    }
+
+    private void DestroyBoatOutOfBounds()
+    {
+        // Avoid duplicate calls if already crashing/sinking
+        if (vehicle != null && hasCrashed)
+        {
+            return;
+        }
+
+        //Debug.Log($"Boat {name} went out of bounds and was destroyed.");
+        Destroy(gameObject);
     }
 }
