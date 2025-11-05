@@ -97,6 +97,17 @@ public class LineFollow : NetworkBehaviour
     }
 
     [Command]
+    public void CmdDeleteLine()
+    {
+        lineFinished = true;
+        line.positionCount = 0;
+        ClearPositions();
+        line.SetPositions(linePositions.ToArray());
+        lineFollowing = false;
+        lineFinished = false;
+    }
+
+    [Server]
     public void DeleteLine()
     {
         lineFinished = true;
@@ -296,6 +307,7 @@ public class LineFollow : NetworkBehaviour
         atPort = value;
     }
 
+    [Server]
     public void SetIsCrashed(bool value)
     {
         if (value)
@@ -349,7 +361,7 @@ public class LineFollow : NetworkBehaviour
     {
         base.OnStartAuthority();
 
-        DeleteLine();
+        CmdDeleteLine();
         StartDrag();
 
     }
@@ -363,6 +375,7 @@ public class LineFollow : NetworkBehaviour
                 return;
             }
 
+            print("line Following: " + lineFollowing + " : drawingLine: " + drawingLine + " : Tag: " + CompareTag("Boat") + " : atPort: " + atPort);
             if (lineFollowing)
             {
                 if (CompareTag("Boat"))

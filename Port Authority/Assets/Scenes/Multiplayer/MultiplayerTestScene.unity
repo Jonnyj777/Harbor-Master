@@ -2703,7 +2703,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -10}
-  m_SizeDelta: {x: -308.8976, y: -730.8573}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1272379751
 MonoBehaviour:
@@ -3985,6 +3985,10 @@ MonoBehaviour:
   - {fileID: 3145206158688813664, guid: 6dc8ed792a53cea449bc5d990cecca8c, type: 3}
   - {fileID: 8945887001801322491, guid: a5511d586b5259e4d80f1d3407ba4c93, type: 3}
   - {fileID: 3857715577458157709, guid: 53297461e2227414f88998ba9e9ca778, type: 3}
+  - {fileID: 551903078520605625, guid: 42c593b151f84da48bfd20ad92c1598b, type: 3}
+  - {fileID: 551903078520605625, guid: cce0c07bc21905249835188e56f87f40, type: 3}
+  - {fileID: 5399419671867262910, guid: 8b6e6269a6cab8a41b5e098650e61bda, type: 3}
+  - {fileID: 3042198004925896561, guid: 6b96559bad54d184f86e7fa40e0d4e97, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
