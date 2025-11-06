@@ -182,6 +182,14 @@ public class Boat : NetworkBehaviour
 
         vehicle.SetIsCrashed(true);
 
+        RpcEnterClientCrashState();
+
+        StartCoroutine(SinkFadeOut());
+    }
+
+    [ClientRpc]
+    void RpcEnterClientCrashState()
+    {
         if (vehiclePartRenderers.Count != 0)
         {
             foreach (Renderer vehiclePartRenderer in vehiclePartRenderers)
@@ -192,8 +200,6 @@ public class Boat : NetworkBehaviour
                 }
             }
         }
-
-        StartCoroutine(SinkFadeOut());
     }
 
     [Server]

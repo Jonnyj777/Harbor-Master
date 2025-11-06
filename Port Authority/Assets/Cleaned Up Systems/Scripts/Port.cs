@@ -45,8 +45,8 @@ public class Port : NetworkBehaviour
         NetworkServer.Spawn(box);
         Color color = new Color(cargo.colorData.x, cargo.colorData.y, cargo.colorData.z);
         print("box: " + box + " : color: " + color);
-        box.GetComponent<Renderer>().material.color = color;
-        //RpcAddCargo(box, color);
+        //box.GetComponent<Renderer>().material.color = color;
+        RpcAddCargo(box, color);
         cargoBoxes.Add(box);
     }
 
