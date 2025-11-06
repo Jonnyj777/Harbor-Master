@@ -12,6 +12,7 @@ TagManager:
   - Factory
   - Dock
   - TerrainTile
+  - Road
   layers:
   - Default
   - TransparentFX

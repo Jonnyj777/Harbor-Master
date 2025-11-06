@@ -215,7 +215,7 @@ GameObject:
   - component: {fileID: 8184965134060130207}
   m_Layer: 0
   m_Name: Spline
-  m_TagString: Untagged
+  m_TagString: Road
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -268,19 +268,19 @@ MonoBehaviour:
         y: -1.4968874
         z: -109.65248
       TangentIn:
-        x: -0.0000031366944
-        y: -0.000000012165401
-        z: -5.7755547
+        x: -0
+        y: -0
+        z: -7.699071
       TangentOut:
-        x: 0.000000029802322
-        y: -0.0000000062864274
-        z: 29.16653
+        x: 0
+        y: 0
+        z: 19.454199
       Rotation:
         value:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
+          x: 0.0023926727
+          y: 0.20858929
+          z: -0.0005103128
+          w: 0.9780002
     - Position:
         x: 27.700012
         y: -2.5040286
@@ -432,57 +432,57 @@ MonoBehaviour:
       TangentIn:
         x: -0
         y: -0
-        z: -11.875083
+        z: -13.412872
       TangentOut:
         x: 0
         y: 0
-        z: 7.731602
+        z: 11.104553
       Rotation:
         value:
-          x: 0
-          y: 0.92211366
-          z: 0
-          w: -0.38691914
+          x: 0.00047683387
+          y: 0.9176494
+          z: 0.0015552216
+          w: -0.39738753
     - Position:
-        x: 36.30002
-        y: -1.4968874
-        z: -237.49875
+        x: 21.700012
+        y: -1.3000002
+        z: -237.99876
       TangentIn:
         x: -0
         y: -0
-        z: -6.6896996
+        z: -10.908411
       TangentOut:
         x: 0
         y: 0
-        z: 7.849724
+        z: 8.717792
       Rotation:
         value:
-          x: 0.008450478
-          y: -0.5062176
-          z: 0.0049627256
-          w: 0.8623501
+          x: 0.010914813
+          y: -0.6516401
+          z: 0.004813624
+          w: 0.7584344
     - Position:
-        x: 23.700012
+        x: -0.59999084
         y: -2.5000002
-        z: -207.59875
+        z: -228.29877
       TangentIn:
         x: -0
         y: -0
-        z: -11.4090805
+        z: -8.890737
       TangentOut:
         x: 0
         y: 0
-        z: 14.472016
+        z: 12.189649
       Rotation:
         value:
-          x: 0.0028927363
-          y: -0.36060816
-          z: 0.0011183989
-          w: 0.9327123
+          x: 0.0068622734
+          y: -0.40585768
+          z: 0.0023894839
+          w: 0.91390747
     - Position:
-        x: -22.277374
-        y: -1.4968874
-        z: -182.83618
+        x: -23
+        y: -1.5000002
+        z: -188.39876
       TangentIn:
         x: -0.00000017881393
         y: -0.00000017881393
@@ -504,19 +504,19 @@ MonoBehaviour:
       TangentIn:
         x: -0
         y: -0
-        z: -13.334539
+        z: -14.153068
       TangentOut:
         x: 0
         y: 0
-        z: 7.033585
+        z: 7.1643577
       Rotation:
         value:
-          x: 0
-          y: -0.033208977
-          z: -0
-          w: 0.9994484
+          x: -0.000012311216
+          y: -0.02400508
+          z: -0.0000005291657
+          w: 0.9997118
     m_MetaData:
-    - Mode: 4
+    - Mode: 0
       Tension: 0.5
     - Mode: 0
       Tension: 0.5
@@ -745,6 +745,7 @@ MonoBehaviour:
   landBuildingRadius: 25
   landShoreClearance: 40
   maxAttemptsPerPoint: 50
+  roadClearance: 25
   raycastHeight: 100
   radialSamples: 16
 --- !u!114 &6417502886766025223
@@ -764,6 +765,8 @@ MonoBehaviour:
   shoreOrientationRadius: 15
   shoreOrientationSamples: 72
   shoreOrientationMinSequence: 2
+  debugSpawnProbeSpheres: 1
+  debugSphereLifetime: 5
 --- !u!114 &3696822621963845898
 MonoBehaviour:
   m_ObjectHideFlags: 0

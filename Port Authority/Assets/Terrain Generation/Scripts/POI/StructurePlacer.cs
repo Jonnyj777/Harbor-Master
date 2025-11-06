@@ -26,6 +26,7 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField] private float landBuildingRadius = 25f;
     [SerializeField] private float landShoreClearance = 40f;
     [SerializeField] private int maxAttemptsPerPoint = 50;
+    [SerializeField] private float roadClearance = 20f;
 
     // Sampling and raycasting
     [SerializeField] private float raycastHeight = 100f;
@@ -125,7 +126,7 @@ public class StructurePlacer : MonoBehaviour
 
         for (int i = 0; i < commercialCount; i++)
         {
-            Vector3 pos = pointFinder.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, landAreaCenter, landAreaSize);
+            Vector3 pos = pointFinder.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, landAreaCenter, landAreaSize, roadClearance);
             if (pos != Vector3.zero)
                 Instantiate(GetStorePrefab(), pos, Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0));
             else 
@@ -157,7 +158,7 @@ public class StructurePlacer : MonoBehaviour
 
         for (int i = 0; i < factoryCount; i++)
         {
-            Vector3 pos = pointFinder.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, landAreaCenter, landAreaSize);
+            Vector3 pos = pointFinder.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, landAreaCenter, landAreaSize, roadClearance);
             if (pos != Vector3.zero)
                 Instantiate(GetFactoryPrefab(), pos, Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0));
             else 

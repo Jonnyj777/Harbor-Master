@@ -16,11 +16,15 @@ public class PointFinder : MonoBehaviour
     private float landBuildingRadius;
     private float landShoreClearance;
     private int landMaxAttempts;
+
+    private float roadBuildingRadius;
     
     private float cubeSize = 10f;
     private string terrainTag = "Terrain";
     private string waterTag = "Water";
+    private string roadTag = "Road";
     private LayerMask raycastMask = ~0;
+    private const float RoadHitTolerance = 0.1f;
 
     private readonly List<Vector3> landPoints = new List<Vector3>();
     private readonly List<Vector3> shorePoints = new List<Vector3>();
@@ -46,11 +50,12 @@ public class PointFinder : MonoBehaviour
 
         return Quaternion.LookRotation(facing, Vector3.up);
     }
-    public Vector3 FindLandPoint(float landBuildingRadius, float landShoreClearance, int landMaxAttempts, Vector2 areaCenter, Vector2 areaSize)
+    public Vector3 FindLandPoint(float landBuildingRadius, float landShoreClearance, int landMaxAttempts, Vector2 areaCenter, Vector2 areaSize, float roadBuildingRadius)
     {
         this.landBuildingRadius = Mathf.Max(0f, landBuildingRadius);
         this.landShoreClearance = Mathf.Max(0f, landShoreClearance);
         this.landMaxAttempts = Mathf.Max(1, landMaxAttempts);
+        this.roadBuildingRadius = Mathf.Max(0f, roadBuildingRadius);
         
         Vector3 point = FindLandPointInternal( areaCenter, areaSize);
 
@@ -81,6 +86,9 @@ public class PointFinder : MonoBehaviour
                 continue;
 
             if (HasWaterWithinRadius(surfacePoint, landShoreClearance))
+                continue;
+
+            if (IsNearTaggedObject(surfacePoint, roadTag, roadBuildingRadius))
                 continue;
 
             landPoints.Add(surfacePoint);
@@ -171,6 +179,7 @@ public class PointFinder : MonoBehaviour
 
         RaycastHit? firstTerrain = null;
         RaycastHit? firstWater = null;
+        RaycastHit? firstRoad = null;
 
         for (int i = 0; i < hits.Length; i++)
         {
@@ -184,10 +193,22 @@ public class PointFinder : MonoBehaviour
 
             if (firstWater == null && collider.CompareTag(waterTag))
                 firstWater = hits[i];
+
+            if (firstRoad == null && HasTagInHierarchy(collider.transform, roadTag))
+                firstRoad = hits[i];
         }
 
         if (firstTerrain == null)
             return false;
+
+        if (firstRoad != null)
+        {
+            var roadDistance = firstRoad.Value.distance;
+            var terrainDistance = firstTerrain.Value.distance;
+
+            if (roadDistance <= terrainDistance + RoadHitTolerance)
+                return false;
+        }
 
         terrainHit = firstTerrain.Value;
         waterHit = firstWater ?? default;
@@ -208,6 +229,40 @@ public class PointFinder : MonoBehaviour
         }
 
         return true;
+    }
+
+    private bool IsNearTaggedObject(Vector3 center, string tag, float radius)
+    {
+        if (radius <= 0f)
+            return false;
+
+        Collider[] hits = Physics.OverlapSphere(center, radius, EffectiveRaycastMask, QueryTriggerInteraction.Collide);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider collider = hits[i];
+
+            if (collider == null)
+                continue;
+
+            if (HasTagInHierarchy(collider.transform, tag))
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool HasTagInHierarchy(Transform current, string tag)
+    {
+        while (current != null)
+        {
+            if (current.CompareTag(tag))
+                return true;
+
+            current = current.parent;
+        }
+
+        return false;
     }
     
     private Vector3 ComputeShoreFacingDirection(Vector3 shorePoint, int sampleCount, float surveyRadius, int minimumSequenceLength)
