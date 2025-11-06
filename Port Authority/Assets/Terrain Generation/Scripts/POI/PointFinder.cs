@@ -22,7 +22,7 @@ public class PointFinder : MonoBehaviour
     private float cubeSize = 10f;
     private string terrainTag = "Terrain";
     private string waterTag = "Water";
-    private string roadTag = "Road";
+    private string roadTag = "Street";
     private LayerMask raycastMask = ~0;
     private const float RoadHitTolerance = 0.1f;
 

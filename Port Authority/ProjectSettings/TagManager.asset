@@ -13,6 +13,7 @@ TagManager:
   - Dock
   - TerrainTile
   - Road
+  - Street
   layers:
   - Default
   - TransparentFX
