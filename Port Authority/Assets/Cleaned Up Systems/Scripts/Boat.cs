@@ -106,10 +106,6 @@ public class Boat : NetworkBehaviour
                 // Pick a random unlocked cargo type
                 CargoType selectedCargoType = unlockedCargoTypes[Random.Range(0, unlockedCargoTypes.Count)];
 
-                // Apply selected cargo color to the prefab
-                Renderer rend = cargoBoxes[i].GetComponent<Renderer>();
-                rend.material.color = selectedCargoType.color;
-
                 // Create a new Cargo instance
                 RpcActivateCargo(i, selectedCargoType.color);
             }
@@ -201,6 +197,7 @@ public class Boat : NetworkBehaviour
             }
         }
     }
+
 
     [Server]
     // function to make boats sink, fade, then destroyed after crashing into another boat vehicle
