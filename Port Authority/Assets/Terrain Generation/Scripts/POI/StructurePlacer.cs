@@ -78,6 +78,7 @@ public class StructurePlacer : MonoBehaviour
             return;
         }
 
+        Debug.Log("Spawning Buildings");
         EnsurePlacementBounds();
 
         InitializeIndices();

@@ -264,7 +264,7 @@ GameObject:
   - component: {fileID: 8404147663582206669}
   m_Layer: 0
   m_Name: Spline (1)
-  m_TagString: Untagged
+  m_TagString: Street
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -611,7 +611,7 @@ GameObject:
   - component: {fileID: 7363127160895319667}
   m_Layer: 0
   m_Name: Streets
-  m_TagString: Untagged
+  m_TagString: Street
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -682,7 +682,7 @@ GameObject:
   - component: {fileID: 5556186137860876122}
   m_Layer: 0
   m_Name: Spline (1)
-  m_TagString: Untagged
+  m_TagString: Street
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

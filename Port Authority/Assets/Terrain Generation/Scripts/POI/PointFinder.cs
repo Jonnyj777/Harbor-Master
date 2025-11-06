@@ -73,6 +73,7 @@ public class PointFinder : MonoBehaviour
 
     private Vector3 FindLandPointInternal(Vector2 areaCenter, Vector2 areaSize)
     {
+      
         int totalAttempts = 0;
 
         while (totalAttempts < landMaxAttempts)

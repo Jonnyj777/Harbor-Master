@@ -16,6 +16,7 @@ public class StreetGenerationManager : MonoBehaviour
     {
         if (generateOnStart)
         {
+            Debug.Log("Spawning Street Groups");
             ActivateStreetGroups();
         }
     }
