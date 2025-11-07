@@ -29,6 +29,14 @@ public class Boat : NetworkBehaviour
 
     private void Start()
     {
+        foreach (Renderer vehiclePartRenderer in GetComponentsInChildren<Renderer>())
+        {
+            if (vehiclePartRenderer.CompareTag("Boat"))
+            {
+                vehiclePartRenderers.Add(vehiclePartRenderer);
+            }
+        }
+
         if (isServer)
         {
             //AssignCargo();
@@ -38,13 +46,6 @@ public class Boat : NetworkBehaviour
 
             vehicle = GetComponent<LineFollow>();
             //vehicleRenderer = GetComponent<Renderer>();
-            foreach (Renderer vehiclePartRenderer in GetComponentsInChildren<Renderer>())
-            {
-                if (vehiclePartRenderer.CompareTag("Boat"))
-                {
-                    vehiclePartRenderers.Add(vehiclePartRenderer);
-                }
-            }
 
             // Teach the boat the world bounds so it can destroy itself
             GameObject terrain = GameObject.Find("TerrainGenerator");
