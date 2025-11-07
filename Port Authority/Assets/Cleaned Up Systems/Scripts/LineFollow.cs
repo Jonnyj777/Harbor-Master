@@ -156,6 +156,7 @@ public class LineFollow : NetworkBehaviour
         atPort = false;
         lineFollowing = false;
         drawingLine = true;
+        CmdRequestStart();
         StartLine(transform.position);
     }
 
@@ -165,6 +166,7 @@ public class LineFollow : NetworkBehaviour
 
         CmdRequestMove(GetMousePosition());
     }
+
 
     private void OnMouseUp()
     {
@@ -329,6 +331,16 @@ public class LineFollow : NetworkBehaviour
     public void CmdRequestMove(Vector3 raycastMousePos)
     {
         ServerUpdateLine(raycastMousePos);
+    }
+
+    [Command]
+    public void CmdRequestStart()
+    {
+        isDragging = true;
+        isDraggable = true;
+        atPort = false;
+        lineFollowing = false;
+        drawingLine = true;
     }
 
     [Command]
