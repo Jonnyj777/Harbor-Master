@@ -10,10 +10,13 @@ public class NetworkPlayer : NetworkBehaviour
     private void Start()
     {
         lineColorData = new Vector3(0f, 1f, 0f);
-        if(isServer)
+
+        if(isServer && isClient)
         {
+            print("is both host and client");
             lineColorData = new Vector3(1f, 0f, 0f);
         }
+
     }
     [Command]
     public void CmdRequestAuthority(NetworkIdentity vehicle)

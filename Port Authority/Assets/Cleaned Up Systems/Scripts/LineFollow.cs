@@ -12,7 +12,8 @@ public class LineFollow : NetworkBehaviour
     private LayerMask layerMask;
     private SyncList<Vector3> linePositions = new SyncList<Vector3>();
     public float timerDelayBetweenLinePoints = 0.01f;
-    public Color lineColor = Color.red;
+    //public Color lineColor = Color.red;
+    [SyncVar] public Vector3 lineColor;
     public float lineWidth = 1;
     private LineRenderer line;
     private float timer;
@@ -73,7 +74,7 @@ public class LineFollow : NetworkBehaviour
         line.startWidth = line.endWidth = lineWidth;
         line.endWidth = lineWidth;
         line.material = new Material(Shader.Find("Sprites/Default"));
-        //line.startColor = line.endColor = lineColor;
+        line.startColor = line.endColor = new Color(lineColor.x, lineColor.y, lineColor.z);
     }
 
     [Server]
@@ -375,7 +376,7 @@ public class LineFollow : NetworkBehaviour
 
         CmdDeleteLine();
         NetworkPlayer localPlayer = NetworkClient.localPlayer.GetComponent<NetworkPlayer>();
-        line.startColor = line.endColor = new Color(localPlayer.lineColorData.x, localPlayer.lineColorData.y, localPlayer.lineColorData.z);
+        lineColor = localPlayer.lineColorData;
         StartDrag();
 
     }
