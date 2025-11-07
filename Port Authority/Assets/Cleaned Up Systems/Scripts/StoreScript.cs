@@ -99,7 +99,7 @@ public class StoreScript : NetworkBehaviour
         //Time.timeScale = 1f;
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void PurchaseRepairSpeedUpgrade()
     {
         if (storePanel.activeSelf
@@ -121,7 +121,7 @@ public class StoreScript : NetworkBehaviour
         }
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void PurchaseDurabilityUpgrade()
     {
         if (storePanel.activeSelf
@@ -141,7 +141,7 @@ public class StoreScript : NetworkBehaviour
         }
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void PurchaseSpeedUpgrade()
     {
         if (storePanel.activeSelf
@@ -164,7 +164,7 @@ public class StoreScript : NetworkBehaviour
         }
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void PurchaseBigCargoShip()
     {
         if (storePanel.activeSelf
@@ -181,7 +181,7 @@ public class StoreScript : NetworkBehaviour
         }
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void PurchaseBiggerCargoShip()
     {
         if (storePanel.activeSelf
@@ -198,7 +198,7 @@ public class StoreScript : NetworkBehaviour
         }
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void PurchaseWhiskey()
     {
         if (storePanel.activeSelf
@@ -215,7 +215,7 @@ public class StoreScript : NetworkBehaviour
         }
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void PurchaseFurniture()
     {
         if (storePanel.activeSelf
@@ -232,7 +232,7 @@ public class StoreScript : NetworkBehaviour
         }
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void PurchaseIndustrialEquipment()
     {
         if (storePanel.activeSelf
