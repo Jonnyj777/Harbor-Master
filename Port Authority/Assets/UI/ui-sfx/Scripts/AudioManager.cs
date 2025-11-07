@@ -8,6 +8,9 @@ public class AudioManager : MonoBehaviour
     [Header("UI Sounds")]
     public AudioClip buttonHover;
     public AudioClip buttonClick;
+    public AudioClip boatDelivery;
+    public AudioClip boatCollision;
+    public AudioClip truckDelivery;
 
     private AudioSource audioSource;
 
@@ -72,6 +75,42 @@ public class AudioManager : MonoBehaviour
         else
         {
             audioSource.PlayOneShot(buttonClick);
+        }
+    }
+
+    public void PlayBoatDelivery()
+    {
+        if (!sfxEnabled || boatDelivery == null)
+        {
+            return;
+        }
+        else
+        {
+            audioSource.PlayOneShot(boatDelivery);
+        }
+    }
+
+    public void PlayBoatCollision()
+    {
+        if (!sfxEnabled || boatCollision == null)
+        {
+            return;
+        }
+        else
+        {
+            audioSource.PlayOneShot(boatCollision);
+        }
+    }
+
+    public void PlayTruckDelivery()
+    {
+        if (!sfxEnabled || truckDelivery == null)
+        {
+            return;
+        }
+        else
+        {
+            audioSource.PlayOneShot(truckDelivery);
         }
     }
 

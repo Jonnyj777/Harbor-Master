@@ -145,6 +145,7 @@ public class Truck : MonoBehaviour
                 scoreUpdate += Mathf.RoundToInt(c.price * c.amount * bonusMultiplier);
             }
 
+            AudioManager.Instance.PlayTruckDelivery();
             ScoreManager.Instance.AddScore(scoreUpdate, bonus);
             cargo.Clear();
         }
