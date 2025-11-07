@@ -68,9 +68,19 @@ public class StoreScript : NetworkBehaviour
     [SyncVar(hook = nameof(UpdateFurnitureEntry))] private bool furniturePurchased = false;
     [SyncVar(hook = nameof(UpdateIndustrialEquipmentEntry))] private bool industrialEquipmentPurchased = false;
 
+    public static StoreScript Instance;
+
 
     private void Start()
     {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
         currentRepairSpeedCost = baseRepairSpeedCost;
         currentDurabilityCost = baseDurabilityCost;
         currentSpeedCost = baseSpeedCost;

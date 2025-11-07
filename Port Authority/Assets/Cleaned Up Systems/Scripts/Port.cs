@@ -44,12 +44,12 @@ public class Port : NetworkBehaviour
         Vector3 spawnPos = new Vector3(Random.Range(minBounds.x + spawnOffset, maxBounds.x - spawnOffset), maxBounds.y + spawnOffset, Random.Range(minBounds.z + spawnOffset, maxBounds.z - spawnOffset));
         GameObject box = Instantiate(cargoPrefab, spawnPos, Quaternion.identity);
         NetworkServer.Spawn(box);
-        Color color = new Color(cargo.colorData.x, cargo.colorData.y, cargo.colorData.z);
+        //Color color = new Color(cargo.colorData.x, cargo.colorData.y, cargo.colorData.z);
         cargoBoxes.Add(box);
-        
-        if(box != null && color != null)
+
+        if(box.TryGetComponent<CargoMaterialSetter>(out CargoMaterialSetter c))
         {
-            StartCoroutine(DelayColorRpc(box, color));
+            c.colorData = cargo.colorData;
         }
     }
 

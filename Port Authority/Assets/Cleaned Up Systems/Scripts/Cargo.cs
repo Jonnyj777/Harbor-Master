@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+using UnityEngine.UIElements;
 
 [System.Serializable]
 public class Cargo : NetworkBehaviour
@@ -20,4 +21,6 @@ public class Cargo : NetworkBehaviour
         this.timeLimit = timeLimit;
         this.spawnTime = spawnTime;
     }
+
+
 }
