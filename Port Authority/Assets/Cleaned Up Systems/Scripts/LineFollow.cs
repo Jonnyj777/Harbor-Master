@@ -26,7 +26,7 @@ public class LineFollow : NetworkBehaviour
 
     private Rigidbody rb;
     private bool lineFollowing = false;
-    private bool drawingLine = false;
+    [SyncVar] private bool drawingLine = false;
     private bool atPort = false;
     private bool isCrashed = false;
     private SyncList<Vector3> positions = new SyncList<Vector3>();
@@ -35,10 +35,10 @@ public class LineFollow : NetworkBehaviour
 
     //variables for network server-side authority and request management
     [SyncVar] private uint authorizedId = 0;
-    private bool isDragging = false;
-    private bool isDraggable = false;
+    [SyncVar] private bool isDragging = false;
+    [SyncVar] private bool isDraggable = false;
     private NetworkIdentity unitIdentity;
-    private bool lineFinished = false;
+    [SyncVar] private bool lineFinished = false;
 
 
     private void Awake()

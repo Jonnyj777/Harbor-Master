@@ -44,10 +44,11 @@ public class Port : NetworkBehaviour
         GameObject box = Instantiate(cargoPrefab, spawnPos, Quaternion.identity);
         NetworkServer.Spawn(box);
         Color color = new Color(cargo.colorData.x, cargo.colorData.y, cargo.colorData.z);
-        print("box: " + box + " : color: " + color);
-        //box.GetComponent<Renderer>().material.color = color;
-        RpcAddCargo(box, color);
-        cargoBoxes.Add(box);
+        if(box != null && color != null)
+        {
+            RpcAddCargoColor(box, color);
+            cargoBoxes.Add(box);
+        }
     }
 
     [Server]
@@ -66,7 +67,7 @@ public class Port : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcAddCargo(GameObject box, Color color)
+    private void RpcAddCargoColor(GameObject box, Color color)
     {
         
         if (box.TryGetComponent<Renderer>(out var rend))
