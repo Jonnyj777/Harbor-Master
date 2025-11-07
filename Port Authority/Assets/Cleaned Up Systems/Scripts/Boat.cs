@@ -8,6 +8,7 @@ public class Boat : MonoBehaviour
     public List<GameObject> cargoBoxes;
     public List<Cargo> cargo = new List<Cargo>();
 
+    [SerializeField]
     private List<Cargo> unlockedCargo = new List<Cargo>();
     private Port port;
 
@@ -132,16 +133,24 @@ public class Boat : MonoBehaviour
     {
         if (cargo.Count > 0)
         {
-            port.ReceiveCargo(cargo);
-            cargo.Clear();
-
-            foreach (var box in cargoBoxes)
-            {
-                box.SetActive(false);
-            }
-
-            AudioManager.Instance.PlayBoatDelivery();
+            StartCoroutine(DeliverCargoRoutine());
         }
+    }
+
+    private IEnumerator DeliverCargoRoutine()
+    {
+        vehicle.SetIsMovingCargo(true);
+        for (int i = 0; i < cargo.Count; i++)
+        {
+            yield return new WaitForSeconds(vehicle.delayPerCargo);
+            
+            port.ReceiveCargoBox(cargo[i]);
+            cargoBoxes[i].SetActive(false);
+        }
+
+        cargo.Clear();
+        vehicle.SetIsMovingCargo(false);
+        AudioManager.Instance.PlayBoatDelivery();
     }
 
     public void EnterCrashState(bool multipleCollisions)
@@ -272,7 +281,7 @@ public class Boat : MonoBehaviour
     {
         Vector3 pos = transform.position;
 
-        // Small buffer to prevent boats from being deleted too early if their model origin isn’t centered
+        // Small buffer to prevent boats from being deleted too early if their model origin isnÂ’t centered
         float buffer = 5f;
 
         if (pos.x < minX - buffer || pos.x > maxX + buffer ||

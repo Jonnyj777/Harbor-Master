@@ -9,6 +9,7 @@ public class Truck : MonoBehaviour
     public List<Cargo> cargo = new List<Cargo>();
     private Port port;
     public List<GameObject> cargoBoxes;
+    private bool isPickingUp = false;
     private bool stallPortMovement = false;
     private bool stallBuildingMovement = false;
 
@@ -158,33 +159,45 @@ public class Truck : MonoBehaviour
 
     private void PickUpCargo()
     {
-        if (cargo.Count >= cargoBoxes.Count)
+        if (cargo.Count >= cargoBoxes.Count || isPickingUp)
         {
             return;
         }
 
         if (port.portCargo.Count > 0)
         {
-            List<Cargo> tempCargo = new List<Cargo>(port.portCargo);
-            int slotsAvailable = cargoBoxes.Count - cargo.Count;
-            int pickUpAmount = Mathf.Min(slotsAvailable, tempCargo.Count);
+            StartCoroutine(PickUpCargoRoutine());
+        }
+    }
 
-            for (int i = 0; i < pickUpAmount; i++)
+    private IEnumerator PickUpCargoRoutine()
+    {
+        isPickingUp = true;
+        vehicle.SetIsMovingCargo(true);
+
+        while (cargo.Count < cargoBoxes.Count && port.portCargo.Count > 0)
+        {
+            yield return new WaitForSeconds(vehicle.delayPerCargo);
+
+            // Always take cargo directly from the port
+            Cargo c = port.portCargo[0];
+            port.RemoveCargoBox(c);
+
+            cargo.Add(c);
+
+            int boxIndex = cargo.Count - 1;
+            GameObject box = cargoBoxes[boxIndex];
+            box.SetActive(true);
+
+            Renderer r = box.GetComponent<Renderer>();
+            if (r != null)
             {
-
-                int boxIndex = cargo.Count;
-                cargo.Add(tempCargo[i]);
-                port.RemoveCargoBox(tempCargo[i]);
-                GameObject box = cargoBoxes[boxIndex];
-                box.SetActive(true);
-
-                Renderer r = box.GetComponent<Renderer>();
-                if (r != null)
-                {
-                    r.material.color = tempCargo[i].color;
-                }
+                r.material.color = c.color;
             }
         }
+
+        vehicle.SetIsMovingCargo(false);
+        isPickingUp = false;
     }
 
     public void EnterCrashState(bool multipleCollisions)
