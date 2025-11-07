@@ -95,16 +95,6 @@ public class StoreScript : MonoBehaviour
         UpdateIndustrialEquipmentEntry();
     }
 
-    public void OpenStore()
-    {
-        storePanel.SetActive(true);
-    }
-
-    public void CloseStore()
-    {
-        storePanel.SetActive(false);
-    }
-
     // stat upgrades
     public void PurchaseRepairSpeedUpgrade()
     {
