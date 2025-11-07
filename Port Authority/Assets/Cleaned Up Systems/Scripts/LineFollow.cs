@@ -73,7 +73,7 @@ public class LineFollow : NetworkBehaviour
         line.startWidth = line.endWidth = lineWidth;
         line.endWidth = lineWidth;
         line.material = new Material(Shader.Find("Sprites/Default"));
-        line.startColor = line.endColor = lineColor;
+        //line.startColor = line.endColor = lineColor;
     }
 
     [Server]
@@ -374,6 +374,8 @@ public class LineFollow : NetworkBehaviour
         base.OnStartAuthority();
 
         CmdDeleteLine();
+        NetworkPlayer localPlayer = NetworkClient.localPlayer.GetComponent<NetworkPlayer>();
+        line.startColor = line.endColor = new Color(localPlayer.lineColorData.x, localPlayer.lineColorData.y, localPlayer.lineColorData.z);
         StartDrag();
 
     }

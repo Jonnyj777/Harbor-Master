@@ -5,10 +5,15 @@ using System;
 public class NetworkPlayer : NetworkBehaviour
 {
 
-    [SyncVar(hook = nameof(Ready))] public bool isReady;
+    [SyncVar] public bool isReady;
+    [SyncVar] public Vector3 lineColorData;
     private void Start()
     {
-        print("Start function for authorizer called");
+        lineColorData = new Vector3(0f, 1f, 0f);
+        if(isServer)
+        {
+            lineColorData = new Vector3(1f, 0f, 0f);
+        }
     }
     [Command]
     public void CmdRequestAuthority(NetworkIdentity vehicle)
@@ -66,5 +71,7 @@ public class NetworkPlayer : NetworkBehaviour
             CmdSetPlayerReady();
         }
     }
+
+
 
 }
