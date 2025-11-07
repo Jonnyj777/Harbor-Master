@@ -222,6 +222,8 @@ MonoBehaviour:
   timerDelayBetweenLinePoints: 0.01
   lineColor: {r: 1, g: 0, b: 0, a: 1}
   lineWidth: 1.5
+  truckSpeed: 20
+  boatTypeSpeedMultiplier: 0.5
 --- !u!120 &42639074413674844
 LineRenderer:
   serializedVersion: 2
@@ -341,7 +343,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f8525d1eac249f49bbbfcb80fd2ad02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cargo: []
   cargoBoxes:
   - {fileID: 5153166043510284692}
   - {fileID: 3101407178973374955}
@@ -353,6 +354,7 @@ MonoBehaviour:
   - {fileID: 1834096249868747116}
   - {fileID: 2785734754744876294}
   - {fileID: 4431593590029593766}
+  cargo: []
   crashedColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!1 &1705438446000358992
 GameObject:

@@ -95,6 +95,16 @@ public class StoreScript : MonoBehaviour
         UpdateIndustrialEquipmentEntry();
     }
 
+    public void OpenStore()
+    {
+        storePanel.SetActive(true);
+    }
+
+    public void CloseStore()
+    {
+        storePanel.SetActive(false);
+    }
+
     // stat upgrades
     public void PurchaseRepairSpeedUpgrade()
     {
@@ -144,7 +154,7 @@ public class StoreScript : MonoBehaviour
             float increaseFactor = 1f + (speedMult * currentSpeedLevel);
 
             // Apply globally to all LineFollow boats
-            LineFollow.globalBoatSpeed = LineFollow.baseBoatSpeed * increaseFactor;
+            LineFollow.globalBaseBoatSpeed *= increaseFactor;
 
             currentSpeedCost = Mathf.RoundToInt(baseSpeedCost * Mathf.Pow(costMultiplier, currentSpeedLevel));
 
