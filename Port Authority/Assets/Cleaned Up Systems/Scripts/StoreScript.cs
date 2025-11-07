@@ -112,6 +112,8 @@ public class StoreScript : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseRepairSpeedUpgrade()
     {
+        print("score: " + ScoreManager.Instance.GetSpendableScore());
+        print("cost: " + currentRepairSpeedCost);
         if (storePanel.activeSelf
                 && ScoreManager.Instance.GetSpendableScore() >= currentRepairSpeedCost
                 && currentRepairSpeedLevel <= maxRepairSpeedLevel)
