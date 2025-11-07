@@ -104,6 +104,7 @@ public class VehicleSpawnScript : MonoBehaviour
         Quaternion rotation = Quaternion.LookRotation(shipDirection);
         rotation *= Quaternion.Euler(0, Random.Range(-maxSpawnAngle, maxSpawnAngle), 0);
 
+        AudioManager.Instance.PlayBoatEntrance();
         Instantiate(unlockedShipPrefabs[Random.Range(0, unlockedShipPrefabs.Count)], spawnPos, rotation);
     }
 

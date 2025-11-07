@@ -64,9 +64,19 @@ public class Boat : MonoBehaviour
     {
         // Boat vehicle crash state:
         // Disappear off map after a few seconds (do NOT act as additional obstacles)
-        if (other.CompareTag("Terrain") || other.CompareTag("Boat")) 
+        if (other.CompareTag("Boat"))
         {
-            EnterCrashState();
+            bool multipleCollisions = true;
+            if (GetInstanceID() < other.GetInstanceID())
+            {
+                multipleCollisions = false;
+            }
+            EnterCrashState(multipleCollisions);
+        }
+        if (other.CompareTag("Terrain"))
+        {
+            bool multipleCollisions = false;
+            EnterCrashState(multipleCollisions);
         }
         if (other.CompareTag("Port")) {
             vehicle.SetAtPort(true);
@@ -140,9 +150,10 @@ public class Boat : MonoBehaviour
 
         cargo.Clear();
         vehicle.SetIsMovingCargo(false);
+        AudioManager.Instance.PlayBoatDelivery();
     }
 
-    public void EnterCrashState()
+    public void EnterCrashState(bool multipleCollisions)
     {
         // Prevent multiple triggers
         if (hasCrashed)
@@ -151,6 +162,12 @@ public class Boat : MonoBehaviour
         }
         hasCrashed = true;
 
+        if (!multipleCollisions)
+        {
+            // Only trigger the collision sound once
+            AudioManager.Instance.PlayBoatCollision();
+        }
+        
         LivesManager.Instance.LoseLife();
 
         vehicle.SetIsCrashed(true);
@@ -264,7 +281,7 @@ public class Boat : MonoBehaviour
     {
         Vector3 pos = transform.position;
 
-        // Small buffer to prevent boats from being deleted too early if their model origin isn’t centered
+        // Small buffer to prevent boats from being deleted too early if their model origin isnÂ’t centered
         float buffer = 5f;
 
         if (pos.x < minX - buffer || pos.x > maxX + buffer ||
