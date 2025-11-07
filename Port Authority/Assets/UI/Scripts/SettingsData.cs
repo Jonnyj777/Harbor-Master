@@ -52,15 +52,24 @@ public class SettingsData : MonoBehaviour
 
     private void InitializeValues()
     {
+        // load saved volumes from PlayerPrefs (default to 1.0 if not found)
+        float savedMaster = PlayerPrefs.GetFloat("MasterVolume", 1f);
+        float savedMusic = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        float savedSfx = PlayerPrefs.GetFloat("SfxVolume", 1f);
+
         tutorialToggle.value = tutorialEnabled ? 1 : 0;
         fullscreenToggle.value = fullscreen ? 1 : 0;
 
         difficultyDropdown.value = 1;
         qualityDropdown.value = 1;
 
-        masterVolumeSlider.value = masterVolume / 100f;
-        musicVolumeSlider.value = musicVolume / 100f;
-        sfxVolumeSlider.value = sfxVolume / 100f;
+        masterVolume = Mathf.RoundToInt(savedMaster * 100);
+        musicVolume = Mathf.RoundToInt(savedMusic * 100);
+        sfxVolume = Mathf.RoundToInt(savedSfx * 100);
+
+        masterVolumeSlider.value = savedMaster;
+        musicVolumeSlider.value = savedMusic;
+        sfxVolumeSlider.value = savedSfx;
 
         masterVolumeText.text = $"{masterVolume}%";
         musicVolumeText.text = $"{musicVolume}%";
