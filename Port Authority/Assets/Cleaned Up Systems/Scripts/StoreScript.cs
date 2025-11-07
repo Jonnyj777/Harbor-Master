@@ -136,8 +136,8 @@ public class StoreScript : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseDurabilityUpgrade()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= currentDurabilityCost
+        if (
+                ScoreManager.Instance.GetSpendableScore() >= currentDurabilityCost
                 && currentDurabilityLevel <= maxDurabilityLevel)
         {
             ScoreManager.Instance.UpdateSpendableScore(-currentDurabilityCost);
@@ -156,8 +156,8 @@ public class StoreScript : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseSpeedUpgrade()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= currentSpeedCost
+        if (
+                ScoreManager.Instance.GetSpendableScore() >= currentSpeedCost
                 && currentSpeedLevel <= maxSpeedLevel)
         {
             ScoreManager.Instance.UpdateSpendableScore(-currentSpeedCost);
@@ -179,8 +179,8 @@ public class StoreScript : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseBigCargoShip()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= bigCargoShipCost
+        if (
+                ScoreManager.Instance.GetSpendableScore() >= bigCargoShipCost
                 && !bigCargoShipPurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-bigCargoShipCost);
@@ -196,8 +196,8 @@ public class StoreScript : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseBiggerCargoShip()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= biggerCargoShipCost
+        if (
+                ScoreManager.Instance.GetSpendableScore() >= biggerCargoShipCost
                 && !biggerCargoShipPurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-biggerCargoShipCost);
@@ -213,8 +213,8 @@ public class StoreScript : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseWhiskey()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= whiskeyCost
+        if (
+                ScoreManager.Instance.GetSpendableScore() >= whiskeyCost
                 && !whiskeyPurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-whiskeyCost);
@@ -230,8 +230,8 @@ public class StoreScript : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseFurniture()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= furnitureCost
+        if (
+                ScoreManager.Instance.GetSpendableScore() >= furnitureCost
                 && !furniturePurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-furnitureCost);
@@ -247,8 +247,8 @@ public class StoreScript : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseIndustrialEquipment()
     {
-        if (storePanel.activeSelf
-                && ScoreManager.Instance.GetSpendableScore() >= industrialEquipmentCost
+        if (
+                ScoreManager.Instance.GetSpendableScore() >= industrialEquipmentCost
                 && !industrialEquipmentPurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-industrialEquipmentCost);
