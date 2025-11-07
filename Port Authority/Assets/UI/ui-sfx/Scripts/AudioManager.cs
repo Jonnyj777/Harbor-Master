@@ -1,24 +1,30 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
     [Header("UI Sounds")]
+    public AudioClip gameMusic;
     public AudioClip buttonHover;
     public AudioClip buttonClick;
+    public AudioClip boatEntrance;
     public AudioClip boatDelivery;
     public AudioClip boatCollision;
     public AudioClip truckDelivery;
+    public AudioClip truckCollision;
 
     private AudioSource audioSource;
 
     [Header("Settings")]
     public bool sfxEnabled = true;
+    public bool musicEnabled = true;
 
     [Header("UI References")]
     public Toggle sfxToggle;
+    public Toggle musicToggle;
 
     private void Awake()
     {
@@ -52,8 +58,51 @@ public class AudioManager : MonoBehaviour
             // DEBUG
             //Debug.LogWarning("AudioManager: SFX Toggle not assigned in Inspector");
         }
+
+        if (musicToggle != null)
+        {
+            musicEnabled = musicToggle.isOn;
+            musicToggle.onValueChanged.AddListener(ToggleMusic);
+        }
+        else
+        {
+            Debug.LogWarning("AudioManager: Music Toggle not assigned in Inspector");
+        }
+    }
+
+    private void Start()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        if (currentScene.name == "LevelWithSFX" && musicEnabled)
+        {
+            PlayMusic();
+        }
     }
     
+    public void PlayMusic()
+    {
+        if (!musicEnabled || audioSource == null || gameMusic == null)
+        {
+            return;
+        }
+
+        if (!audioSource.isPlaying)
+        {
+            audioSource.clip = gameMusic;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+    }
+
+    public void StopMusic()
+    {
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+    }
+
     public void PlayHover()
     {
         if (!sfxEnabled || buttonHover == null)
@@ -78,8 +127,21 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void PlayBoatEntrance()
+    {
+        if (!sfxEnabled || boatEntrance == null)
+        {
+            return;
+        }
+        else
+        {
+            audioSource.PlayOneShot(boatEntrance);
+        }
+    }
+
     public void PlayBoatDelivery()
     {
+        // DM-CGS-24
         if (!sfxEnabled || boatDelivery == null)
         {
             return;
@@ -114,9 +176,34 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void PlayTruckCollision()
+    {
+        if (!sfxEnabled || truckCollision == null)
+        {
+            return;
+        }
+        else
+        {
+            audioSource.PlayOneShot(truckCollision);
+        }
+    }
+
     public void ToggleSFX(bool enabled)
     {
         sfxEnabled = enabled;
         //Debug.Log("SFX Enabled: " + sfxEnabled);
+    }
+
+    public void ToggleMusic(bool enabled)
+    {
+        musicEnabled = enabled;
+        if (musicEnabled)
+        {
+            PlayMusic();
+        }
+        else
+        {
+            StopMusic();
+        }
     }
 }
