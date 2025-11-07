@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using Mirror;
+using UnityEngine.UIElements;
 
 public class Port : NetworkBehaviour
 {
@@ -24,7 +25,7 @@ public class Port : NetworkBehaviour
         Renderer cargoRend = cargoPrefab.GetComponent<Renderer>();
         spawnOffset = cargoRend.bounds.size.y;
 
-        //NetworkClient.RegisterPrefab(cargoPrefab);
+        NetworkClient.RegisterPrefab(cargoPrefab);
     }
 
     [Server]
@@ -44,11 +45,20 @@ public class Port : NetworkBehaviour
         GameObject box = Instantiate(cargoPrefab, spawnPos, Quaternion.identity);
         NetworkServer.Spawn(box);
         Color color = new Color(cargo.colorData.x, cargo.colorData.y, cargo.colorData.z);
+        cargoBoxes.Add(box);
+        
         if(box != null && color != null)
         {
-            RpcAddCargoColor(box, color);
-            cargoBoxes.Add(box);
+            StartCoroutine(DelayColorRpc(box, color));
         }
+    }
+
+
+    [Server]
+    private IEnumerator DelayColorRpc(GameObject box, Color color)
+    {
+        yield return new WaitForEndOfFrame();
+        RpcAddCargoColor(box, color);
     }
 
     [Server]
