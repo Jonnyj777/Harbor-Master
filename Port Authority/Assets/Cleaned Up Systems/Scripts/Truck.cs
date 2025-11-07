@@ -45,7 +45,12 @@ public class Truck : MonoBehaviour
         // land crash state == stuck in place, no fade out
         if (other.CompareTag("Truck"))
         {
-            EnterCrashState();
+            bool multipleCollisions = true;
+            if (GetInstanceID() < other.GetInstanceID())
+            {
+                multipleCollisions = false;
+            }
+            EnterCrashState(multipleCollisions);
         }
         if (other.CompareTag("Port") && cargo.Count <= 3)
         {
@@ -145,6 +150,7 @@ public class Truck : MonoBehaviour
                 scoreUpdate += Mathf.RoundToInt(c.price * c.amount * bonusMultiplier);
             }
 
+            AudioManager.Instance.PlayTruckDelivery();
             ScoreManager.Instance.AddScore(scoreUpdate, bonus);
             cargo.Clear();
         }
@@ -181,8 +187,13 @@ public class Truck : MonoBehaviour
         }
     }
 
-    public void EnterCrashState()
+    public void EnterCrashState(bool multipleCollisions)
     {
+        if (!multipleCollisions)
+        {
+            AudioManager.Instance.PlayTruckCollision();
+        }
+        
         vehicle.SetIsCrashed(true);
         ShowRepairButton();
 
