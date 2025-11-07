@@ -13,7 +13,7 @@ public class LineFollow : NetworkBehaviour
     private SyncList<Vector3> linePositions = new SyncList<Vector3>();
     public float timerDelayBetweenLinePoints = 0.01f;
     //public Color lineColor = Color.red;
-    [SyncVar] public Vector3 lineColor;
+    [SyncVar(hook = nameof(OnLineColorChanged))] public Vector3 lineColor;
     public float lineWidth = 1;
     private LineRenderer line;
     private float timer;
@@ -67,6 +67,11 @@ public class LineFollow : NetworkBehaviour
         }
     }
 
+    public void OnLineColorChanged(Vector3 oldColorData, Vector3 newColorData)
+    {
+        line.startColor = line.endColor = new Color(newColorData.x, newColorData.y, newColorData.z);
+    }
+
     // Line Drawing Functions
     public void StartLine(Vector3 position)
     {
@@ -74,7 +79,6 @@ public class LineFollow : NetworkBehaviour
         line.startWidth = line.endWidth = lineWidth;
         line.endWidth = lineWidth;
         line.material = new Material(Shader.Find("Sprites/Default"));
-        line.startColor = line.endColor = new Color(lineColor.x, lineColor.y, lineColor.z);
     }
 
     [Server]
