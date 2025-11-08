@@ -15,7 +15,7 @@ public class LineFollow : NetworkBehaviour
     private SyncList<Vector3> linePositions = new SyncList<Vector3>();
     public float timerDelayBetweenLinePoints = 0.01f;
     //public Color lineColor = Color.red;
-    [SyncVar(hook = nameof(RpcOnLineColorChanged))] public Vector3 lineColor;
+    [SyncVar(hook = nameof(OnLineColorChanged))] public Vector3 lineColor;
     public float lineWidth = 1;
     private LineRenderer line;
     private float timer;
@@ -69,8 +69,8 @@ public class LineFollow : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    public void RpcOnLineColorChanged(Vector3 oldColorData, Vector3 newColorData)
+    
+    public void OnLineColorChanged(Vector3 oldColorData, Vector3 newColorData)
     {
         line.startColor = line.endColor = new Color(newColorData.x, newColorData.y, newColorData.z);
     }
