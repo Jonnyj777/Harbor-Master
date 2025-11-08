@@ -1,4 +1,6 @@
+using Edgegap;
 using Mirror;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,7 @@ public class LineFollow : NetworkBehaviour
     private SyncList<Vector3> linePositions = new SyncList<Vector3>();
     public float timerDelayBetweenLinePoints = 0.01f;
     //public Color lineColor = Color.red;
-    [SyncVar(hook = nameof(OnLineColorChanged))] public Vector3 lineColor;
+    [SyncVar(hook = nameof(RpcOnLineColorChanged))] public Vector3 lineColor;
     public float lineWidth = 1;
     private LineRenderer line;
     private float timer;
@@ -67,7 +69,8 @@ public class LineFollow : NetworkBehaviour
         }
     }
 
-    public void OnLineColorChanged(Vector3 oldColorData, Vector3 newColorData)
+    [ClientRpc]
+    public void RpcOnLineColorChanged(Vector3 oldColorData, Vector3 newColorData)
     {
         line.startColor = line.endColor = new Color(newColorData.x, newColorData.y, newColorData.z);
     }
@@ -379,11 +382,33 @@ public class LineFollow : NetworkBehaviour
         base.OnStartAuthority();
 
         CmdDeleteLine();
-        NetworkPlayer localPlayer = NetworkClient.localPlayer.GetComponent<NetworkPlayer>();
-        lineColor = localPlayer.lineColorData;
+        //NetworkPlayer localPlayer = NetworkClient.localPlayer.GetComponent<NetworkPlayer>();
+        //lineColor = localPlayer.lineColorData;
+        SetLineColor();
         StartDrag();
 
     }
+
+    [Command]
+    private void SetLineColor()
+    {
+        Friend self = new Friend(SteamClient.SteamId);
+        string colorName = SteamLobbyManager.Lobby.GetMemberData(self, "lineColor");
+        print("color: " + colorName);
+        switch(colorName)
+        {
+            case "Orange":
+                lineColor = new Vector3(1.0f, 0.647f, 0.0f);
+                break;
+            case "Blue":
+                lineColor = new Vector3(0.0f, 0.0f, 1.0f);
+                break;
+            default:
+                lineColor = new Vector3(1.0f, 1.0f, 1.0f);
+                break;
+        }
+    }
+
 
     private void Update()
     {

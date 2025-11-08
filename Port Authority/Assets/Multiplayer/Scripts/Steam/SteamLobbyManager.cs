@@ -325,6 +325,27 @@ public class SteamLobbyManager : MonoBehaviour
         toggle.gameObject.SetActive(true);
         toggle.onValueChanged.AddListener(ReadyPlayer);
 
+        GameObject colorPicker = playerObj.GetComponentInChildren<HorizontalLayoutGroup>(true).gameObject;
+        colorPicker.SetActive(true);
+        Button[] colorButtons = colorPicker.GetComponentsInChildren<Button>();
+        TextMeshProUGUI colorText = playerObj.transform.Find("Selected Color").GetComponent<TextMeshProUGUI>();
+
+        foreach(Button button in colorButtons)
+        {
+            switch(button.gameObject.name)
+            {
+                case "Orange":
+                    button.onClick.AddListener(() => SetUserLineColor("Orange", colorText));
+                    break;
+                case "Blue":
+                    button.onClick.AddListener(() => SetUserLineColor("Blue", colorText));
+                    break;
+
+            }
+            
+        }
+
+
 
         inLobby.Add(SteamClient.SteamId, new PlayerInfo(playerObj));
        
@@ -376,6 +397,12 @@ public class SteamLobbyManager : MonoBehaviour
         inLobby[SteamClient.SteamId].IsReady = status;
 
         print("check IsAllReady status on readying: " + IsAllReady());
+    }
+
+    public void SetUserLineColor(string colorName, TextMeshProUGUI text)
+    {
+        Lobby.SetMemberData("lineColor", colorName);
+        text.text = "Color: " + colorName;
     }
 
     public void LeaveLobby()
