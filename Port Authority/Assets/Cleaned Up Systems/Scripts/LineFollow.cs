@@ -68,10 +68,9 @@ public class LineFollow : NetworkBehaviour
             SnapToSurface();
         }
 
-        OnLineColorChanged(lineColor, lineColor);
     }
 
-    
+
     public void OnLineColorChanged(Vector3 oldColorData, Vector3 newColorData)
     {
         line.startColor = line.endColor = new Color(newColorData.x, newColorData.y, newColorData.z);
@@ -94,12 +93,12 @@ public class LineFollow : NetworkBehaviour
         //print("Update line");
         //Debug.DrawRay(Camera.main.ScreenToWorldPoint(mousePos), GetMousePosition(mousePos), Color.red);
         timer -= Time.deltaTime;
-            if (timer <= 0) { 
+        if (timer <= 0) {
             linePositions.Add(raycastMousePos);
             //line.positionCount = linePositions.Count;
             //line.SetPositions(linePositions.ToArray());
             timer = timerDelayBetweenLinePoints;
-            }
+        }
     }
 
     [Server]
@@ -164,7 +163,7 @@ public class LineFollow : NetworkBehaviour
     {
         print("Start Drag");
         isDragging = true;
-        isDraggable = true;;
+        isDraggable = true; ;
         atPort = false;
         lineFollowing = false;
         drawingLine = true;
@@ -174,7 +173,7 @@ public class LineFollow : NetworkBehaviour
 
     private void OnMouseDrag()
     {
-        if(!isOwned || !isDraggable) return;
+        if (!isOwned || !isDraggable) return;
 
         CmdRequestMove(GetMousePosition());
     }
@@ -188,7 +187,7 @@ public class LineFollow : NetworkBehaviour
 
         NetworkPlayer playerPlayer = NetworkClient.localPlayer.GetComponent<NetworkPlayer>();
         playerPlayer.CmdRemoveAuthority(unitIdentity);
-        
+
     }
 
     [Server]
@@ -401,18 +400,32 @@ public class LineFollow : NetworkBehaviour
     private void CmdSetLineColor(string colorName)
     {
         print("setting color to: " + colorName);
-        switch(colorName)
+        Vector3 colorData;
+        switch (colorName)
         {
             case "Orange":
-                lineColor = new Vector3(1.0f, 0.647f, 0.0f);
+                colorData = new Vector3(1.0f, 0.647f, 0.0f);
                 break;
             case "Blue":
-                lineColor = new Vector3(0.0f, 0.0f, 1.0f);
+                colorData = new Vector3(0.0f, 0.0f, 1.0f);
                 break;
             default:
-                lineColor = new Vector3(1.0f, 1.0f, 1.0f);
+                colorData = new Vector3(1.0f, 1.0f, 1.0f);
                 break;
         }
+
+        RpcApplyLineColor(colorData);
+    }
+
+    [ClientRpc]
+    private void RpcApplyLineColor(Vector3 newColorData)
+    {
+        if (line.material == null) line.material = new Material(Shader.Find("Sprites/Default"));
+
+        Color newLineColor = new Color(newColorData.x, newColorData.y, newColorData.z);
+
+        lineColor = newColorData;
+        line.startColor = line.endColor = newLineColor;
     }
 
 
