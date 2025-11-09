@@ -384,17 +384,18 @@ public class LineFollow : NetworkBehaviour
         CmdDeleteLine();
         //NetworkPlayer localPlayer = NetworkClient.localPlayer.GetComponent<NetworkPlayer>();
         //lineColor = localPlayer.lineColorData;
-        SetLineColor();
+        Friend self = new Friend(SteamClient.SteamId);
+        string colorName = SteamLobbyManager.Lobby.GetMemberData(self, "lineColor");
+        print("color: " + colorName);
+
+        CmdSetLineColor(colorName);
         StartDrag();
 
     }
 
     [Command]
-    private void SetLineColor()
+    private void CmdSetLineColor(string colorName)
     {
-        Friend self = new Friend(SteamClient.SteamId);
-        string colorName = SteamLobbyManager.Lobby.GetMemberData(self, "lineColor");
-        print("color: " + colorName);
         switch(colorName)
         {
             case "Orange":
