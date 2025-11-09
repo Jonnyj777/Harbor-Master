@@ -67,6 +67,8 @@ public class LineFollow : NetworkBehaviour
         {
             SnapToSurface();
         }
+
+        OnLineColorChanged(lineColor, lineColor);
     }
 
     
