@@ -73,6 +73,7 @@ public class LineFollow : NetworkBehaviour
     public void OnLineColorChanged(Vector3 oldColorData, Vector3 newColorData)
     {
         line.startColor = line.endColor = new Color(newColorData.x, newColorData.y, newColorData.z);
+        print("Color changed to: " + newColorData);
     }
 
     // Line Drawing Functions
@@ -82,6 +83,7 @@ public class LineFollow : NetworkBehaviour
         line.startWidth = line.endWidth = lineWidth;
         line.endWidth = lineWidth;
         line.material = new Material(Shader.Find("Sprites/Default"));
+        print("starting line with color: " + line.startColor);
     }
 
     [Server]
@@ -396,6 +398,7 @@ public class LineFollow : NetworkBehaviour
     [Command]
     private void CmdSetLineColor(string colorName)
     {
+        print("setting color to: " + colorName);
         switch(colorName)
         {
             case "Orange":
