@@ -240,6 +240,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Boat
       objectReference: {fileID: 0}
+    - target: {fileID: 5484665934614282575, guid: 6dc8ed792a53cea449bc5d990cecca8c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7572274700235345642, guid: 6dc8ed792a53cea449bc5d990cecca8c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 122.5
@@ -651,7 +655,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5267347697263191900, guid: a5511d586b5259e4d80f1d3407ba4c93, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5466057443297664885, guid: a5511d586b5259e4d80f1d3407ba4c93, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1111,8 +1115,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1867384773}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.33820695, y: 0.002230689, z: -0.0032262434, w: -0.94106364}
-  m_LocalPosition: {x: -160.60909, y: 112.5634, z: -39.549034}
+  m_LocalRotation: {x: -0.32917282, y: -0.0011370502, z: -0.002022899, w: -0.94426686}
+  m_LocalPosition: {x: -57.585434, y: 155.74547, z: -98.8851}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
