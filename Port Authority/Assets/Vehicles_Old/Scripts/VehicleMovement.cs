@@ -282,5 +282,36 @@ public class VehicleMovement : MonoBehaviour
         // notify the whirlpool that this boat is done
         callback?.Invoke(this);
     }
+
+    #region Mud Puddle Interaction
+    public void ApplyMudEffect(float slowdownMultiplier, float duration)
+    {
+        if (mudEffected)
+        {
+            return;
+        }
+
+        StartCoroutine(MudRecovery(slowdownMultiplier, duration));
+    }
+
+    private IEnumerator MudRecovery(float slowdownMultiplier, float duration)
+    {
+        mudEffected = true;
+        float originalSpeed = speed;
+
+        speed *= slowdownMultiplier;
+        Debug.Log($"{name} hit mud. Speed reduced for {duration} seconds.");
+
+        yield return new WaitForSeconds(duration);
+
+        if (!isCrashed)
+        {
+            speed = originalSpeed;
+            Debug.Log($"{name} recovered from mud and is back to normal speed.");
+        }
+
+        mudEffected = false;
+    }
+    #endregion
 }
 #endregion
