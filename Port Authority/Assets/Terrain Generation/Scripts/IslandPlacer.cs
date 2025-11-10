@@ -19,6 +19,7 @@ public class IslandPlacer : MonoBehaviour
 
         InitializeIndices();
         SpawnIslands();
+        GetGridBounds();
     }
 
     private void SpawnIslands()
@@ -39,6 +40,7 @@ public class IslandPlacer : MonoBehaviour
 
                 GameObject island = Instantiate(prefab);
                 island.transform.position = new Vector3(x * tileSize.x, 0f, z * tileSize.y);
+                Debug.Log("Island PositionX: " + island.transform.position.x + " Island PositionZ: " + island.transform.position.z);
             }
         }
     }
@@ -85,5 +87,16 @@ public class IslandPlacer : MonoBehaviour
 
         availableIslandIndices.Remove(selectedIndex);
         return islandPrefabs[selectedIndex];
+    }
+
+    public Bounds GetGridBounds()
+    {
+        Vector3 center = new Vector3((gridSize.x / 2) * tileSize.x, 0, (gridSize.y / 2) * tileSize.y); // Example: centered at the origin
+        Vector3 size = new Vector3(gridSize.x * tileSize.x, 0, gridSize.y * tileSize.y);   // Example: total size of 1 unit on X, 2 on Y, 1 on Z
+        Bounds gridBounds = new Bounds(center, size);
+
+        Debug.Log($"GridBounds - Center: {gridBounds.center}, Size: {gridBounds.size}");
+
+        return gridBounds;
     }
 }
