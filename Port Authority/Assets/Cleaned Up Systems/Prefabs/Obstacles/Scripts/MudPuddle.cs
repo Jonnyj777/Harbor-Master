@@ -12,38 +12,38 @@ public class MudPuddle : MonoBehaviour
         VehicleMovement vehicle = other.GetComponent<VehicleMovement>();
         if (vehicle != null && vehicle.vehicleType == VehicleType.Land)
         {
-            StartCoroutine(MudEffect(vehicle));
+            vehicle.ApplyMudEffect(slowdownMultiplier, slownessDuration);
         }
     }
 
-    private IEnumerator MudEffect(VehicleMovement vehicle)
-    {
-        if (vehicle.mudEffected)
-            yield break;
+    //private IEnumerator MudEffect(VehicleMovement vehicle)
+    //{
+    //    if (vehicle.mudEffected)
+    //        yield break;
 
-        vehicle.mudEffected = true;
+    //    vehicle.mudEffected = true;
 
-        // store original speed
-        float ogSpeed = vehicle.speed;
+    //    // store original speed
+    //    float ogSpeed = vehicle.speed;
 
-        // reduce speed
-        vehicle.speed *= slowdownMultiplier;
+    //    // reduce speed
+    //    vehicle.speed *= slowdownMultiplier;
 
-        // DEBUG TEST
-        Debug.Log($"{vehicle.name} hit mud. SPeed reduced for {slownessDuration} seconds.");
+    //    // DEBUG TEST
+    //    Debug.Log($"{vehicle.name} hit mud. SPeed reduced for {slownessDuration} seconds.");
 
-        yield return new WaitForSeconds(slownessDuration);
+    //    yield return new WaitForSeconds(slownessDuration);
 
-        // restore speed if not crashed
-        if (!vehicle.isCrashed)
-        {
-            vehicle.speed = ogSpeed;
-            // DEBUG TEST
-            Debug.Log($"{vehicle.name} recovered from mud and is back to normal speed.");
-        }
+    //    // restore speed if not crashed
+    //    if (!vehicle.isCrashed)
+    //    {
+    //        vehicle.speed = ogSpeed;
+    //        // DEBUG TEST
+    //        Debug.Log($"{vehicle.name} recovered from mud and is back to normal speed.");
+    //    }
 
-        vehicle.mudEffected = false;
-    }
+    //    vehicle.mudEffected = false;
+    //}
 
     public void OnChildClicked()
     {
@@ -64,8 +64,8 @@ public class MudPuddle : MonoBehaviour
             {
                 if (r.material.HasProperty("_Color"))
                 {
-                    Color c = r.material.color;
-                    r.material.color = new Color(c.r, c.g, c.b, alpha);
+                    Color c = r.sharedMaterial.color;
+                    r.sharedMaterial.color = new Color(c.r, c.g, c.b, alpha);
                 }
             }
             yield return null;
