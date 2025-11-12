@@ -438,6 +438,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storePrefabs:
   - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
+  - {fileID: 100000, guid: 65abb0f1b521f834bae80ea4c9d93734, type: 3}
+  - {fileID: 100000, guid: 3667b1c4d7f532647b9156782c0c80f0, type: 3}
+  - {fileID: 100000, guid: 4c14ffc6a7f79e942885227ac141590c, type: 3}
+  - {fileID: 100000, guid: 4c14ffc6a7f79e942885227ac141590c, type: 3}
+  - {fileID: 100000, guid: 8b3eca4c34b9e1148a3c4d42a48dd5b8, type: 3}
+  - {fileID: 100000, guid: 0c7bcaa85c9494849bc7a0a18b7f3324, type: 3}
+  - {fileID: 100000, guid: e1d9101af5d96d94ca99efe2de0bac21, type: 3}
+  - {fileID: 100000, guid: 5dd9f8de2583df543859013bcdc56639, type: 3}
+  - {fileID: 100000, guid: 4dc7028a3a83758439585b7c7c98cb27, type: 3}
+  - {fileID: 100000, guid: 931fa17f0ab17504bbfc8903e54e6a16, type: 3}
+  - {fileID: 100000, guid: 260808cfd9b21994d8c3007a7bc9934c, type: 3}
+  - {fileID: 100000, guid: 9ccda285cd5f1ce4fa00133b50ba5cbc, type: 3}
   dockPrefabs:
   - {fileID: 2220100466157476232, guid: b8c02466a340343c19ea215f7963f868, type: 3}
   factoriesPrefabs:
@@ -552,7 +564,7 @@ Terrain:
   serializedVersion: 6
   m_TerrainData: {fileID: 15600000, guid: dc498bc189fcf4f279679205ab2e3d6b, type: 2}
   m_TreeDistance: 5000
-  m_TreeBillboardDistance: 50
+  m_TreeBillboardDistance: 555
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
   m_DetailObjectDistance: 80
