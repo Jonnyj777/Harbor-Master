@@ -287,7 +287,7 @@ GameObject:
   - component: {fileID: 5856501482760209841}
   - component: {fileID: 7542726444879001885}
   m_Layer: 0
-  m_Name: MudPuddle
+  m_Name: MudPuddleN
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
