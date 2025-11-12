@@ -43,16 +43,19 @@ public class Boat : MonoBehaviour
         }
 
         // Teach the boat the world bounds so it can destroy itself
+        
+        /*
         GameObject terrain = GameObject.Find("TerrainGenerator");
         MeshFilter terrainMeshFilter = terrain.GetComponent<MeshFilter>();
         Bounds terrainMeshBounds = terrainMeshFilter.mesh.bounds;
         Vector3 terrainUnscaledSize = terrainMeshBounds.size;
         Vector3 terrainScaledSize = Vector3.Scale(terrainUnscaledSize, terrain.transform.localScale);
+        */
 
-        minX = terrain.transform.position.x;
-        maxX = minX + terrainScaledSize.x;
-        minZ = terrain.transform.position.z;
-        maxZ = minZ + terrainScaledSize.z;
+        minX = 0;
+        maxX = 200;
+        minZ = 0;
+        maxZ = 200;
     }
 
     private void Update()

@@ -94,7 +94,8 @@ public class VehicleSpawnScript : MonoBehaviour
 
     void spawnVehicle()
     {
-        Vector3 spawnPos = validSpawnLocations[Random.Range(0, validSpawnLocations.Count)];
+        //Vector3 spawnPos = validSpawnLocations[Random.Range(0, validSpawnLocations.Count)];
+        Vector3 spawnPos = Vector3.zero;
         spawnPos.y = waterLevel + spawnHeightOffset;
 
         Vector3 shipDirection = (terrainCenter - spawnPos).normalized;
