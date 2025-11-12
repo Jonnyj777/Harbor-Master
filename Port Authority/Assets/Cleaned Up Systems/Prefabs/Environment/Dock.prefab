@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 734607315235809963}
   - component: {fileID: 4780158387874651706}
   m_Layer: 0
-  m_Name: DockN
+  m_Name: Dock
   m_TagString: Port
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

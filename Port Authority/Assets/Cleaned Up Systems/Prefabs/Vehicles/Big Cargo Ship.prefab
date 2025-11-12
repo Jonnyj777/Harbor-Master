@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 2409304050537549700}
   - component: {fileID: 369142842699578696}
   m_Layer: 0
-  m_Name: Big Cargo ShipN
+  m_Name: Big Cargo Ship
   m_TagString: Boat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
