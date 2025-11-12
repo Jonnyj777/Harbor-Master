@@ -1,0 +1,47 @@
+{
+  "name": "com.anandev.splinemesh",
+  "displayName": "Spline Mesh",
+  "version": "1.4.1",
+  "unity": "2021.3",
+  "documentationUrl": "https://docs.google.com/document/d/1Ul0xCCkXnXC6aQOrWnYuw3nb1dB4rRg9OA2tuF2eWms/edit?usp=sharing",
+  "description": "A flexible spline-based mesh and collider generation package for Unity.",
+  "keywords": [
+    "spline",
+    "mesh",
+    "collider",
+    "spline road",
+    "conveyor belt",
+    "texture",
+    "train tracks"
+  ],
+  "author": {
+    "name": "Anand Satheesan",
+    "email": "anandcdigital@gmail.com",
+    "url": "https://youtube.com/@anandev"
+  },
+  "dependencies": {
+    "com.unity.splines": "2.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnanD3V/SplineMesh.git"
+  },
+  "_fingerprint": "b5f504e483e95aa704fdb1ddd2169dee8a3e5c00",
+  "samples": [
+    {
+      "displayName": "Conveyor Belt Sample",
+      "description": "A sample scene showcasing the conveyor belt functionality.",
+      "path": "Samples~/Conveyors"
+    },
+    {
+      "displayName": "Road Creation Sample",
+      "description": "A sample scene demonstrating road creation with splines.",
+      "path": "Samples~/Roads"
+    },
+    {
+      "displayName": "Train Tracks Sample",
+      "description": "A sample scene for generating train tracks using splines.",
+      "path": "Samples~/Train Tracks"
+    }
+  ]
+}
