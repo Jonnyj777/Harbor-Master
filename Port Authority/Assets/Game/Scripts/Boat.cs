@@ -53,9 +53,9 @@ public class Boat : MonoBehaviour
         */
 
         minX = 0;
-        maxX = 200;
+        maxX = 1000;
         minZ = 0;
-        maxZ = 200;
+        maxZ = 1000;
     }
 
     private void Update()
