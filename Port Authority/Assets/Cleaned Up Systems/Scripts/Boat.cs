@@ -277,6 +277,51 @@ public class Boat : MonoBehaviour
     //    mat.renderQueue = 3000;
     //}
 
+    public void EnterWhirlpool(Transform whirlpoolCenter, float duration, System.Action<VehicleMovement> callback = null)
+    {
+        if (!hasCrashed)
+        {
+            hasCrashed = true;
+            crashType = CrashType.Boat;
+            StartCoroutine(SuckedInWhirlpool(whirlpoolCenter, duration, callback));
+        }
+    }
+
+    private IEnumerator SuckedInWhirlpool(Transform center, float duration, System.Action<VehicleMovement> callback)
+    {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.constraints = RigidbodyConstraints.FreezeRotation;
+        }
+
+        float elapsed = 0f;
+        Vector3 startPos = transform.position;
+        Vector3 endPos = new Vector3(center.position.x, center.position.y - sinkLength, center.position.z);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+
+            // move toward center while sinking
+            transform.position = Vector3.Lerp(startPos, endPos, t);
+
+            // rotate around center while moving inward
+            transform.RotateAround(center.position, Vector3.up, 360f * Time.deltaTime);
+
+            yield return null;
+        }
+
+        // once centered, trigger immediate crash for boat(s)
+        Destroy(gameObject);
+
+        // notify the whirlpool that this boat is done
+        callback?.Invoke(this);
+    }
+
     private void CheckBounds()
     {
         Vector3 pos = transform.position;
