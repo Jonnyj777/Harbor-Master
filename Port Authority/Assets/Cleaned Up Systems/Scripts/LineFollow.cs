@@ -60,6 +60,7 @@ public class LineFollow : NetworkBehaviour
         timer = timerDelayBetweenLinePoints;
         Renderer rend = GetComponent<Renderer>();
         heightOffset = rend.bounds.size.y * 0.5f;
+        line.material = new Material(Shader.Find("Sprites/Default"));
 
         linePositions.Callback += OnLinePositionsChanged;
 
