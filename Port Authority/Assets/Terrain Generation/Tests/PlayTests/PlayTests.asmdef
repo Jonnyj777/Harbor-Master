@@ -1,0 +1,9 @@
+{
+    "name": "PlayTests",
+    "references": [
+        "Assembly-CSharp"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}

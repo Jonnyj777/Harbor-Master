@@ -1,14 +1,14 @@
-using Mirror;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class Boat : NetworkBehaviour
+public class Boat : MonoBehaviour
 {
     [Header("Cargo Prefabs")]
     public List<GameObject> cargoBoxes;
+    public List<Cargo> cargo = new List<Cargo>();
 
+    [SerializeField]
     private List<Cargo> unlockedCargo = new List<Cargo>();
     private Port port;
 
@@ -27,8 +27,13 @@ public class Boat : NetworkBehaviour
     private List<Renderer> vehiclePartRenderers = new List<Renderer>();
     private float minX, maxX, minZ, maxZ;   // World bounds
 
+
     private void Start()
     {
+        AssignCargo();
+
+        vehicle = GetComponent<LineFollow>();
+        //vehicleRenderer = GetComponent<Renderer>();
         foreach (Renderer vehiclePartRenderer in GetComponentsInChildren<Renderer>())
         {
             if (vehiclePartRenderer.CompareTag("Boat"))
@@ -37,48 +42,46 @@ public class Boat : NetworkBehaviour
             }
         }
 
-        if (isServer)
-        {
-            //AssignCargo();
-            //vehicle = GetComponent<LineFollow>();
-            //vehicleRenderer = GetComponent<Renderer>();
-            AssignCargo();
+        // Teach the boat the world bounds so it can destroy itself
+        
+        /*
+        GameObject terrain = GameObject.Find("TerrainGenerator");
+        MeshFilter terrainMeshFilter = terrain.GetComponent<MeshFilter>();
+        Bounds terrainMeshBounds = terrainMeshFilter.mesh.bounds;
+        Vector3 terrainUnscaledSize = terrainMeshBounds.size;
+        Vector3 terrainScaledSize = Vector3.Scale(terrainUnscaledSize, terrain.transform.localScale);
+        */
 
-            vehicle = GetComponent<LineFollow>();
-            //vehicleRenderer = GetComponent<Renderer>();
-
-            // Teach the boat the world bounds so it can destroy itself
-            GameObject terrain = GameObject.Find("TerrainGenerator");
-            MeshFilter terrainMeshFilter = terrain.GetComponent<MeshFilter>();
-            Bounds terrainMeshBounds = terrainMeshFilter.mesh.bounds;
-            Vector3 terrainUnscaledSize = terrainMeshBounds.size;
-            Vector3 terrainScaledSize = Vector3.Scale(terrainUnscaledSize, terrain.transform.localScale);
-
-            minX = terrain.transform.position.x;
-            maxX = minX + terrainScaledSize.x;
-            minZ = terrain.transform.position.z;
-            maxZ = minZ + terrainScaledSize.z;
-        }
+        minX = 0;
+        maxX = 1000;
+        minZ = 0;
+        maxZ = 1000;
     }
 
     private void Update()
     {
-        if(isServer)
-        {
-            CheckBounds();
-        }
+        CheckBounds();
     }
 
-    [ServerCallback]
     private void OnTriggerEnter(Collider other)
     {
-
-        if (other.CompareTag("Terrain") || other.CompareTag("Boat"))
+        // Boat vehicle crash state:
+        // Disappear off map after a few seconds (do NOT act as additional obstacles)
+        if (other.CompareTag("Boat"))
         {
-            EnterCrashState();
+            bool multipleCollisions = true;
+            if (GetInstanceID() < other.GetInstanceID())
+            {
+                multipleCollisions = false;
+            }
+            EnterCrashState(multipleCollisions);
         }
-        if (other.CompareTag("Port"))
+        if (other.CompareTag("Terrain"))
         {
+            bool multipleCollisions = false;
+            EnterCrashState(multipleCollisions);
+        }
+        if (other.CompareTag("Port")) {
             vehicle.SetAtPort(true);
             vehicle.DeleteLine();
             port = other.GetComponent<Port>();
@@ -87,11 +90,10 @@ public class Boat : NetworkBehaviour
         }
     }
 
-    [Server]
     public void AssignCargo()
     {
         List<CargoType> unlockedCargoTypes = CargoManager.Instance.GetUnlockedCargo();
-        if (unlockedCargoTypes.Count == 0)
+        if (unlockedCargoTypes.Count ==  0)
         {
             return;
         }
@@ -107,66 +109,54 @@ public class Boat : NetworkBehaviour
                 // Pick a random unlocked cargo type
                 CargoType selectedCargoType = unlockedCargoTypes[Random.Range(0, unlockedCargoTypes.Count)];
 
+                // Apply selected cargo color to the prefab
+                Renderer rend = cargoBoxes[i].GetComponent<Renderer>();
+                rend.material.color = selectedCargoType.color;
+
                 // Create a new Cargo instance
-                RpcActivateCargo(i, selectedCargoType.color);
+                Cargo c = new Cargo
+                {
+                    type = selectedCargoType.cargoName,
+                    price = selectedCargoType.basePrice,
+                    amount = 1,
+                    color = selectedCargoType.color,
+                    spawnTime = Time.time,
+                };
+
+                cargo.Add(c);
             }
             else
             {
-                RpcDeactivateCargo(i);
+                cargoBoxes[i].SetActive(false);
             }
         }
     }
 
-    [ClientRpc]
-    private void RpcActivateCargo(int cargoIndex, Color randomColor)
-    {
-        cargoBoxes[cargoIndex].SetActive(true);
-        Renderer rend = cargoBoxes[cargoIndex].GetComponent<Renderer>();
-        rend.material.color = randomColor;
-
-        Cargo c = cargoBoxes[cargoIndex].AddComponent<Cargo>();
-        c.type = "Coffee";
-        c.amount = 1;
-        c.colorData = new Vector3(randomColor.r, randomColor.g, randomColor.b);
-        c.spawnTime = Time.time;
-        c.price = 20;
-    }
-
-
-    [ClientRpc]
-    private void RpcDeactivateCargo(int cargoIndex)
-    {
-        cargoBoxes[cargoIndex].SetActive(false);
-    }
-
-
-
-    [Server]
     void DeliverCargo()
     {
-        List<Cargo> cargo = new List<Cargo>();
-
-        foreach(GameObject gameObject in cargoBoxes)
+        if (cargo.Count > 0)
         {
-            if (!gameObject.activeSelf) continue;
-            if(gameObject.TryGetComponent<Cargo>(out Cargo c))
-            {
-                cargo.Add(c);
-            }
-        }
-
-        if(cargo.Count > 0) { 
-            port.ReceiveCargo(cargo);
-
-            for(int i = 0; i < cargoBoxes.Count; i++)
-            {
-                RpcDeactivateCargo(i);
-            }
+            StartCoroutine(DeliverCargoRoutine());
         }
     }
 
-    [Server]
-    public void EnterCrashState()
+    private IEnumerator DeliverCargoRoutine()
+    {
+        vehicle.SetIsMovingCargo(true);
+        for (int i = 0; i < cargo.Count; i++)
+        {
+            yield return new WaitForSeconds(vehicle.delayPerCargo);
+            
+            port.ReceiveCargoBox(cargo[i]);
+            cargoBoxes[i].SetActive(false);
+        }
+
+        cargo.Clear();
+        vehicle.SetIsMovingCargo(false);
+        AudioManager.Instance.PlayBoatDelivery();
+    }
+
+    public void EnterCrashState(bool multipleCollisions)
     {
         // Prevent multiple triggers
         if (hasCrashed)
@@ -175,18 +165,16 @@ public class Boat : NetworkBehaviour
         }
         hasCrashed = true;
 
+        if (!multipleCollisions)
+        {
+            // Only trigger the collision sound once
+            AudioManager.Instance.PlayBoatCollision();
+        }
+        
         LivesManager.Instance.LoseLife();
 
         vehicle.SetIsCrashed(true);
 
-        RpcEnterClientCrashState();
-
-        StartCoroutine(SinkFadeOut());
-    }
-
-    [ClientRpc]
-    void RpcEnterClientCrashState()
-    {
         if (vehiclePartRenderers.Count != 0)
         {
             foreach (Renderer vehiclePartRenderer in vehiclePartRenderers)
@@ -197,10 +185,10 @@ public class Boat : NetworkBehaviour
                 }
             }
         }
+
+        StartCoroutine(SinkFadeOut());
     }
 
-
-    [Server]
     // function to make boats sink, fade, then destroyed after crashing into another boat vehicle
     private IEnumerator SinkFadeOut()
     {
@@ -218,14 +206,85 @@ public class Boat : NetworkBehaviour
             yield return null;
         }
         transform.position = endPos;
+
+        //TODO: Review Fadeout logic.
+        //// Wait before fade
+        //yield return new WaitForSeconds(fadeDelay);
+
+        //// Fade out logic
+        //if (vehiclePartRenderers.Count == 0)
+        //{
+        //    yield break;
+        //}
+
+        //// Cache original material colors for all parts of a ship
+        //List<Color[]> originalMatColors = new List<Color[]>();
+        //foreach (Renderer vehiclePartRenderer in vehiclePartRenderers)
+        //{
+        //    Color[] colors = new Color[vehiclePartRenderer.materials.Length];
+        //    for (int i = 0; i < vehiclePartRenderer.materials.Length; i++)
+        //    {
+        //        colors[i] = vehiclePartRenderer.materials[i].color;
+        //    }
+        //    originalMatColors.Add(colors);
+        //}
+
+        //float fadeElapsed = 0f;
+
+        //// Fade all materials over time
+        //while (fadeElapsed < fadeDuration)
+        //{
+        //    float ratioFaded = fadeElapsed / fadeDuration;
+
+        //    for (int r = 0; r < vehiclePartRenderers.Count; r++)
+        //    {
+        //        Renderer vehiclePartRenderer = vehiclePartRenderers[r];
+        //        for (int i = 0; i < vehiclePartRenderer.materials.Length; ++i)
+        //        {
+        //            // Ensure material supports transparency
+        //            MakeMaterialTransparent(vehiclePartRenderer.materials[i]);
+
+        //            Color startColor = originalMatColors[r][i];
+        //            Color targetColor = new Color(startColor.r, startColor.g, startColor.b, 0f);
+        //            vehiclePartRenderer.materials[i].color = Color.Lerp(startColor, targetColor, ratioFaded);
+        //        }
+        //    }
+
+        //    fadeElapsed += Time.deltaTime;
+        //    yield return null;
+        //}
+
+        //// Ensure that each material is fully transparent at the end
+        //foreach (Renderer vehiclePartRenderer in vehiclePartRenderers)
+        //{
+        //    foreach (Material mat in vehiclePartRenderer.materials)
+        //    {
+        //        Color c = mat.color;
+        //        c.a = 0f;
+        //        mat.color = c;
+        //    }
+        //}
+
         Destroy(gameObject);
     }
+
+    //private void MakeMaterialTransparent(Material mat)
+    //{
+    //    mat.SetFloat("_Mode", 3); // 3 = Transparent in Standard Shader
+    //    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+    //    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+    //    mat.SetInt("_ZWrite", 0);
+    //    mat.DisableKeyword("_ALPHATEST_ON");
+    //    mat.EnableKeyword("_ALPHABLEND_ON");
+    //    mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+    //    mat.renderQueue = 3000;
+    //}
 
     private void CheckBounds()
     {
         Vector3 pos = transform.position;
 
-        // Small buffer to prevent boats from being deleted too early if their model origin isn’t centered
+        // Small buffer to prevent boats from being deleted too early if their model origin isnÂ’t centered
         float buffer = 5f;
 
         if (pos.x < minX - buffer || pos.x > maxX + buffer ||

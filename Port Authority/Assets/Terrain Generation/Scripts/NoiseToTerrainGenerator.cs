@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-//[ExecuteInEditMode]
+[ExecuteInEditMode]
 public class NoiseToTerrainGenerator : MonoBehaviour
 {
     [SerializeField]
@@ -16,7 +16,7 @@ public class NoiseToTerrainGenerator : MonoBehaviour
     [SerializeField]
     private int[] triangles;
 
-    private Mesh mesh;
+    public Mesh mesh;
 
     [SerializeField]
     private Texture2D texture;
@@ -51,11 +51,12 @@ public class NoiseToTerrainGenerator : MonoBehaviour
         SetVectorColors();
 
         waterPlaneTransform.position = new Vector3(waterPlaneTransform.position.x, waterLevel, waterPlaneTransform.position.z);
+
     }
 
     private void Update()
     {
-        
+
     }
 
 
