@@ -16,7 +16,7 @@ public class LineFollow : MonoBehaviour
     private float timer;
 
     [Header("Path Output (movement)")]
-    // positions is the smoothed path that boats follow
+    // Positions is the smoothed path that boats follow
     private Vector3[] positions = new Vector3[0];
     private int moveIndex = 0;
 
