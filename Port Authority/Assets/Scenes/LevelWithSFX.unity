@@ -10768,7 +10768,7 @@ MonoBehaviour:
   - {fileID: 3145206158688813664, guid: 6dc8ed792a53cea449bc5d990cecca8c, type: 3}
   - {fileID: 551903078520605625, guid: cce0c07bc21905249835188e56f87f40, type: 3}
   - {fileID: 551903078520605625, guid: 42c593b151f84da48bfd20ad92c1598b, type: 3}
-  spawnRate: 10
+  spawnRate: 25
   difficultyIncreaseRate: 60
   spawnMargin: 0
   cornerMargin: 10
