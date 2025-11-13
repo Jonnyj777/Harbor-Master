@@ -1,9 +1,15 @@
 fileFormatVersion: 2
 guid: bcc8fc05f1f924531a65f39394c0b703
 TextureImporter:
+<<<<<<< HEAD
   internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
+=======
+  fileIDToRecycleName: {}
+  externalObjects: {}
+  serializedVersion: 9
+>>>>>>> parent of c84bd2c (Merge branch 'main' into Merged-Multiplayer-Networking-Development)
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
@@ -20,12 +26,18 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+<<<<<<< HEAD
     flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
   ignoreMipmapLimit: 0
+=======
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+>>>>>>> parent of c84bd2c (Merge branch 'main' into Merged-Multiplayer-Networking-Development)
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -34,12 +46,21 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
+<<<<<<< HEAD
     filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 0
     wrapV: 0
     wrapW: 0
+=======
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: -1
+    wrapV: -1
+    wrapW: -1
+>>>>>>> parent of c84bd2c (Merge branch 'main' into Merged-Multiplayer-Networking-Development)
   nPOTScale: 1
   lightmap: 0
   compressionQuality: 50
@@ -57,6 +78,7 @@ TextureImporter:
   textureType: 0
   textureShape: 1
   singleChannelComponent: 0
+<<<<<<< HEAD
   flipbookRows: 1
   flipbookColumns: 1
   maxTextureSizeSet: 0
@@ -68,6 +90,13 @@ TextureImporter:
   cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
+=======
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - serializedVersion: 2
+>>>>>>> parent of c84bd2c (Merge branch 'main' into Merged-Multiplayer-Networking-Development)
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -77,6 +106,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+<<<<<<< HEAD
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
@@ -119,19 +149,29 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+=======
+    androidETC2FallbackOverride: 0
+>>>>>>> parent of c84bd2c (Merge branch 'main' into Merged-Multiplayer-Networking-Development)
   spriteSheet:
     serializedVersion: 2
     sprites: []
     outline: []
+<<<<<<< HEAD
     customData: 
     physicsShape: []
     bones: []
     spriteID: 
     internalID: 0
+=======
+    physicsShape: []
+    bones: []
+    spriteID: 
+>>>>>>> parent of c84bd2c (Merge branch 'main' into Merged-Multiplayer-Networking-Development)
     vertices: []
     indices: 
     edges: []
     weights: []
+<<<<<<< HEAD
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
@@ -141,3 +181,19 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+=======
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 129321
+  packageName: Mirror
+  packageVersion: 96.0.1
+  assetPath: Assets/Mirror/Examples/_Common/Textures/(Public Domain) Dirt Hand Painted
+    Texture/dirt.png
+  uploadId: 736421
+>>>>>>> parent of c84bd2c (Merge branch 'main' into Merged-Multiplayer-Networking-Development)
