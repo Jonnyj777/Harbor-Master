@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 public class PortN : NetworkBehaviour
 {
-    public List<Cargo> portCargo = new List<Cargo>();
+    public List<CargoN> portCargo = new List<CargoN>();
     public List<GameObject> cargoBoxes = new List<GameObject>();
 
     public GameObject loadingArea;
@@ -29,7 +29,7 @@ public class PortN : NetworkBehaviour
     }
 
     [Server]
-    public void ReceiveCargo(List<Cargo> cargo)
+    public void ReceiveCargo(List<CargoN> cargo)
     {
         foreach (var c in cargo)
         {
@@ -39,7 +39,7 @@ public class PortN : NetworkBehaviour
     }
 
     [Server]
-    private void SpawnCargoBox(Cargo cargo)
+    private void SpawnCargoBox(CargoN cargo)
     {
         Vector3 spawnPos = new Vector3(Random.Range(minBounds.x + spawnOffset, maxBounds.x - spawnOffset), maxBounds.y + spawnOffset, Random.Range(minBounds.z + spawnOffset, maxBounds.z - spawnOffset));
         GameObject box = Instantiate(cargoPrefab, spawnPos, Quaternion.identity);
@@ -62,7 +62,7 @@ public class PortN : NetworkBehaviour
     }
 
     [Server]
-    public void RemoveCargoBox(Cargo cargo)
+    public void RemoveCargoBox(CargoN cargo)
     {
         int index = portCargo.IndexOf(cargo);
 

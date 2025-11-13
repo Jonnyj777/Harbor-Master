@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class TruckN : NetworkBehaviour
 {
-    public List<Cargo> cargo = new List<Cargo>();
+    public List<CargoN> cargo = new List<CargoN>();
     private PortN port;
     public List<GameObject> cargoBoxes;
     private bool stallPortMovement = false;
@@ -142,7 +142,7 @@ public class TruckN : NetworkBehaviour
                 RpcDeactivateCargo(i);
             }
 
-            foreach (Cargo c in cargo)
+            foreach (CargoN c in cargo)
             {
                 float elapsedTime = Time.time - c.spawnTime; 
                 float bonusMultiplier = 1f;
@@ -171,7 +171,7 @@ public class TruckN : NetworkBehaviour
 
         if (port.portCargo.Count > 0)
         {
-            List<Cargo> tempCargo = new List<Cargo>(port.portCargo);
+            List<CargoN> tempCargo = new List<CargoN>(port.portCargo);
             int slotsAvailable = cargoBoxes.Count - cargo.Count;
             int pickUpAmount = Mathf.Min(slotsAvailable, tempCargo.Count);
 

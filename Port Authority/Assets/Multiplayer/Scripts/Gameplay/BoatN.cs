@@ -144,12 +144,12 @@ public class BoatN : NetworkBehaviour
     [Server]
     void DeliverCargo()
     {
-        List<Cargo> cargo = new List<Cargo>();
+        List<CargoN> cargo = new List<CargoN>();
 
         foreach(GameObject gameObject in cargoBoxes)
         {
             if (!gameObject.activeSelf) continue;
-            if(gameObject.TryGetComponent<Cargo>(out Cargo c))
+            if(gameObject.TryGetComponent<CargoN>(out CargoN c))
             {
                 cargo.Add(c);
             }
