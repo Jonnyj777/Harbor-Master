@@ -146,6 +146,7 @@ public class StructurePlacer : MonoBehaviour
             Vector3 pos = pointFinder.FindShorePoint(shoreDistance, shoreMaxAttempts, shoreBuildingRadius, dockAreaCenter, dockAreaSize);
             if (pos != Vector3.zero)
             {
+                pos.y = 5;
                 Quaternion dockRotation = GetDockOrientation(pos);
                 Instantiate(GetDockPrefab(), pos, dockRotation);
             }

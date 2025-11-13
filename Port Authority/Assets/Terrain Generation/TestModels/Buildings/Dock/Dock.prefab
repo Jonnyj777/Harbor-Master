@@ -118,9 +118,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2066809112058927430}
   - component: {fileID: 8753447791400849447}
+  - component: {fileID: 1935564826572249425}
   m_Layer: 0
   m_Name: Dock
-  m_TagString: Untagged
+  m_TagString: Port
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -134,7 +135,7 @@ Transform:
   m_GameObject: {fileID: 2220100466157476232}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -160,6 +161,27 @@ MonoBehaviour:
   cargoBoxes: []
   loadingArea: {fileID: 9212152112330783210}
   cargoPrefab: {fileID: 3857715577458157709, guid: 08d4b5594f496fb4f906a8e5805c98b3, type: 3}
+--- !u!65 &1935564826572249425
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2220100466157476232}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 15, y: 10, z: 15}
+  m_Center: {x: 0, y: 0, z: 15}
 --- !u!1 &4622616552872659502
 GameObject:
   m_ObjectHideFlags: 0
