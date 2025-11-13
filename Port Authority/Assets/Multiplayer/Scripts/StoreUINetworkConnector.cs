@@ -4,45 +4,45 @@ public class StoreUINetworkConnector : MonoBehaviour
 {
     public void PurchaseRepairSpeedUpgrade()
     {
-        StoreScript.Instance.PurchaseRepairSpeedUpgrade();
+        StoreScriptN.Instance.PurchaseRepairSpeedUpgrade();
     }
 
 
     public void PurchaseDurabilityUpgrade()
     {
-        StoreScript.Instance.PurchaseDurabilityUpgrade();
+        StoreScriptN.Instance.PurchaseDurabilityUpgrade();
     }
 
 
     public void PurchaseSpeedUpgrade()
     {
-        StoreScript.Instance.PurchaseSpeedUpgrade();
+        StoreScriptN.Instance.PurchaseSpeedUpgrade();
     }
 
 
     public void PurchaseBigCargoShip()
     {
-        StoreScript.Instance.PurchaseBigCargoShip();
+        StoreScriptN.Instance.PurchaseBigCargoShip();
     }
 
 
     public void PurchaseBiggerCargoShip()
     {
-        StoreScript.Instance.PurchaseBiggerCargoShip();
+        StoreScriptN.Instance.PurchaseBiggerCargoShip();
     }
 
     public void PurchaseWhiskey()
     {
-        StoreScript.Instance.PurchaseWhiskey();
+        StoreScriptN.Instance.PurchaseWhiskey();
     }
 
     public void PurchaseFurniture()
     {
-        StoreScript.Instance.PurchaseFurniture();
+        StoreScriptN.Instance.PurchaseFurniture();
     }
 
     public void PurchaseIndustrialEquipment()
     {
-        StoreScript.Instance.PurchaseIndustrialEquipment();
+        StoreScriptN.Instance.PurchaseIndustrialEquipment();
     }
 }
