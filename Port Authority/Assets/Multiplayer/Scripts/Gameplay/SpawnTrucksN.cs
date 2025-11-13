@@ -2,7 +2,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class SpawnTrucks : NetworkBehaviour
+public class SpawnTrucksN : NetworkBehaviour
 {
     [SerializeField]
     private GameObject truck;
