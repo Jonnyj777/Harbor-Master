@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Port Authority/Assets/Mirror.meta
 guid: cdba4409bc31c914782900873b1bc69c
+========
+guid: 17975c3f9a9ad3040beb6eee01b15a34
+>>>>>>>> main:Port Authority/Assets/VFX/Prefabs.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Port Authority/Assets/Scenes/LossState.unity.meta
 guid: 92eb8bef8fe739a41a845305727ef1ee
 DefaultImporter:
+========
+guid: df3eeb9e496e49740a394b1e677f234f
+PrefabImporter:
+>>>>>>>> main:Port Authority/Assets/VFX/Prefabs/Particle System.prefab.meta
   externalObjects: {}
   userData: 
   assetBundleName: 
