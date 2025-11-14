@@ -177,7 +177,7 @@ public class Truck : MonoBehaviour
 
         while (cargo.Count < cargoBoxes.Count && port.portCargo.Count > 0)
         {
-            yield return new WaitForSeconds(vehicle.delayPerCargo);
+            yield return new WaitForSeconds(LineFollow.globalTruckLoadingDelay);
 
             // Always take cargo directly from the port
             Cargo c = port.portCargo[0];
