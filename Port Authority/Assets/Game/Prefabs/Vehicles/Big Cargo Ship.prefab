@@ -111,6 +111,10 @@ MonoBehaviour:
   lineWidth: 1.5
   truckSpeed: 20
   boatTypeSpeedMultiplier: 0.75
+  rotationSpeed: 2
+  smoothPath: 1
+  smoothingIterations: 3
+  boatLoadingDelay: 2
 --- !u!120 &42639074413674844
 LineRenderer:
   serializedVersion: 2
@@ -237,7 +241,11 @@ MonoBehaviour:
   - {fileID: 698397121116732186}
   - {fileID: 6626648013133955947}
   cargo: []
+  unlockedCargo: []
   crashedColor: {r: 0, g: 1, b: 1, a: 1}
+  dockingTime: 2
+  rotationSmooth: 10
+  rend: {fileID: 1192695934844977239}
 --- !u!1 &698397121116732186
 GameObject:
   m_ObjectHideFlags: 0

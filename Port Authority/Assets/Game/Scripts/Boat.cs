@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Apple;
+using static UnityEngine.GraphicsBuffer;
 
 public class Boat : MonoBehaviour
 {
@@ -21,6 +23,16 @@ public class Boat : MonoBehaviour
     private float sinkDuration = 2f;  // time it takes to sink down to the desired length
     //private float fadeDelay = 1f;  // time to wait before fading starts
     //private float fadeDuration = 5f;  // how long to fully fade out
+
+    [Header("Boat Snapping")]
+    public float dockingTime = 1.5f;
+    public float rotationSmooth = 10f;
+    public Renderer rend;
+    private Transform dockEndPoint;
+    private float t = 0f;
+    private Vector3 p0, p1, p2;
+    private bool isDelivering = false;
+    private float boatLength;
 
     [Header("Instance Settings")]
     private LineFollow vehicle;
@@ -53,6 +65,9 @@ public class Boat : MonoBehaviour
         maxX = minX + terrainScaledSize.x;
         minZ = terrain.transform.position.z;
         maxZ = minZ + terrainScaledSize.z;
+
+        // Get boat size
+        boatLength = rend.bounds.size.z;
     }
 
     private void Update()
@@ -78,12 +93,14 @@ public class Boat : MonoBehaviour
             bool multipleCollisions = false;
             EnterCrashState(multipleCollisions);
         }
-        if (other.CompareTag("Port")) {
+        if (other.CompareTag("Port") && !isDelivering) 
+        {
+            isDelivering = true;
             vehicle.SetAtPort(true);
             vehicle.DeleteLine();
             port = other.GetComponent<Port>();
-            DeliverCargo();
-            transform.Rotate(0f, 180f, 0f);
+            StartCoroutine(ParkBoatAndDeliver());
+            //DeliverCargo();
         }
     }
 
@@ -151,6 +168,51 @@ public class Boat : MonoBehaviour
         cargo.Clear();
         vehicle.SetIsMovingCargo(false);
         AudioManager.Instance.PlayBoatDelivery();
+        isDelivering = false;
+    }
+
+    private IEnumerator ParkBoatAndDeliver()
+    {
+        yield return ParkBoat();
+        DeliverCargo();
+        transform.Rotate(0f, 180f, 0f);
+    }
+
+    private IEnumerator ParkBoat()
+    {
+        t = 0f;
+        dockEndPoint = port.endPoint;
+
+        Vector3 p0 = transform.position;
+        Vector3 p2 = dockEndPoint.position - dockEndPoint.forward * (boatLength / 2f);
+        p2.y = p0.y;
+
+        while (true)
+        {
+            if (hasCrashed)
+                yield break;
+
+            t += Time.deltaTime / dockingTime;
+            float easedT = Mathf.SmoothStep(0, 1, t);
+
+            transform.position = Vector3.Lerp(p0, p2, easedT);
+
+            Quaternion targetRot = Quaternion.LookRotation(dockEndPoint.forward);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                rotationSmooth * Time.deltaTime
+            );
+
+            if (t >= 1f)
+            {
+                transform.position = p2;
+                transform.rotation = dockEndPoint.rotation;
+                break;
+            }
+
+            yield return null;
+        }
     }
 
     public void EnterCrashState(bool multipleCollisions)
