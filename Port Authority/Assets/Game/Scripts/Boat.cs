@@ -142,7 +142,7 @@ public class Boat : MonoBehaviour
         vehicle.SetIsMovingCargo(true);
         for (int i = 0; i < cargo.Count; i++)
         {
-            yield return new WaitForSeconds(vehicle.delayPerCargo);
+            yield return new WaitForSeconds(vehicle.boatLoadingDelay);
             
             port.ReceiveCargoBox(cargo[i]);
             cargoBoxes[i].SetActive(false);
