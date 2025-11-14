@@ -261,7 +261,7 @@ public class Boat : MonoBehaviour
 
         // Sinking logic
         Vector3 startPos = transform.position;
-        Vector3 endPos = new Vector3(startPos.x, startPos.y - whirlpoolSinkLength, startPos.z);
+        Vector3 endPos = new Vector3(startPos.x, startPos.y - sinkLength, startPos.z);
         float time = 0f;
         while (time < sinkDuration)
         {
@@ -366,7 +366,7 @@ public class Boat : MonoBehaviour
 
         float elapsed = 0f;
         Vector3 startPos = transform.position;
-        Vector3 endPos = new Vector3(center.position.x, center.position.y - sinkLength, center.position.z);
+        Vector3 endPos = new Vector3(center.position.x, center.position.y - whirlpoolSinkLength, center.position.z);
 
         while (elapsed < duration)
         {
