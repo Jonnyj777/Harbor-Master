@@ -20,8 +20,8 @@ public class StoreScript : MonoBehaviour
     private int currentRepairSpeedLevel = 0;
     private int currentRepairSpeedCost;
 
-    [Header("Truck Loading Speed Upgrade Settings")]
-    public int baseLoadingSpeedCost = 2;
+    [Header("Loading Speed Upgrade Settings")]
+    public int baseLoadingSpeedCost = 1000;
     public float loadingSpeedMult = 0.5f;   // Each upgrade reduces current loading speed by 50%
     public int maxLoadingSpeedLevel = 2;
 
