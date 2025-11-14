@@ -25,6 +25,9 @@ public class Truck : MonoBehaviour
     public Canvas trucksUICanvas;
     private GameObject repairButtonInstance;
 
+    private bool mudEffected = false;
+    private float originalTruckSpeed;
+
     private void Awake()
     {
         if (globalRestartDelay == 0)
@@ -247,5 +250,37 @@ public class Truck : MonoBehaviour
 
         vehicleRenderer.material = originalMaterial;
         vehicle.SetIsCrashed(false);
+    }
+
+    public void ApplyMudEffect(float slowdownMultiplier, float duration)
+    {
+        if (mudEffected || vehicle.GetIsCrashed())
+        {
+            return;
+        }
+
+        StartCoroutine(MudRecovery(slowdownMultiplier, duration));
+    }
+
+    private IEnumerator MudRecovery(float slowdownMultiplier, float duration)
+    {
+        mudEffected = true;
+
+        // store og speed if not stored yet
+        originalTruckSpeed = vehicle.TruckSpeed;
+        vehicle.TruckSpeed *= slowdownMultiplier;
+
+        Debug.Log($"{name} hit mud. Speed reduced for {duration} seconds.");
+
+        yield return new WaitForSeconds(duration);
+
+        // only restore speed if not crashed
+        if (!vehicle.GetIsCrashed())
+        {
+            vehicle.TruckSpeed = originalTruckSpeed;
+            Debug.Log($"{name} recovered from mud and is back to normal speed.");
+        }
+
+        mudEffected = false;
     }
 }

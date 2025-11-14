@@ -27,6 +27,8 @@ public class Boat : MonoBehaviour
     private List<Renderer> vehiclePartRenderers = new List<Renderer>();
     private float minX, maxX, minZ, maxZ;   // World bounds
 
+    [Header("Whirlpool Settings")]
+    [SerializeField] private float whirlpoolSinkLength = 7f;
 
     private void Start()
     {
@@ -153,7 +155,7 @@ public class Boat : MonoBehaviour
         AudioManager.Instance.PlayBoatDelivery();
     }
 
-    public void EnterCrashState(bool multipleCollisions)
+    public void EnterCrashState(bool multipleCollisions, bool skipFadeOut = false)
     {
         // Prevent multiple triggers
         if (hasCrashed)
@@ -183,7 +185,10 @@ public class Boat : MonoBehaviour
             }
         }
 
-        StartCoroutine(SinkFadeOut());
+        if (!skipFadeOut)
+        {
+            StartCoroutine(SinkFadeOut());
+        }
     }
 
     // function to make boats sink, fade, then destroyed after crashing into another boat vehicle
@@ -194,7 +199,7 @@ public class Boat : MonoBehaviour
 
         // Sinking logic
         Vector3 startPos = transform.position;
-        Vector3 endPos = new Vector3(startPos.x, startPos.y - sinkLength, startPos.z);
+        Vector3 endPos = new Vector3(startPos.x, startPos.y - whirlpoolSinkLength, startPos.z);
         float time = 0f;
         while (time < sinkDuration)
         {
@@ -277,17 +282,17 @@ public class Boat : MonoBehaviour
     //    mat.renderQueue = 3000;
     //}
 
-    public void EnterWhirlpool(Transform whirlpoolCenter, float duration, System.Action<VehicleMovement> callback = null)
+    public void EnterWhirlpool(Transform whirlpoolCenter, float duration, System.Action<Boat> callback = null)
     {
         if (!hasCrashed)
         {
-            hasCrashed = true;
-            crashType = CrashType.Boat;
+            EnterCrashState(multipleCollisions: false, skipFadeOut: true);
+
             StartCoroutine(SuckedInWhirlpool(whirlpoolCenter, duration, callback));
         }
     }
 
-    private IEnumerator SuckedInWhirlpool(Transform center, float duration, System.Action<VehicleMovement> callback)
+    private IEnumerator SuckedInWhirlpool(Transform center, float duration, System.Action<Boat> callback)
     {
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)

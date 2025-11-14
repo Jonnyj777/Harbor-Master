@@ -378,6 +378,17 @@ public class LineFollow : MonoBehaviour
         atPort = value;
     }
 
+    public bool GetIsCrashed()
+    {
+        return isCrashed;
+    }
+
+    public float TruckSpeed
+    {
+        get => truckSpeed;
+        set => truckSpeed = value;
+    }
+
     public void SetIsCrashed(bool value)
     {
         if (value)
