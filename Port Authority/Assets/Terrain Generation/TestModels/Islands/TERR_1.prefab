@@ -1384,8 +1384,8 @@ MonoBehaviour:
   factoriesPrefabs:
   - {fileID: 100000, guid: f6674c1362ba984468bc1e71a2323d66, type: 3}
   pointFinder: {fileID: 0}
-  commercialCount: 6
-  factoryCount: 2
+  commercialCount: 3
+  factoryCount: 1
   dockCount: 2
   shoreDistance: 5
   shoreBuildingRadius: 10

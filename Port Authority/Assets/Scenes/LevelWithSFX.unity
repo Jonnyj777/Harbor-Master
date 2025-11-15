@@ -9259,7 +9259,7 @@ Transform:
   m_GameObject: {fileID: 961739749}
   serializedVersion: 2
   m_LocalRotation: {x: 0.4897831, y: -0.2315541, z: 0.13674986, w: 0.8293339}
-  m_LocalPosition: {x: 250, y: 100, z: 200}
+  m_LocalPosition: {x: 288, y: 232, z: 138}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9283,7 +9283,7 @@ MonoBehaviour:
   minHeight: 5
   maxHeight: 50
   minZoom: 5
-  maxZoom: 200
+  maxZoom: 400
   shiftMultiplier: 5
 --- !u!1001 &966869714
 PrefabInstance:
