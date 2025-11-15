@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Apple;
-using static UnityEngine.GraphicsBuffer;
 
 public class Boat : MonoBehaviour
 {
@@ -24,23 +22,11 @@ public class Boat : MonoBehaviour
     //private float fadeDelay = 1f;  // time to wait before fading starts
     //private float fadeDuration = 5f;  // how long to fully fade out
 
-    [Header("Boat Snapping")]
-    public float dockingTime = 1.5f;
-    public float rotationSmooth = 10f;
-    public Renderer rend;
-    private Transform dockEndPoint;
-    private float t = 0f;
-    private Vector3 p0, p1, p2;
-    private bool isDelivering = false;
-    private float boatLength;
-
     [Header("Instance Settings")]
     private LineFollow vehicle;
     private List<Renderer> vehiclePartRenderers = new List<Renderer>();
     private float minX, maxX, minZ, maxZ;   // World bounds
 
-    [Header("Whirlpool Settings")]
-    [SerializeField] private float whirlpoolSinkLength = 7f;
 
     private void Start()
     {
@@ -57,19 +43,19 @@ public class Boat : MonoBehaviour
         }
 
         // Teach the boat the world bounds so it can destroy itself
+        
+        /*
         GameObject terrain = GameObject.Find("TerrainGenerator");
         MeshFilter terrainMeshFilter = terrain.GetComponent<MeshFilter>();
         Bounds terrainMeshBounds = terrainMeshFilter.mesh.bounds;
         Vector3 terrainUnscaledSize = terrainMeshBounds.size;
         Vector3 terrainScaledSize = Vector3.Scale(terrainUnscaledSize, terrain.transform.localScale);
+        */
 
-        minX = terrain.transform.position.x;
-        maxX = minX + terrainScaledSize.x;
-        minZ = terrain.transform.position.z;
-        maxZ = minZ + terrainScaledSize.z;
-
-        // Get boat size
-        boatLength = rend.bounds.size.z;
+        minX = 0;
+        maxX = 1000;
+        minZ = 0;
+        maxZ = 1000;
     }
 
     private void Update()
@@ -95,14 +81,12 @@ public class Boat : MonoBehaviour
             bool multipleCollisions = false;
             EnterCrashState(multipleCollisions);
         }
-        if (other.CompareTag("Port") && !isDelivering) 
-        {
-            isDelivering = true;
+        if (other.CompareTag("Port")) {
             vehicle.SetAtPort(true);
             vehicle.DeleteLine();
             port = other.GetComponent<Port>();
-            StartCoroutine(ParkBoatAndDeliver());
-            //DeliverCargo();
+            DeliverCargo();
+            transform.Rotate(0f, 180f, 0f);
         }
     }
 
@@ -161,7 +145,7 @@ public class Boat : MonoBehaviour
         vehicle.SetIsMovingCargo(true);
         for (int i = 0; i < cargo.Count; i++)
         {
-            yield return new WaitForSeconds(vehicle.boatLoadingDelay);
+            yield return new WaitForSeconds(vehicle.delayPerCargo);
             
             port.ReceiveCargoBox(cargo[i]);
             cargoBoxes[i].SetActive(false);
@@ -170,54 +154,9 @@ public class Boat : MonoBehaviour
         cargo.Clear();
         vehicle.SetIsMovingCargo(false);
         AudioManager.Instance.PlayBoatDelivery();
-        isDelivering = false;
     }
 
-    private IEnumerator ParkBoatAndDeliver()
-    {
-        yield return ParkBoat();
-        DeliverCargo();
-        transform.Rotate(0f, 180f, 0f);
-    }
-
-    private IEnumerator ParkBoat()
-    {
-        t = 0f;
-        dockEndPoint = port.endPoint;
-
-        Vector3 p0 = transform.position;
-        Vector3 p2 = dockEndPoint.position - dockEndPoint.forward * (boatLength / 2f);
-        p2.y = p0.y;
-
-        while (true)
-        {
-            if (hasCrashed)
-                yield break;
-
-            t += Time.deltaTime / dockingTime;
-            float easedT = Mathf.SmoothStep(0, 1, t);
-
-            transform.position = Vector3.Lerp(p0, p2, easedT);
-
-            Quaternion targetRot = Quaternion.LookRotation(dockEndPoint.forward);
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                targetRot,
-                rotationSmooth * Time.deltaTime
-            );
-
-            if (t >= 1f)
-            {
-                transform.position = p2;
-                transform.rotation = dockEndPoint.rotation;
-                break;
-            }
-
-            yield return null;
-        }
-    }
-
-    public void EnterCrashState(bool multipleCollisions, bool skipFadeOut = false)
+    public void EnterCrashState(bool multipleCollisions)
     {
         // Prevent multiple triggers
         if (hasCrashed)
@@ -247,10 +186,7 @@ public class Boat : MonoBehaviour
             }
         }
 
-        if (!skipFadeOut)
-        {
-            StartCoroutine(SinkFadeOut());
-        }
+        StartCoroutine(SinkFadeOut());
     }
 
     // function to make boats sink, fade, then destroyed after crashing into another boat vehicle
@@ -343,51 +279,6 @@ public class Boat : MonoBehaviour
     //    mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
     //    mat.renderQueue = 3000;
     //}
-
-    public void EnterWhirlpool(Transform whirlpoolCenter, float duration, System.Action<Boat> callback = null)
-    {
-        if (!hasCrashed)
-        {
-            EnterCrashState(multipleCollisions: false, skipFadeOut: true);
-
-            StartCoroutine(SuckedInWhirlpool(whirlpoolCenter, duration, callback));
-        }
-    }
-
-    private IEnumerator SuckedInWhirlpool(Transform center, float duration, System.Action<Boat> callback)
-    {
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            rb.constraints = RigidbodyConstraints.FreezeRotation;
-        }
-
-        float elapsed = 0f;
-        Vector3 startPos = transform.position;
-        Vector3 endPos = new Vector3(center.position.x, center.position.y - whirlpoolSinkLength, center.position.z);
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-
-            // move toward center while sinking
-            transform.position = Vector3.Lerp(startPos, endPos, t);
-
-            // rotate around center while moving inward
-            transform.RotateAround(center.position, Vector3.up, 360f * Time.deltaTime);
-
-            yield return null;
-        }
-
-        // once centered, trigger immediate crash for boat(s)
-        Destroy(gameObject);
-
-        // notify the whirlpool that this boat is done
-        callback?.Invoke(this);
-    }
 
     private void CheckBounds()
     {

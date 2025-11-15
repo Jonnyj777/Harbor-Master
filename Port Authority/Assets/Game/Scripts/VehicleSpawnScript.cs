@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 public class VehicleSpawnScript : MonoBehaviour
@@ -94,15 +96,32 @@ public class VehicleSpawnScript : MonoBehaviour
 
     void spawnVehicle()
     {
-        Vector3 spawnPos = validSpawnLocations[Random.Range(0, validSpawnLocations.Count)];
+        Vector3 top = new Vector3(500f, 0f, 1000f);
+        Vector3 right = new Vector3(1000f, 0f, 500f);
+        Vector3 left = new Vector3(0f, 0f, 500f);
+        Vector3 bottom = new Vector3(500f, 0f, 0);
+
+        // Each spawn point uses a base rotation of 0 degrees.
+        List<Vector3> spawnPoints = new()
+        {
+            right,
+            left,
+            bottom,
+            top
+        };
+        List<int> rotations = new()
+        {
+            270, //right
+            90, //left
+            0, //bottom
+            180 //top
+        };
+        int index = Random.Range(0, spawnPoints.Count);
+        Vector3 spawnPos = spawnPoints[index];
         spawnPos.y = waterLevel + spawnHeightOffset;
 
-        Vector3 shipDirection = (terrainCenter - spawnPos).normalized;
-        shipDirection.y = 0f;
-        shipDirection.Normalize();
-
-        Quaternion rotation = Quaternion.LookRotation(shipDirection);
-        rotation *= Quaternion.Euler(0, Random.Range(-maxSpawnAngle, maxSpawnAngle), 0);
+        // Base rotation is 0 for all spawn points; only a small random offset is applied.
+        Quaternion rotation = Quaternion.Euler(0f, rotations[index], 0f);
 
         AudioManager.Instance.PlayBoatEntrance();
         Instantiate(unlockedShipPrefabs[Random.Range(0, unlockedShipPrefabs.Count)], spawnPos, rotation);

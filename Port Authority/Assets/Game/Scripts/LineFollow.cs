@@ -16,7 +16,7 @@ public class LineFollow : MonoBehaviour
     private float timer;
 
     [Header("Path Output (movement)")]
-    // positions is the smoothed path that boats follow
+    // Positions is the smoothed path that boats follow
     private Vector3[] positions = new Vector3[0];
     private int moveIndex = 0;
 
@@ -60,19 +60,21 @@ public class LineFollow : MonoBehaviour
         heightOffset = rend.bounds.size.y * 0.5f;
 
         if (CompareTag("Truck"))
-        {
             SnapToSurface();
-        }
     }
 
     // Line Drawing Functions
     public void StartLine(Vector3 position)
     {
+        linePositions.Clear();
+        linePositions.Add(position);
+
         line.positionCount = 1;
         line.startWidth = line.endWidth = lineWidth;
         line.endWidth = lineWidth;
         line.material = new Material(Shader.Find("Sprites/Default"));
         line.startColor = line.endColor = lineColor;
+        line.SetPosition(0, position);
     }
 
     public void UpdateLine()
@@ -103,7 +105,12 @@ public class LineFollow : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
+        int effectiveMask = layerMask.value;
+        
+        if (CompareTag("Truck"))
+            effectiveMask |= LayerMask.GetMask("Default");
+
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, effectiveMask))
         {
             Vector3 pos = hit.point + Vector3.up * 0.75f;
 
@@ -164,6 +171,7 @@ public class LineFollow : MonoBehaviour
         {
             positions = simplified.ToArray();
         }
+        
 
         // Update the renderer and begin following
         line.positionCount = positions.Length;
