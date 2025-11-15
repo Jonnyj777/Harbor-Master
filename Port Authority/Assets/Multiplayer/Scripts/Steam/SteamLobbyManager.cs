@@ -28,6 +28,9 @@ public class SteamLobbyManager : MonoBehaviour
     public GameObject lobbyTemplate;
     public Transform lobbyContent;
 
+    public TMP_InputField lobbyNameInput;
+    public Slider maxPlayersSlider;
+    public TextMeshProUGUI maxPlayersCountText;
     public Button startButton;
 
     private readonly int lobbyListDelayDuration = 3000;
@@ -72,6 +75,12 @@ public class SteamLobbyManager : MonoBehaviour
         SteamMatchmaking.OnLobbyMemberDataChanged += SetReadyStatus;
 
         GetLobbyInfo();
+
+        lobbyNameInput.placeholder.GetComponent<TMP_Text>().text = SteamClient.Name + "'s Lobby";
+        maxPlayersSlider.onValueChanged.AddListener((float val) =>
+        {
+            maxPlayersCountText.text = val.ToString();
+        });
 
     }
 
@@ -181,8 +190,21 @@ public class SteamLobbyManager : MonoBehaviour
         {
             Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("HostAddress")}.");
             GameObject lobbyObj = Instantiate(lobbyTemplate, lobbyContent);
-            Debug.Log(l.GetData("name"));
-            lobbyObj.GetComponentInChildren<TextMeshProUGUI>().text = l.GetData("name");
+            TextMeshProUGUI[] texts = lobbyObj.GetComponentsInChildren<TextMeshProUGUI>();
+            foreach(var text in texts)
+            {
+                switch(text.name)
+                {
+                    case "LobbyName":
+                        text.text = l.GetData("name");
+                        break;
+                    case "LobbyCount":
+                        text.text = l.MemberCount + "/" + l.GetData("maxplayers");
+                        break;
+                }
+            }
+            
+            //lobbyObj.GetComponentInChildren<TextMeshProUGUI>().text = l.GetData("name");
             lobbyObj.GetComponentInChildren<Button>().onClick.AddListener(() => AttemptJoin(l));
             lobbyList.Add(l.Id, lobbyObj);
             Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("name")}.");
@@ -192,7 +214,10 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void AttemptJoin(Steamworks.Data.Lobby l)
     {
-        l.Join();
+        if (int.Parse(l.GetData("maxplayers")) - l.MemberCount > 0)
+        {
+            l.Join();
+        }
     }
     public void SetLobby(Steamworks.Data.Lobby newLobbyData)
     {
@@ -206,6 +231,13 @@ public class SteamLobbyManager : MonoBehaviour
         try
         {
             var lobbyOutput = await SteamMatchmaking.CreateLobbyAsync();
+            string lobbyName = SteamClient.Name + "'s Lobby";
+
+            if(lobbyNameInput != null && lobbyNameInput.text.Length > 0)
+            {
+                lobbyName = lobbyNameInput.text;
+            }
+
             if (!lobbyOutput.HasValue)
             {
                 Debug.Log("Created but not instantiated");
@@ -216,9 +248,10 @@ public class SteamLobbyManager : MonoBehaviour
             Lobby.SetPublic();
            // Lobby.SetFriendsOnly();
             Lobby.SetJoinable(true);
-            Lobby.SetData("name", SteamClient.Name + "'s Lobby");
+            Lobby.SetData("name", lobbyName);
             Lobby.SetData("game", "PORTAUTH");
             Lobby.SetData("HostAddress", SteamClient.SteamId.Value.ToString());
+            Lobby.SetData("maxplayers", maxPlayersSlider.value.ToString());
 
 
             return true;
