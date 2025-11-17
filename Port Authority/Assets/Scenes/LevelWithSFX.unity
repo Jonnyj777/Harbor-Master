@@ -9717,7 +9717,7 @@ MonoBehaviour:
   zoomSpeed: 10
   minHeight: 5
   maxHeight: 50
-  minZoom: 5
+  minZoom: 100
   maxZoom: 400
   minX: -500
   maxX: 1300

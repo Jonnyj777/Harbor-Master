@@ -2725,7 +2725,7 @@ Terrain:
   serializedVersion: 6
   m_TerrainData: {fileID: 15600000, guid: ea89d3ba42fa9486b9707d5e88e4143a, type: 2}
   m_TreeDistance: 5000
-  m_TreeBillboardDistance: 507
+  m_TreeBillboardDistance: 1000
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
   m_DetailObjectDistance: 80
@@ -3383,7 +3383,7 @@ MonoBehaviour:
   factoryCount: 1
   dockCount: 1
   shoreDistance: 10
-  shoreBuildingRadius: 35
+  shoreBuildingRadius: 80
   shoreMaxAttempts: 99999
   landBuildingRadius: 50
   landShoreClearance: 40
