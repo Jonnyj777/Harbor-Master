@@ -20223,7 +20223,7 @@ MonoBehaviour:
   minPlayers: 1
   roomPlayerPrefab: {fileID: 338399410527955210, guid: 5404f5dab5d3a9d479529ca39aeaac81, type: 3}
   RoomScene: Assets/UI/MultiplayerMenuConnecting.unity
-  GameplayScene: Assets/UI/GameSystemMultiplayer.unity
+  GameplayScene: Assets/Scenes/Multiplayer/ScoringSystemN.unity
   _allPlayersReady: 0
   clientIndex: 0
   lobbyCanvas: {fileID: 0}
