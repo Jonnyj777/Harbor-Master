@@ -9,10 +9,10 @@ public class MudPuddle : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        VehicleMovement vehicle = other.GetComponent<VehicleMovement>();
-        if (vehicle != null && vehicle.vehicleType == VehicleType.Land)
+        Truck truck = other.GetComponent<Truck>();
+        if (truck != null)
         {
-            vehicle.ApplyMudEffect(slowdownMultiplier, slownessDuration);
+            truck.ApplyMudEffect(slowdownMultiplier, slownessDuration);
         }
     }
 

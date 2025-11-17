@@ -144,10 +144,11 @@ public class TreeObstacle : MonoBehaviour
     {
         if (!fallen) return;
 
-        VehicleMovement vehicle = other.GetComponent<VehicleMovement>();
-        if (vehicle != null && vehicle.vehicleType == VehicleType.Land)
+        Truck truck = other.GetComponent<Truck>();
+        if (truck != null)
         {
-            vehicle.EnterCrashState(VehicleMovement.CrashType.Land);
+            truck.EnterCrashState(true);
+            return;
         }
     }
 }

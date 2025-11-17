@@ -27,6 +27,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip ambientWaves;
 
     private AudioSource sfxSource;
+    private AudioSource musicSource;
     private AudioSource ambientSource;
 
     [Header("Game Settings")]
@@ -61,6 +62,11 @@ public class AudioManager : MonoBehaviour
         // set up audio sources
         sfxSource = gameObject.AddComponent<AudioSource>();
         sfxSource.playOnAwake = false;
+
+        musicSource = gameObject.AddComponent<AudioSource>();
+        musicSource.playOnAwake = false;
+        musicSource.loop = true;
+
         ambientSource = gameObject.AddComponent<AudioSource>();
         ambientSource.playOnAwake = false;
         ambientSource.loop = true;
@@ -103,25 +109,24 @@ public class AudioManager : MonoBehaviour
     
     public void PlayMusic()
     {
-        if (!musicEnabled || sfxSource == null || gameMusic == null)
+        if (!musicEnabled || musicSource == null || gameMusic == null)
         {
             return;
         }
 
-        if (!sfxSource.isPlaying)
+        if (!musicSource.isPlaying)
         {
-            sfxSource.clip = gameMusic;
-            sfxSource.loop = true;
-            sfxSource.volume = 0.15f;
-            sfxSource.Play();
+            musicSource.clip = gameMusic;
+            musicSource.loop = true;
+            musicSource.Play();
         }
     }
 
     public void StopMusic()
     {
-        if (sfxSource != null && sfxSource.isPlaying)
+        if (musicSource != null && musicSource.isPlaying)
         {
-            sfxSource.Stop();
+            musicSource.Stop();
         }
     }
 
@@ -172,8 +177,20 @@ public class AudioManager : MonoBehaviour
 
     private void ApplyVolume()
     {
-        sfxSource.volume = masterVolume * sfxVolume;
-        ambientSource.volume = masterVolume * musicVolume;
+        if (sfxSource != null)
+        {
+            sfxSource.volume = masterVolume * sfxVolume;
+        }
+
+        if (musicSource != null)
+        {
+            musicSource.volume = 0.15f;
+        }
+
+        if (ambientSource != null)
+        {
+            ambientSource.volume = masterVolume * musicVolume;
+        }
     }
 
     public void SetMasterVolume(float volume)
@@ -339,7 +356,7 @@ public class AudioManager : MonoBehaviour
 
         if (PlayerPrefs.HasKey("MusicVolume"))
         {
-            musicVolume = PlayerPrefs.GetFloat("MusicVolume");
+            musicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.15f);
         }
     }
 

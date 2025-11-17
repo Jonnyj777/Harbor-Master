@@ -96,6 +96,16 @@ public class PointFinder : MonoBehaviour
             return surfacePoint;
         }
 
+        Debug.Log("Running Fallback Algorithm");
+        Vector3 fallbackPoint = FindLandPointFallback(areaCenter, areaSize);
+        if (fallbackPoint != Vector3.zero)
+        {
+            landPoints.Add(fallbackPoint);
+            Debug.Log("Fallback Success");
+            return fallbackPoint;
+        }
+
+        Debug.Log("Fallback Unsuccessful");
         return Vector3.zero;
     }
 
@@ -120,6 +130,16 @@ public class PointFinder : MonoBehaviour
             return surfacePoint;
         }
 
+        Debug.Log("Running Fallback Algorithm");
+        Vector3 fallbackPoint = FindShorePointFallback(areaCenter, areaSize);
+        if (fallbackPoint != Vector3.zero)
+        {
+            shorePoints.Add(fallbackPoint);
+            Debug.Log("Fallback Success");
+            return fallbackPoint;
+        }
+
+        Debug.Log("Fallback Unsuccessful");
         return Vector3.zero;
     }
 
@@ -128,6 +148,13 @@ public class PointFinder : MonoBehaviour
         point = default;
 
         Vector2 sampledPoint = GetRandomXZWithinArea( areaCenter, areaSize);
+        return TryFindValidPointAt(sampledPoint, out point);
+    }
+
+    private bool TryFindValidPointAt(Vector2 sampledPoint, out Vector3 point)
+    {
+        point = default;
+
         Vector3 rayOrigin = new Vector3(sampledPoint.x, raycastHeight, sampledPoint.y);
         RaycastHit[] hits = Physics.RaycastAll(rayOrigin, Vector3.down, Mathf.Infinity, EffectiveRaycastMask);
 
@@ -142,6 +169,65 @@ public class PointFinder : MonoBehaviour
 
         point = terrainHit.point;
         return true;
+    }
+
+    private Vector3 FindLandPointFallback(Vector2 areaCenter, Vector2 areaSize)
+    {
+        Vector2 halfSize = GetHalfSize(areaSize);
+        int minX = Mathf.FloorToInt(areaCenter.x - halfSize.x);
+        int maxX = Mathf.CeilToInt(areaCenter.x + halfSize.x);
+        int minZ = Mathf.FloorToInt(areaCenter.y - halfSize.y);
+        int maxZ = Mathf.CeilToInt(areaCenter.y + halfSize.y);
+
+        for (int x = minX; x <= maxX; x++)
+        {
+            for (int z = minZ; z <= maxZ; z++)
+            {
+                if (!TryFindValidPointAt(new Vector2(x, z), out Vector3 surfacePoint))
+                    continue;
+
+                if (!IsFarFromPoints(surfacePoint, landPoints, landBuildingRadius))
+                    continue;
+
+                if (HasWaterWithinRadius(surfacePoint, landShoreClearance))
+                    continue;
+
+                if (IsNearTaggedObject(surfacePoint, roadTag, roadBuildingRadius))
+                    continue;
+
+                return surfacePoint;
+            }
+        }
+
+        return Vector3.zero;
+    }
+
+    private Vector3 FindShorePointFallback(Vector2 areaCenter, Vector2 areaSize)
+    {
+        Vector2 halfSize = GetHalfSize(areaSize);
+        int minX = Mathf.FloorToInt(areaCenter.x - halfSize.x);
+        int maxX = Mathf.CeilToInt(areaCenter.x + halfSize.x);
+        int minZ = Mathf.FloorToInt(areaCenter.y - halfSize.y);
+        int maxZ = Mathf.CeilToInt(areaCenter.y + halfSize.y);
+
+        for (int x = minX; x <= maxX; x++)
+        {
+            for (int z = minZ; z <= maxZ; z++)
+            {
+                if (!TryFindValidPointAt(new Vector2(x, z), out Vector3 surfacePoint))
+                    continue;
+
+                if (!IsFarFromPoints(surfacePoint, shorePoints, shoreBuildingRadius))
+                    continue;
+
+                if (!HasWaterWithinRadius(surfacePoint, shoreDistance))
+                    continue;
+
+                return surfacePoint;
+            }
+        }
+
+        return Vector3.zero;
     }
 
     private bool HasWaterWithinRadius(Vector3 center, float radius)
@@ -379,10 +465,15 @@ public class PointFinder : MonoBehaviour
     }
     private Vector2 GetRandomXZWithinArea(Vector2 areaCenter, Vector2 areaSize)
     {
-        Vector2 halfSize = new Vector2(Mathf.Max(0.1f, areaSize.x) * 0.5f, Mathf.Max(0.1f, areaSize.y) * 0.5f);
+        Vector2 halfSize = GetHalfSize(areaSize);
         float x = Random.Range(areaCenter.x - halfSize.x, areaCenter.x + halfSize.x);
         float z = Random.Range(areaCenter.y - halfSize.y, areaCenter.y + halfSize.y);
         return new Vector2(x, z);
+    }
+
+    private Vector2 GetHalfSize(Vector2 areaSize)
+    {
+        return new Vector2(Mathf.Max(0.1f, areaSize.x) * 0.5f, Mathf.Max(0.1f, areaSize.y) * 0.5f);
     }
 
     private int EffectiveRaycastMask => raycastMask.value == 0 ? Physics.DefaultRaycastLayers : raycastMask.value;
