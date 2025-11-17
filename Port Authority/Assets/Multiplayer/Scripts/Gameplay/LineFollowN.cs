@@ -460,7 +460,7 @@ public class LineFollowN : NetworkBehaviour
             }
             else if (!drawingLine && CompareTag("Boat") && !atPort)
             {
-                transform.position += transform.forward * globalBoatSpeed * Time.deltaTime;
+                transform.position += globalBoatSpeed * Time.deltaTime * transform.forward;
             }
         }
     }

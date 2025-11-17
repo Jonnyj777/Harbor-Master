@@ -105,7 +105,7 @@ public class VehicleSpawnScriptN : NetworkBehaviour
         Quaternion rotation = Quaternion.LookRotation(shipDirection);
         rotation *= Quaternion.Euler(0, Random.Range(-maxSpawnAngle, maxSpawnAngle), 0);
 
-        GameObject spawnedShip = Instantiate(unlockedShipPrefabs[Random.Range(0, unlockedShipPrefabs.Count)], spawnPos, rotation);
+        GameObject spawnedShip = Instantiate(unlockedShipPrefabs[Random.Range(0, unlockedShipPrefabs.Count)], spawnPos, new Quaternion(0, rotation.y, rotation.z, rotation.w));
         NetworkServer.Spawn(spawnedShip);
     }
 
