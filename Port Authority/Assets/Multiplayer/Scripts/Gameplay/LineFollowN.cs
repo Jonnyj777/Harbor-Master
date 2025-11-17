@@ -405,10 +405,25 @@ public class LineFollowN : NetworkBehaviour
         switch (colorName)
         {
             case "Orange":
-                colorData = new Vector3(1.0f, 0.647f, 0.0f);
+                colorData = new Vector3(255f / 255f, 119f / 255f, 0f / 255f);
                 break;
             case "Blue":
-                colorData = new Vector3(0.0f, 0.0f, 1.0f);
+                colorData = new Vector3(14f / 255f, 165f / 255f, 233f / 255f);
+                break;
+            case "Pink":
+                colorData = new Vector3(255f / 255f, 31f / 255f, 139f / 255f);
+                break;
+            case "Purple":
+                colorData = new Vector3(182f / 255f, 27f / 255f, 243f / 255f);
+                break;
+            case "Red":
+                colorData = new Vector3(233f / 255f, 14f / 255f, 18f / 255f);
+                break;
+            case "Yellow":
+                colorData = new Vector3(255f / 255f, 217f / 255f, 0f / 255f);
+                break;
+            case "Green":
+                colorData = new Vector3(22f / 255f, 218f / 255f, 35f / 255f);
                 break;
             default:
                 colorData = new Vector3(1.0f, 1.0f, 1.0f);

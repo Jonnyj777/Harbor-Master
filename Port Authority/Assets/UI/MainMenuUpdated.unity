@@ -1658,8 +1658,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb30198aa32dd140b5750692dd48104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 40
-  image: {fileID: 153245123}
 --- !u!114 &153245122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2520,8 +2518,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb30198aa32dd140b5750692dd48104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 40
-  image: {fileID: 202950421}
 --- !u!114 &202950420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3158,8 +3154,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb30198aa32dd140b5750692dd48104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 40
-  image: {fileID: 254173261}
 --- !u!114 &254173260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16722,8 +16716,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb30198aa32dd140b5750692dd48104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 40
-  image: {fileID: 1382671407}
 --- !u!114 &1382671406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19062,8 +19054,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb30198aa32dd140b5750692dd48104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 40
-  image: {fileID: 1664067509}
 --- !u!114 &1664067508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19923,8 +19913,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb30198aa32dd140b5750692dd48104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 40
-  image: {fileID: 1738454587}
 --- !u!114 &1738454586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20106,8 +20094,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb30198aa32dd140b5750692dd48104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 40
-  image: {fileID: 1740338939}
 --- !u!114 &1740338938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22309,8 +22295,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb30198aa32dd140b5750692dd48104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 40
-  image: {fileID: 1966528605}
 --- !u!114 &1966528604
 MonoBehaviour:
   m_ObjectHideFlags: 0
