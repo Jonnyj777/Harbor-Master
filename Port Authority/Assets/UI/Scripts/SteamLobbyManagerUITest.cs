@@ -310,7 +310,11 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             lobbyObj.lobbyNameText.ForceMeshUpdate();
             LayoutRebuilder.ForceRebuildLayoutImmediate(lobbyObj.lobbyNameText.rectTransform);
             lobbyObj.countText.text = l.MemberCount + "/4"; // count
-            lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
+
+            String host = l.Owner.Name;
+            
+
+            //lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
 
 
             Button btn = lobbyObj.joinButton;
@@ -318,7 +322,9 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
             btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
 
-            btn.onClick.AddListener(() => AttemptJoin(l)); 
+            btn.onClick.AddListener(() => AttemptJoin(l));
+
+            lobbyObj.hostText.text = "Host: " + host;
 
             lobbyList.Add(l.Id, lobbyObj);
             lobbyData.Add(l.Id, l);
@@ -506,6 +512,17 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             bool isHost = (member.Key == ownerId);
             member.Value.playerCardObj.UpdateHost(isHost);
         }
+
+        StartCoroutine(LobbyMemberDisconnectedCoroutine());
+    }
+
+    private IEnumerator LobbyMemberDisconnectedCoroutine()
+    {
+        CanvasGroup cg = joinedLobbyContainer.GetComponent<CanvasGroup>();
+
+        yield return new WaitForEndOfFrame();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(joinedPlayersGrid.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(selectedLobbySection.GetComponent<RectTransform>());
     }
 
     void OnChatMessage(Steamworks.Data.Lobby lobby, Friend friend, string message)
@@ -583,53 +600,9 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         OnColorClicked(colorChoices[0]);
 
-        // make object for current player
-        PlayerCard playerObj = Instantiate(joinedPlayerCardPrefab, joinedPlayersGrid);
-
-        joinedLobbyNameText.text = lobby.GetData("name");
-        joinedHostNameText.text = "Host: " + lobby.Owner.Name;
-
-        // get profile picture
-        Texture2D tex = await SteamProfileManager.GetTextureFromId(SteamClient.SteamId);
-        Sprite profileSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
-        playerObj.profilePicture.sprite = profileSprite;
-        playerObj.profilePicture.type = UnityEngine.UI.Image.Type.Simple;
-        playerObj.playerNameText.text = SteamClient.Name;
-
-        // ready button
-        Button readyBtn = playerObj.readyButton;
-        readyBtn.gameObject.SetActive(true);
-        playerObj.readyButton.image.color = notReadyColor;
-        readyBtn.onClick.AddListener(() =>
-        {
-            playerObj.isReady = !playerObj.isReady;
-            ReadyPlayer(playerObj.isReady);
-        });
-
-        // keep track of player
-        PlayerInfo playerInfo = new PlayerInfo(playerObj);
-
-        playerObj.readyButton.gameObject.SetActive(true);
-        //playerObj.UpdateReadyButton(playerInfo.IsReady);
-
-        playerInfo.onValueChanged.AddListener((bool ready) =>
-        {
-            playerObj.UpdateReadyButton(playerInfo.IsReady); 
-        });
-
-        joinedLobbyReadyButton.onClick.AddListener(() =>
-        {
-            playerInfo.IsReady = !playerInfo.IsReady;
-
-            playerObj.UpdateReadyButton(playerInfo.IsReady);
-
-            ReadyPlayer(playerInfo.IsReady);
-
-            OnReadyButtonPressed(playerInfo.IsReady);
-        });
-
+        Texture2D tex;
+        Sprite profileSprite;
         var ownerId = lobby.Owner.Id;
-        playerObj.UpdateHost(SteamClient.SteamId == ownerId);
 
         print("member Count: " + lobby.MemberCount);
         foreach (var friend in lobby.Members)
@@ -673,8 +646,61 @@ public class SteamLobbyManagerUITest : MonoBehaviour
                     friendObj.UpdateColorVisual("Blue");
                 }
 
-                friendObj.UpdateHost(SteamClient.SteamId == ownerId);
+                friendObj.UpdateHost(friend.Id == ownerId);
             }
+        }
+
+        // make object for current player
+        PlayerCard playerObj = Instantiate(joinedPlayerCardPrefab, joinedPlayersGrid);
+
+        joinedLobbyNameText.text = lobby.GetData("name");
+        joinedHostNameText.text = "Host: " + lobby.Owner.Name;
+
+        // get profile picture
+        tex = await SteamProfileManager.GetTextureFromId(SteamClient.SteamId);
+        profileSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+        playerObj.profilePicture.sprite = profileSprite;
+        playerObj.profilePicture.type = UnityEngine.UI.Image.Type.Simple;
+        playerObj.playerNameText.text = SteamClient.Name;
+
+        // ready button
+        Button readyBtn = playerObj.readyButton;
+        readyBtn.gameObject.SetActive(true);
+        playerObj.readyButton.image.color = notReadyColor;
+        readyBtn.onClick.AddListener(() =>
+        {
+            playerObj.isReady = !playerObj.isReady;
+            ReadyPlayer(playerObj.isReady);
+        });
+
+        // keep track of player
+        PlayerInfo playerInfo = new PlayerInfo(playerObj);
+
+        playerObj.readyButton.gameObject.SetActive(true);
+        //playerObj.UpdateReadyButton(playerInfo.IsReady);
+
+        playerInfo.onValueChanged.AddListener((bool ready) =>
+        {
+            playerObj.UpdateReadyButton(playerInfo.IsReady);
+        });
+
+        joinedLobbyReadyButton.onClick.RemoveAllListeners();
+        joinedLobbyReadyButton.onClick.AddListener(() =>
+        {
+            playerInfo.IsReady = !playerInfo.IsReady;
+
+            playerObj.UpdateReadyButton(playerInfo.IsReady);
+
+            ReadyPlayer(playerInfo.IsReady);
+
+            OnReadyButtonPressed(playerInfo.IsReady);
+        });
+
+        playerObj.UpdateHost(SteamClient.SteamId == ownerId);
+
+        if (SteamClient.SteamId != ownerId)
+        {
+            startButton.gameObject.SetActive(false);
         }
 
         inLobby.Add(SteamClient.SteamId, playerInfo);

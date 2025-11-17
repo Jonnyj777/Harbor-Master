@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UINetworkConnectorTest : MonoBehaviour
+public class StoreUINetworkConnectorUI : MonoBehaviour
 {
     public void PurchaseRepairSpeedUpgrade()
     {
