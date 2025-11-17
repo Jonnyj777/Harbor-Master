@@ -3388,8 +3388,8 @@ MonoBehaviour:
   landBuildingRadius: 50
   landShoreClearance: 40
   maxAttemptsPerPoint: 99999
-  roadClearance: 15
-  factoryRoadPadding: 7
+  roadClearance: 25
+  factoryRoadPadding: 0
   raycastHeight: 100
   radialSamples: 16
 --- !u!114 &6417502886766025223
