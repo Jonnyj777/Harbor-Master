@@ -136,7 +136,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.19}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5982788778340481402}
@@ -161,6 +161,8 @@ MonoBehaviour:
   cargoBoxes: []
   loadingArea: {fileID: 9212152112330783210}
   cargoPrefab: {fileID: 3857715577458157709, guid: 08d4b5594f496fb4f906a8e5805c98b3, type: 3}
+  startPoint: {fileID: 0}
+  endPoint: {fileID: 0}
 --- !u!65 &1935564826572249425
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -425,8 +427,8 @@ Transform:
   m_GameObject: {fileID: 9212152112330783210}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000024694136, y: 0.7071068, z: -0.000012380168, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -10.72}
-  m_LocalScale: {x: 14.832297, y: 1.1999999, z: 25.903715}
+  m_LocalPosition: {x: 0, y: 0.9, z: 2.81}
+  m_LocalScale: {x: 9.018482, y: 1.1999999, z: 12.772345}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2066809112058927430}

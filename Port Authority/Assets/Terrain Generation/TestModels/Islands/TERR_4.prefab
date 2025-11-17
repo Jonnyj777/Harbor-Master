@@ -199,17 +199,17 @@ MonoBehaviour:
   factoriesPrefabs:
   - {fileID: 100000, guid: f6674c1362ba984468bc1e71a2323d66, type: 3}
   pointFinder: {fileID: 0}
-  commercialCount: 9
+  commercialCount: 4
   factoryCount: 2
-  dockCount: 4
-  shoreDistance: 5
-  shoreBuildingRadius: 10
+  dockCount: 3
+  shoreDistance: 10
+  shoreBuildingRadius: 35
   shoreMaxAttempts: 99999
   landBuildingRadius: 50
   landShoreClearance: 40
   maxAttemptsPerPoint: 99999
-  roadClearance: 10
-  factoryRoadPadding: 10
+  roadClearance: 15
+  factoryRoadPadding: 7
   raycastHeight: 100
   radialSamples: 16
 --- !u!114 &1681427898111283358
@@ -2277,89 +2277,89 @@ MonoBehaviour:
       TangentIn:
         x: -0
         y: -0
-        z: -25.48723
+        z: -9.970837
       TangentOut:
         x: 0
         y: 0
-        z: 25.48723
+        z: 9.970837
       Rotation:
         value:
-          x: 0.0027886485
-          y: 0.88315696
-          z: 0.005191846
-          w: -0.4690407
+          x: 0.0043406137
+          y: 0.76603544
+          z: 0.016023893
+          w: -0.642584
     - Position:
-        x: -107.37958
+        x: 5.6204224
         y: 1.7440648
-        z: -66.91063
+        z: 58.48938
       TangentIn:
         x: -0
         y: -0
-        z: -38.246254
+        z: -30.25583
       TangentOut:
         x: 0
         y: 0
-        z: 20.716515
+        z: 25.303978
       Rotation:
         value:
-          x: -0.0026527236
-          y: -0.6012974
-          z: 0.019307278
-          w: 0.7987878
+          x: 0.009486901
+          y: 0.76505953
+          z: -0.010790674
+          w: -0.6437992
     - Position:
-        x: -137.47958
+        x: -63.07959
         y: -0.9559355
-        z: 1.4893646
+        z: 46.789368
       TangentIn:
         x: -0
         y: -0
-        z: -22.882626
+        z: -18.406391
       TangentOut:
         x: 0
         y: 0
-        z: 24.068079
+        z: 16.873571
       Rotation:
         value:
-          x: 0.010216778
-          y: 0.022314481
-          z: 0.109083585
-          w: 0.99372953
+          x: 0.07610114
+          y: 0.91660243
+          z: -0.041227646
+          w: -0.39031908
     - Position:
-        x: -97.27957
+        x: -75.37958
         y: -0.25593567
-        z: 73.78937
+        z: -10.510635
       TangentIn:
         x: -0
         y: -0
-        z: -26.996117
+        z: -15.897416
       TangentOut:
         x: 0
         y: 0
-        z: 31.68721
+        z: 16.438766
       Rotation:
         value:
-          x: -0.0021884067
-          y: 0.035806548
-          z: 0.0040930323
-          w: 0.99934804
+          x: 0.012568541
+          y: 0.9100342
+          z: -0.0016228555
+          w: -0.41433942
     - Position:
         x: -137.87958
         y: -0.25593567
-        z: 180.28937
+        z: -15.110626
       TangentIn:
         x: -0
         y: -0
-        z: -11.761318
+        z: -18.795765
       TangentOut:
         x: 0
         y: 0
-        z: 16.696745
+        z: 16.73382
       Rotation:
         value:
-          x: -0.006509882
-          y: 0.7406024
-          z: 0.0003357438
-          w: -0.671912
+          x: -0.0062568327
+          y: 0.82614106
+          z: -0.0021106435
+          w: -0.5634245
     - Position:
         x: -176.67958
         y: -1.2559357
@@ -2367,17 +2367,17 @@ MonoBehaviour:
       TangentIn:
         x: -0
         y: -0
-        z: -22.970285
+        z: -4.967334
       TangentOut:
         x: 0
         y: 0
-        z: 22.970285
+        z: 4.967334
       Rotation:
         value:
-          x: -0.012858803
-          y: 0.99631584
-          z: -0.001090531
-          w: -0.08478332
+          x: -0.011628647
+          y: 0.9010569
+          z: -0.0055763824
+          w: -0.4335093
     - Position:
         x: -176.67958
         y: -1.2559357
@@ -2574,7 +2574,7 @@ GameObject:
   - component: {fileID: 5471867417316229003}
   m_Layer: 0
   m_Name: Spline
-  m_TagString: Road
+  m_TagString: Street
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
