@@ -6932,6 +6932,115 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &462318159
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 462318163}
+  - component: {fileID: 462318162}
+  - component: {fileID: 462318161}
+  - component: {fileID: 462318160}
+  m_Layer: 4
+  m_Name: WaterPlane
+  m_TagString: Water
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!64 &462318160
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462318159}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &462318161
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462318159}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: b473a3f67a5fc7e46a2cc128830194ab, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &462318162
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462318159}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &462318163
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462318159}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 500, y: 1.2700005, z: 400}
+  m_LocalScale: {x: 200, y: 1, z: 200}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &464292039
 GameObject:
   m_ObjectHideFlags: 0
@@ -10636,6 +10745,9 @@ MonoBehaviour:
   baseRepairSpeedCost: 2
   repairSpeedMult: 0.1
   maxRepairSpeedLevel: 4
+  baseLoadingSpeedCost: 1000
+  loadingSpeedMult: 0.5
+  maxLoadingSpeedLevel: 2
   baseDurabilityCost: 10
   maxDurabilityLevel: 2
   baseSpeedCost: 5
@@ -10653,6 +10765,7 @@ MonoBehaviour:
   industrialEquipmentCost: 15
   industrialEquipment: {fileID: 11400000, guid: 1d476a28631bb3c4b9c60e4b8be221c0, type: 2}
   repairSpeedCard: {fileID: 895127220}
+  loadingSpeedCard: {fileID: 0}
   durabilityCard: {fileID: 435867045}
   speedCard: {fileID: 1269692570}
   bigCargoShipCard: {fileID: 5608445612477540674}
@@ -12760,7 +12873,7 @@ MonoBehaviour:
   rotationSpeed: 2
   smoothPath: 1
   smoothingIterations: 3
-  delayPerCargo: 2
+  boatLoadingDelay: 2
 --- !u!114 &1511169321573145634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15865,6 +15978,10 @@ MonoBehaviour:
   cargo: []
   unlockedCargo: []
   crashedColor: {r: 0, g: 1, b: 1, a: 1}
+  dockingTime: 1.5
+  rotationSmooth: 10
+  rend: {fileID: 0}
+  whirlpoolSinkLength: 7
 --- !u!223 &7514636850797592933
 Canvas:
   m_ObjectHideFlags: 0
@@ -16697,3 +16814,4 @@ SceneRoots:
   - {fileID: 1177790837}
   - {fileID: 4781270428388095095}
   - {fileID: 140897765}
+  - {fileID: 462318163}
