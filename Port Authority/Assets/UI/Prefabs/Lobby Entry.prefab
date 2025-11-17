@@ -517,6 +517,7 @@ MonoBehaviour:
   hostText: {fileID: 2736511593458883194}
   countBackground: {fileID: 6165454938874058926}
   countText: {fileID: 1012163906946137912}
+  joinButton: {fileID: 741467706944024188}
 --- !u!114 &1754808314947161296
 MonoBehaviour:
   m_ObjectHideFlags: 0

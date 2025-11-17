@@ -311,9 +311,14 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             LayoutRebuilder.ForceRebuildLayoutImmediate(lobbyObj.lobbyNameText.rectTransform);
             lobbyObj.countText.text = l.MemberCount + "/4"; // count
             lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
-            lobbyObj.GetComponent<Button>().onClick.AddListener(() => OnLobbyClicked(l.Id, true));
 
-            lobbyObj.GetComponentInChildren<Button>().onClick.AddListener(() => AttemptJoin(l)); 
+
+            Button btn = lobbyObj.joinButton;
+            btn.onClick.RemoveAllListeners();
+
+            btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
+
+            btn.onClick.AddListener(() => AttemptJoin(l)); 
 
             lobbyList.Add(l.Id, lobbyObj);
             lobbyData.Add(l.Id, l);
