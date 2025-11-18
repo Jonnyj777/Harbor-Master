@@ -8,4 +8,10 @@ public class SceneManagerScript : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         Time.timeScale = 1f;
     }
+
+    public void LoadSceneByIndex(int sceneIndex)
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(sceneIndex);
+    }
 }

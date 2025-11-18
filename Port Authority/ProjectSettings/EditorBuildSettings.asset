@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/UI/GameSystemMultiplayer.unity
     guid: 2b62fa4869efa534d9f8feae1bb16818
+  - enabled: 1
+    path: Assets/UI/MultiplayerMenuConnecting.unity
+    guid: 8f2a2b0cbf5197a4bb04e1437ab7e54f
+  - enabled: 1
+    path: Assets/Scenes/SimpleLevelWithSFX.unity
+    guid: 75c76cf275a41a744972729b6282a933
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
