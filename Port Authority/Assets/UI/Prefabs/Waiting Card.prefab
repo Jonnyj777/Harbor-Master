@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 224.2, y: -56}
-  m_SizeDelta: {x: 314.549, y: 37.434998}
+  m_AnchoredPosition: {x: 172.47896, y: -56.7}
+  m_SizeDelta: {x: 314.549, y: 37.435}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8112040625343857605
 CanvasRenderer:
@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 109192563317858960}
   m_Layer: 5
   m_Name: Waiting Card
-  m_TagString: WaitingCard
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -169,10 +169,10 @@ RectTransform:
   - {fileID: 3442649415372751129}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 443.359, y: 124.6}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 511, y: -202.5}
+  m_SizeDelta: {x: 340, y: 124}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8083153018359041321
 CanvasRenderer:
@@ -202,7 +202,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7038ac06f9e697a45a6d58b26cea0288, type: 3}
+  m_Sprite: {fileID: 21300000, guid: be388f4d2be47b24b835006fd8c6c06d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

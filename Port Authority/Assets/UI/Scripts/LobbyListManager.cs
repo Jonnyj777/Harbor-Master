@@ -30,8 +30,6 @@ public class LobbyData
 
 public class LobbyListManager : MonoBehaviour
 {
-    public static LobbyListManager Instance;
-
     [Header("Test Data")]
     public List<LobbyData> lobbies = new List<LobbyData>();
 
@@ -86,8 +84,6 @@ public class LobbyListManager : MonoBehaviour
 
     void Awake()
     {
-        Instance = this;
-
         // get color choices
         colorChoices = new List<ColorChoice>(colorChoicesContainer.GetComponentsInChildren<ColorChoice>());
 
@@ -119,130 +115,128 @@ public class LobbyListManager : MonoBehaviour
         player.colorChoice = selectedColorChoice;
         player.id = GenerateId();
 
-
-        lobbies = new List<LobbyData>();
         // add test lobby examples
-        //lobbies = new List<LobbyData>
-        //{
-        //    new LobbyData
-        //    {
-        //        lobbyName = "Fun Lobby",
-        //        id = 1,
-        //        maxMembers = 4,
-        //        host = new LobbyMember { id = GenerateId(), name = "Alice", colorChoice = colorChoices[0], isReady = true },
-        //        members = new List<LobbyMember>
-        //        {
-        //            new LobbyMember { id = GenerateId(), name = "Bob", colorChoice = colorChoices[1], isReady = false }
-        //        }
-        //    },
-        //    new LobbyData
-        //    {
-        //        lobbyName = "Casual Lobby",
-        //        id = 2,
-        //        maxMembers = 4,
-        //        host = new LobbyMember { id = GenerateId(), name = "Charlie", colorChoice = colorChoices[2], isReady = true },
-        //        members = new List<LobbyMember>
-        //        {
-        //            new LobbyMember { id = GenerateId(), name = "Dana", colorChoice = colorChoices[3], isReady = false }
-        //        }
-        //    },
-        //    new LobbyData
-        //    {
-        //        lobbyName = "Pro Players",
-        //        id = 3,
-        //        maxMembers = 5,
-        //        host = new LobbyMember { id = GenerateId(), name = "Eve", colorChoice = colorChoices[4], isReady = true },
-        //        members = new List<LobbyMember>
-        //        {
-        //            new LobbyMember { id = GenerateId(), name = "Frank", colorChoice = colorChoices[5], isReady = false },
-        //            new LobbyMember { id = GenerateId(), name = "Grace", colorChoice = colorChoices[1], isReady = false }
-        //        }
-        //    },
-        //    new LobbyData
-        //    {
-        //        lobbyName = "Chill Zone",
-        //        id = 4,
-        //        maxMembers = 4,
-        //        host = new LobbyMember { id = GenerateId(), name = "Hank", colorChoice = colorChoices[6], isReady = true },
-        //        members = new List<LobbyMember>
-        //        {
-        //            new LobbyMember { id = GenerateId(), name = "Ivy", colorChoice = colorChoices[3], isReady = false }
-        //        }
-        //    },
-        //    new LobbyData
-        //    {
-        //        lobbyName = "Adventure Squad",
-        //        id = 5,
-        //        maxMembers = 4,
-        //        host = new LobbyMember { id = GenerateId(), name = "Jack", colorChoice = colorChoices[0], isReady = true },
-        //        members = new List<LobbyMember>
-        //        {
-        //            new LobbyMember { id = GenerateId(), name = "Kim", colorChoice = colorChoices[2], isReady = false },
-        //            new LobbyMember { id = GenerateId(), name = "Leo", colorChoice = colorChoices[1], isReady = false }
-        //        }
-        //    },
-        //    new LobbyData
-        //    {
-        //        lobbyName = "Night Owls",
-        //        id = 6,
-        //        maxMembers = 2,
-        //        host = new LobbyMember { id = GenerateId(), name = "Mia", colorChoice = colorChoices[5], isReady = true },
-        //        members = new List<LobbyMember>
-        //        {
-        //            new LobbyMember { id = GenerateId(), name = "Nina", colorChoice = colorChoices[2], isReady = false }
-        //        }
-        //    },
-        //    new LobbyData
-        //    {
-        //        lobbyName = "Speedsters",
-        //        id = 7,
-        //        maxMembers = 6,
-        //        host = new LobbyMember { id = GenerateId(), name = "Oscar", colorChoice = colorChoices[3], isReady = true },
-        //        members = new List<LobbyMember>
-        //        {
-        //            new LobbyMember { id = GenerateId(), name = "Pam", colorChoice = colorChoices[0], isReady = false }
-        //        }
-        //    },
-        //    new LobbyData
-        //    {
-        //        lobbyName = "Gamers United",
-        //        id = 8,
-        //        maxMembers = 4,
-        //        host = new LobbyMember { id = GenerateId(), name = "Quinn", colorChoice = colorChoices[1], isReady = true },
-        //        members = new List<LobbyMember>
-        //        {
-        //            new LobbyMember { id = GenerateId(), name = "Ray", colorChoice = colorChoices[2], isReady = false },
-        //            new LobbyMember { id = GenerateId(), name = "Sara", colorChoice = colorChoices[4], isReady = false }
-        //        }
-        //    },
-        //    new LobbyData
-        //    {
-        //        lobbyName = "Elite Squad",
-        //        id = 9,
-        //        maxMembers = 3,
-        //        host = new LobbyMember { id = GenerateId(), name = "Tom", colorChoice = colorChoices[2], isReady = true },
-        //        members = new List<LobbyMember>
-        //        {
-        //            new LobbyMember { id = GenerateId(), name = "Uma", colorChoice = colorChoices[3], isReady = false }
-        //        }
-        //    },
-        //    new LobbyData
-        //    {
-        //        lobbyName = "Casual Gamers",
-        //        id = 10,
-        //        maxMembers = 4,
-        //        host = new LobbyMember { id = GenerateId(), name = "Vera", colorChoice = colorChoices[0], isReady = true },
-        //        members = new List<LobbyMember>
-        //        {
-        //            new LobbyMember { id = GenerateId(), name = "Will", colorChoice = colorChoices[2], isReady = false },
-        //            new LobbyMember { id = GenerateId(), name = "Xander", colorChoice = colorChoices[1], isReady = false }
-        //        }
-        //    }
-        //};
-        //foreach (var lobby in lobbies)
-        //{
-        //    lobby.members.Insert(0, lobby.host);
-        //}
+        lobbies = new List<LobbyData>
+        {
+            new LobbyData
+            {
+                lobbyName = "Fun Lobby",
+                id = 1,
+                maxMembers = 4,
+                host = new LobbyMember { id = GenerateId(), name = "Alice", colorChoice = colorChoices[0], isReady = true },
+                members = new List<LobbyMember>
+                {
+                    new LobbyMember { id = GenerateId(), name = "Bob", colorChoice = colorChoices[1], isReady = false }
+                }
+            },
+            new LobbyData
+            {
+                lobbyName = "Casual Lobby",
+                id = 2,
+                maxMembers = 4,
+                host = new LobbyMember { id = GenerateId(), name = "Charlie", colorChoice = colorChoices[2], isReady = true },
+                members = new List<LobbyMember>
+                {
+                    new LobbyMember { id = GenerateId(), name = "Dana", colorChoice = colorChoices[3], isReady = false }
+                }
+            },
+            new LobbyData
+            {
+                lobbyName = "Pro Players",
+                id = 3,
+                maxMembers = 5,
+                host = new LobbyMember { id = GenerateId(), name = "Eve", colorChoice = colorChoices[4], isReady = true },
+                members = new List<LobbyMember>
+                {
+                    new LobbyMember { id = GenerateId(), name = "Frank", colorChoice = colorChoices[5], isReady = false },
+                    new LobbyMember { id = GenerateId(), name = "Grace", colorChoice = colorChoices[1], isReady = false }
+                }
+            },
+            new LobbyData
+            {
+                lobbyName = "Chill Zone",
+                id = 4,
+                maxMembers = 4,
+                host = new LobbyMember { id = GenerateId(), name = "Hank", colorChoice = colorChoices[6], isReady = true },
+                members = new List<LobbyMember>
+                {
+                    new LobbyMember { id = GenerateId(), name = "Ivy", colorChoice = colorChoices[3], isReady = false }
+                }
+            },
+            new LobbyData
+            {
+                lobbyName = "Adventure Squad",
+                id = 5,
+                maxMembers = 4,
+                host = new LobbyMember { id = GenerateId(), name = "Jack", colorChoice = colorChoices[0], isReady = true },
+                members = new List<LobbyMember>
+                {
+                    new LobbyMember { id = GenerateId(), name = "Kim", colorChoice = colorChoices[2], isReady = false },
+                    new LobbyMember { id = GenerateId(), name = "Leo", colorChoice = colorChoices[1], isReady = false }
+                }
+            },
+            new LobbyData
+            {
+                lobbyName = "Night Owls",
+                id = 6,
+                maxMembers = 2,
+                host = new LobbyMember { id = GenerateId(), name = "Mia", colorChoice = colorChoices[5], isReady = true },
+                members = new List<LobbyMember>
+                {
+                    new LobbyMember { id = GenerateId(), name = "Nina", colorChoice = colorChoices[2], isReady = false }
+                }
+            },
+            new LobbyData
+            {
+                lobbyName = "Speedsters",
+                id = 7,
+                maxMembers = 6,
+                host = new LobbyMember { id = GenerateId(), name = "Oscar", colorChoice = colorChoices[3], isReady = true },
+                members = new List<LobbyMember>
+                {
+                    new LobbyMember { id = GenerateId(), name = "Pam", colorChoice = colorChoices[0], isReady = false }
+                }
+            },
+            new LobbyData
+            {
+                lobbyName = "Gamers United",
+                id = 8,
+                maxMembers = 4,
+                host = new LobbyMember { id = GenerateId(), name = "Quinn", colorChoice = colorChoices[1], isReady = true },
+                members = new List<LobbyMember>
+                {
+                    new LobbyMember { id = GenerateId(), name = "Ray", colorChoice = colorChoices[2], isReady = false },
+                    new LobbyMember { id = GenerateId(), name = "Sara", colorChoice = colorChoices[4], isReady = false }
+                }
+            },
+            new LobbyData
+            {
+                lobbyName = "Elite Squad",
+                id = 9,
+                maxMembers = 3,
+                host = new LobbyMember { id = GenerateId(), name = "Tom", colorChoice = colorChoices[2], isReady = true },
+                members = new List<LobbyMember>
+                {
+                    new LobbyMember { id = GenerateId(), name = "Uma", colorChoice = colorChoices[3], isReady = false }
+                }
+            },
+            new LobbyData
+            {
+                lobbyName = "Casual Gamers",
+                id = 10,
+                maxMembers = 4,
+                host = new LobbyMember { id = GenerateId(), name = "Vera", colorChoice = colorChoices[0], isReady = true },
+                members = new List<LobbyMember>
+                {
+                    new LobbyMember { id = GenerateId(), name = "Will", colorChoice = colorChoices[2], isReady = false },
+                    new LobbyMember { id = GenerateId(), name = "Xander", colorChoice = colorChoices[1], isReady = false }
+                }
+            }
+        };
+        foreach (var lobby in lobbies)
+        {
+            lobby.members.Insert(0, lobby.host);
+        }
     }
 
     void Start()
@@ -278,11 +272,6 @@ public class LobbyListManager : MonoBehaviour
     private string GenerateId()
     {
         return System.Guid.NewGuid().ToString("N").Substring(0, 8);
-    }
-
-    public void SetSteamLobbyList(List<LobbyData> newList)
-    {
-        lobbies = newList;
     }
 
     public void RefreshList()
@@ -382,61 +371,59 @@ public class LobbyListManager : MonoBehaviour
 
     private IEnumerator DisplayLobbyCoroutine(LobbyData lobby, bool doFade = true)
     {
-        //CanvasGroup cg = selectedLobbyContainer.GetComponent<CanvasGroup>();
+        CanvasGroup cg = selectedLobbyContainer.GetComponent<CanvasGroup>();
 
-        //if (doFade)
-        //{
-        //    yield return StartCoroutine(FadeOut(cg));
-        //}
+        if (doFade)
+        {
+            yield return StartCoroutine(FadeOut(cg));
+        }
 
-        //// clear old players
-        //foreach (Transform child in playersGrid)
-        //{
-        //    Destroy(child.gameObject);
-        //}
+        // clear old players
+        foreach (Transform child in playersGrid)
+        {
+            Destroy(child.gameObject);
+        }
 
-        //// set lobby name and host text
-        //selectedLobbyNameText.text = lobby.lobbyName;
-        //selectedHostNameText.text = "Host: " + lobby.host.name;
+        // set lobby name and host text
+        selectedLobbyNameText.text = lobby.lobbyName;
+        selectedHostNameText.text = "Host: " + lobby.host.name;
 
-        //// keep track of cards for pop in animations
-        //List<Transform> popInCards = new List<Transform>();
+        // keep track of cards for pop in animations
+        List<Transform> popInCards = new List<Transform>();
 
-        //// make player cards for each member
-        //foreach (var member in lobby.members)
-        //{
-        //    GameObject playerCard = Instantiate(playerCardPrefab, playersGrid);
-        //    PlayerCard card = playerCard.GetComponent<PlayerCard>();
-        //    bool isHost = member.id == lobby.host.id;
-        //    card.SetPlayerInfo(
-        //        member.name,
-        //        member.colorChoice.colorName,
-        //        member.colorChoice.color,
-        //        member.id,
-        //        isHost,
-        //        steamProfilePicture: null);
+        // make player cards for each member
+        foreach (var member in lobby.members)
+        {
+            GameObject playerCard = Instantiate(playerCardPrefab, playersGrid);
+            PlayerCard card = playerCard.GetComponent<PlayerCard>();
+            bool isHost = member.id == lobby.host.id;
+            card.SetPlayerInfo(
+                member.name,
+                member.colorChoice.colorName,
+                member.colorChoice.color,
+                member.id,
+                isHost,
+                steamProfilePicture: null);
 
-        //    popInCards.Add(playerCard.transform);
-        //}
+            popInCards.Add(playerCard.transform);
+        }
 
-        //// fill waiting slots
-        //int remaining = lobby.maxMembers - lobby.members.Count;
-        //for (int i = 0; i < remaining; i++)
-        //{
-        //    Instantiate(waitingCardPrefab, playersGrid);
-        //}
+        // fill waiting slots
+        int remaining = lobby.maxMembers - lobby.members.Count;
+        for (int i = 0; i < remaining; i++)
+        {
+            Instantiate(waitingCardPrefab, playersGrid);
+        }
+            
+        yield return new WaitForEndOfFrame();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(selectedLobbyContainer.GetComponent<RectTransform>());
 
-        //yield return new WaitForEndOfFrame();
-        //LayoutRebuilder.ForceRebuildLayoutImmediate(selectedLobbyContainer.GetComponent<RectTransform>());
+        StartCoroutine(SequentialPopIn(popInCards));
 
-        //StartCoroutine(SequentialPopIn(popInCards));
-
-        //if (doFade)
-        //{
-        //    yield return StartCoroutine(FadeIn(cg));
-        //}
-
-        yield return null;
+        if (doFade)
+        {
+            yield return StartCoroutine(FadeIn(cg));
+        }
     }
 
     public void DisplayJoinedLobby()
@@ -446,101 +433,99 @@ public class LobbyListManager : MonoBehaviour
 
     private IEnumerator DisplayJoinedLobbyCoroutine()
     {
-        //JoinLobby();
-        //CanvasGroup cg = joinedLobbyContainer.GetComponent<CanvasGroup>();
-        //cg.alpha = 0;
+        JoinLobby();
+        CanvasGroup cg = joinedLobbyContainer.GetComponent<CanvasGroup>();
+        cg.alpha = 0;
 
-        //joinedLobbyNameText.text = selectedLobbyData.lobbyName;
-        //joinedHostNameText.text = "Host: " + selectedLobbyData.host.name;
+        joinedLobbyNameText.text = selectedLobbyData.lobbyName;
+        joinedHostNameText.text = "Host: " + selectedLobbyData.host.name;
 
-        //// clear old cards
-        //foreach (Transform child in joinedPlayersGrid)
-        //{
-        //    Destroy(child.gameObject);
-        //}
+        // clear old cards
+        foreach (Transform child in joinedPlayersGrid)
+        {
+            Destroy(child.gameObject);
+        }
 
-        //joinedPlayerCards.Clear();
+        joinedPlayerCards.Clear();
 
-        //// create cards for all members
-        //foreach (var member in selectedLobbyData.members)
-        //{
-        //    GameObject cardObj = Instantiate(joinedPlayerCardPrefab, joinedPlayersGrid);
-        //    PlayerCard card = cardObj.GetComponent<PlayerCard>();
-        //    bool isHost = member.id == selectedLobbyData.host.id;
+        // create cards for all members
+        foreach (var member in selectedLobbyData.members)
+        {
+            GameObject cardObj = Instantiate(joinedPlayerCardPrefab, joinedPlayersGrid);
+            PlayerCard card = cardObj.GetComponent<PlayerCard>();
+            bool isHost = member.id == selectedLobbyData.host.id;
 
-        //    cardObj.SetActive(true);
+            cardObj.SetActive(true);
 
-        //    card.SetPlayerInfo(
-        //        member.name,
-        //        member.colorChoice.colorName,
-        //        member.colorChoice.color,
-        //        member.id,
-        //        isHost,
-        //        null
-        //    );
+            card.SetPlayerInfo(
+                member.name,
+                member.colorChoice.colorName,
+                member.colorChoice.color,
+                member.id,
+                isHost,
+                null
+            );
 
-        //    joinedPlayerCards.Add(card);
-        //}
+            joinedPlayerCards.Add(card);
+        }
 
-        //// fill empty slots
-        //int remaining = selectedLobbyData.maxMembers - selectedLobbyData.members.Count;
-        //for (int i = 0; i < remaining; i++)
-        //{
-        //    Instantiate(waitingCardPrefab, joinedPlayersGrid); // change to invite if done
-        //}
+        // fill empty slots
+        int remaining = selectedLobbyData.maxMembers - selectedLobbyData.members.Count;
+        for (int i = 0; i < remaining; i++)
+        {
+            Instantiate(inviteCardPrefab, joinedPlayersGrid);
+        }
 
-        //// set up main button
-        //TMP_Text buttonText = joinedLobbyReadyButton.GetComponentInChildren<TMP_Text>();
-        //Image buttonBg = joinedLobbyReadyButton.GetComponent<Image>();
+        // set up main button
+        TMP_Text buttonText = joinedLobbyReadyButton.GetComponentInChildren<TMP_Text>();
+        Image buttonBg = joinedLobbyReadyButton.GetComponent<Image>();
 
-        //joinedLobbyReadyButton.onClick.RemoveAllListeners();
+        joinedLobbyReadyButton.onClick.RemoveAllListeners();
 
-        //if (player.id == selectedLobbyData.host.id)
-        //{
-        //    buttonText.text = "Start";
+        if (player.id == selectedLobbyData.host.id)
+        {
+            buttonText.text = "Start";
 
-        //    if (AllPlayersReady())
-        //    {
-        //        buttonBg.color = readyColor;
-        //    }
-        //    else
-        //    {
-        //        buttonBg.color = notReadyColor;
-        //    }
+            if (AllPlayersReady())
+            {
+                buttonBg.color = readyColor;
+            }
+            else
+            {
+                buttonBg.color = notReadyColor;
+            }
 
-        //    joinedLobbyReadyButton.onClick.AddListener(() =>
-        //    {
-        //        if (AllPlayersReady())
-        //        {
-        //            Debug.Log("Starting game!");
-        //        }
-        //    });
-        //}
-        //else
-        //{
-        //    bool currentReady = selectedLobbyData.members.FirstOrDefault(m => m.id == player.id)?.isReady ?? false;
-        //    isReady = currentReady;
-        //    if (isReady) 
-        //    { 
-        //        buttonText.text = "Ready"; 
-        //        buttonBg.color = readyColor; 
-        //    } 
-        //    else 
-        //    { 
-        //        buttonText.text = "Not Ready";
-        //        buttonBg.color = notReadyColor; 
-        //    }
+            joinedLobbyReadyButton.onClick.AddListener(() =>
+            {
+                if (AllPlayersReady())
+                {
+                    Debug.Log("Starting game!");
+                }
+            });
+        }
+        else
+        {
+            bool currentReady = selectedLobbyData.members.FirstOrDefault(m => m.id == player.id)?.isReady ?? false;
+            isReady = currentReady;
+            if (isReady) 
+            { 
+                buttonText.text = "Ready"; 
+                buttonBg.color = readyColor; 
+            } 
+            else 
+            { 
+                buttonText.text = "Not Ready";
+                buttonBg.color = notReadyColor; 
+            }
 
-        //    joinedLobbyReadyButton.onClick.AddListener(OnReadyButtonPressed);
-        //}
+            joinedLobbyReadyButton.onClick.AddListener(OnReadyButtonPressed);
+        }
 
-        //yield return new WaitForEndOfFrame();
-        //yield return new WaitForEndOfFrame();
-        //LayoutRebuilder.ForceRebuildLayoutImmediate(joinedLobbyContainer.GetComponent<RectTransform>());
-        //StartCoroutine(SequentialPopIn(joinedPlayerCards.Select(c => c.transform).ToList()));
-        //yield return StartCoroutine(FadeIn(cg));
-
-        yield return null;
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(joinedLobbyContainer.GetComponent<RectTransform>());
+        StartCoroutine(SequentialPopIn(joinedPlayerCards.Select(c => c.transform).ToList()));
+        yield return StartCoroutine(FadeIn(cg));
     }
 
     private bool AllPlayersReady()
@@ -573,37 +558,37 @@ public class LobbyListManager : MonoBehaviour
 
     public void OnReadyButtonPressed()
     {
-        //// toggle the ready state
-        //bool newReadyState = !(selectedLobbyData.members.FirstOrDefault(m => m.id == player.id)?.isReady ?? false);
+        // toggle the ready state
+        bool newReadyState = !(selectedLobbyData.members.FirstOrDefault(m => m.id == player.id)?.isReady ?? false);
 
-        //// update the lobby data
-        //SetPlayerReady(player.id, newReadyState);
+        // update the lobby data
+        SetPlayerReady(player.id, newReadyState);
 
-        //// update player card
-        //PlayerCard card = joinedPlayerCards.FirstOrDefault(c => c.id == player.id);
-        //if (card == null)
-        //{
-        //    return;
-        //}
-        //card.ToggleReadyState();
+        // update player card
+        PlayerCard card = joinedPlayerCards.FirstOrDefault(c => c.id == player.id);
+        if (card == null)
+        {
+            return;
+        }
+        card.ToggleReadyState();
 
-        //// update ready button visual
-        //isReady = newReadyState;
-        //TMP_Text readyText = joinedLobbyReadyButton.GetComponentInChildren<TMP_Text>();
-        //Image readyBg = joinedLobbyReadyButton.GetComponent<Image>();
+        // update ready button visual
+        isReady = newReadyState;
+        TMP_Text readyText = joinedLobbyReadyButton.GetComponentInChildren<TMP_Text>();
+        Image readyBg = joinedLobbyReadyButton.GetComponent<Image>();
 
-        //if (isReady)
-        //{
-        //    readyText.text = "Ready";
-        //    readyBg.color = readyColor;
-        //}
-        //else
-        //{
-        //    readyText.text = "Not Ready";
-        //    readyBg.color = notReadyColor;
-        //}
+        if (isReady)
+        {
+            readyText.text = "Ready";
+            readyBg.color = readyColor;
+        }
+        else
+        {
+            readyText.text = "Not Ready";
+            readyBg.color = notReadyColor;
+        }
 
-        //StartCoroutine(ReadyButtonCoroutine(card));
+        StartCoroutine(ReadyButtonCoroutine(card));
     }
 
 
@@ -697,7 +682,7 @@ public class LobbyListManager : MonoBehaviour
     }
 
     // animations
-    public IEnumerator FadeIn(CanvasGroup cg)
+    private IEnumerator FadeIn(CanvasGroup cg)
     {
         for (float t = 0; t < fadeDuration; t += Time.deltaTime)
         {
@@ -707,7 +692,7 @@ public class LobbyListManager : MonoBehaviour
         cg.alpha = 1f;
     }
 
-    public IEnumerator FadeOut(CanvasGroup cg)
+    private IEnumerator FadeOut(CanvasGroup cg)
     {
         for (float t = 0; t < fadeDuration; t += Time.deltaTime)
         {
@@ -717,7 +702,7 @@ public class LobbyListManager : MonoBehaviour
         cg.alpha = 0f;
     }
 
-    public IEnumerator FadeIn(CanvasGroup cg1, CanvasGroup cg2)
+    private IEnumerator FadeIn(CanvasGroup cg1, CanvasGroup cg2)
     {
         for (float t = 0; t < fadeDuration; t += Time.deltaTime)
         {
@@ -729,7 +714,7 @@ public class LobbyListManager : MonoBehaviour
         cg2.alpha = 1f;
     }
 
-    public IEnumerator FadeOut(CanvasGroup cg1, CanvasGroup cg2)
+    private IEnumerator FadeOut(CanvasGroup cg1, CanvasGroup cg2)
     {
         for (float t = 0; t < fadeDuration; t += Time.deltaTime)
         {
@@ -741,7 +726,7 @@ public class LobbyListManager : MonoBehaviour
         cg2.alpha = 0f;
     }
 
-    public IEnumerator PopIn(Transform target, float startScale = 0.8f)
+    private IEnumerator PopIn(Transform target, float startScale = 0.8f)
     {
         if (target == null)
         {
@@ -761,7 +746,7 @@ public class LobbyListManager : MonoBehaviour
         target.localScale = originalScale;
     }
 
-    public IEnumerator SequentialPopIn(List<Transform> cards, float delayBetween = 0.05f)
+    private IEnumerator SequentialPopIn(List<Transform> cards, float delayBetween = 0.05f)
     {
         for (int i = 0; i < cards.Count; i++)
         {
