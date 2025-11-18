@@ -179,7 +179,7 @@ public class Boat : MonoBehaviour
     {
         yield return ParkBoat();
         DeliverCargo();
-        transform.Rotate(0f, 180f, 0f);
+        
     }
 
     private IEnumerator ParkBoat()
@@ -217,6 +217,8 @@ public class Boat : MonoBehaviour
 
             yield return null;
         }
+
+        transform.Rotate(0f, 180f, 0f);
     }
 
     public void EnterCrashState(bool multipleCollisions, bool skipFadeOut = false)
