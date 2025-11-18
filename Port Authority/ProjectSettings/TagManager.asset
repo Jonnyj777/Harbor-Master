@@ -11,6 +11,10 @@ TagManager:
   - Boat
   - Truck
   - WaitingCard
+  - TerrainTile
+  - Street
+  - Road
+  - Tree
   layers:
   - Default
   - TransparentFX

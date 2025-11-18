@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3300000}
   - component: {fileID: 2300000}
   - component: {fileID: -6776032166118775542}
+  - component: {fileID: 7071083421674938437}
   m_Layer: 0
   m_Name: Building_Books Shop
   m_TagString: Building
@@ -109,6 +110,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 12.039232, y: 8.357073, z: 12.035599}
   m_Center: {x: 0.50256443, y: 4.1785803, z: 0.50646067}
+--- !u!114 &7071083421674938437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c76da995081204b7b8c7b13f831bcddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7783351716638465757
 PrefabInstance:
   m_ObjectHideFlags: 0
