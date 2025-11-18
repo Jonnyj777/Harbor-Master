@@ -39,22 +39,23 @@ public class VehicleSpawnScript : MonoBehaviour
         }
 
         // Calculate the world bounds after the game bounds object exists
-        GameObject terrain = GameObject.Find("TerrainGenerator");
-        MeshFilter terrainMeshFilter = terrain.GetComponent<MeshFilter>();
-        Bounds terrainMeshBounds = terrainMeshFilter.mesh.bounds;
-        Vector3 terrainUnscaledSize = terrainMeshBounds.size;
-        Vector3 terrainScaledSize = Vector3.Scale(terrainUnscaledSize, terrain.transform.localScale);
 
-        float centerX = terrain.transform.position.x + terrainScaledSize.x / 2;
-        float centerZ = terrain.transform.position.z + terrainScaledSize.z / 2;
-        terrainCenter = new Vector3(centerX, 0, centerZ);
+        //GameObject terrain = GameObject.Find("TerrainGenerator");
+        //MeshFilter terrainMeshFilter = terrain.GetComponent<MeshFilter>();
+        //Bounds terrainMeshBounds = terrainMeshFilter.mesh.bounds;
+        //Vector3 terrainUnscaledSize = terrainMeshBounds.size;
+       // Vector3 terrainScaledSize = Vector3.Scale(terrainUnscaledSize, terrain.transform.localScale);
+
+       // float centerX = terrain.transform.position.x + terrainScaledSize.x / 2;
+       // float centerZ = terrain.transform.position.z + terrainScaledSize.z / 2;
+       // terrainCenter = new Vector3(centerX, 0, centerZ);
 
         // Retrieve valid spawn locations
-        NoiseToTerrainGenerator terrainGenerator = terrain.GetComponent<NoiseToTerrainGenerator>();
-        validSpawnLocations = terrainGenerator.GetOceanEdgeVertices();
+        //NoiseToTerrainGenerator terrainGenerator = terrain.GetComponent<NoiseToTerrainGenerator>();
+        //validSpawnLocations = terrainGenerator.GetOceanEdgeVertices();
 
         // Retrieve the water level for boats
-        waterLevel = terrainGenerator.GetWaterLevel();
+        //waterLevel = terrainGenerator.GetWaterLevel();
 
         minSpawnRate = spawnRate - 2f;
         currentSpawnInterval = Random.Range(minSpawnRate, spawnRate);
