@@ -698,10 +698,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         playerObj.UpdateHost(SteamClient.SteamId == ownerId);
 
-        if (SteamClient.SteamId != ownerId)
-        {
-            startButton.gameObject.SetActive(false);
-        }
+        
 
         inLobby.Add(SteamClient.SteamId, playerInfo);
         popInCards.Add(playerObj.transform);
