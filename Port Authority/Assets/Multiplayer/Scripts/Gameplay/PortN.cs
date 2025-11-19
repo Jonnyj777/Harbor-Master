@@ -29,13 +29,10 @@ public class PortN : NetworkBehaviour
     }
 
     [Server]
-    public void ReceiveCargo(List<CargoN> cargo)
+    public void ReceiveCargoBox(CargoN c)
     {
-        foreach (var c in cargo)
-        {
-            portCargo.Add(c);
-            SpawnCargoBox(c);
-        }
+        portCargo.Add(c);
+        SpawnCargoBox(c);
     }
 
     [Server]

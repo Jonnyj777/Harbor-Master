@@ -72,12 +72,22 @@ public class BoatN : NetworkBehaviour
     [ServerCallback]
     private void OnTriggerEnter(Collider other)
     {
-
-        if (other.CompareTag("Terrain") || other.CompareTag("Boat"))
+        bool multipleCollisions = true;
+        if (other.CompareTag("Terrain"))
         {
-            EnterCrashState();
+            multipleCollisions = false;
+            EnterCrashState(multipleCollisions);
         }
-        if (other.CompareTag("Port"))
+        else if (other.CompareTag("Boat"))
+        {
+            multipleCollisions = true;
+            if (GetInstanceID() < other.GetInstanceID())
+            {
+                multipleCollisions = false;
+            }
+            EnterCrashState(multipleCollisions);
+        }
+        else if (other.CompareTag("Port"))
         {
             vehicle.SetAtPort(true);
             vehicle.DeleteLine();
@@ -144,34 +154,63 @@ public class BoatN : NetworkBehaviour
     [Server]
     void DeliverCargo()
     {
+
+        StartCoroutine(DelayCargo());
+        RpcPlayAudio("boat-delivery");
+        
+       
+    }
+
+    [Server]
+    private IEnumerator DelayCargo()
+    {
         List<CargoN> cargo = new List<CargoN>();
 
-        foreach(GameObject gameObject in cargoBoxes)
+        foreach (GameObject gameObject in cargoBoxes)
         {
             if (!gameObject.activeSelf) continue;
-            if(gameObject.TryGetComponent<CargoN>(out CargoN c))
+            if (gameObject.TryGetComponent<CargoN>(out CargoN c))
             {
                 cargo.Add(c);
             }
         }
 
-        if(cargo.Count > 0) { 
-            port.ReceiveCargo(cargo);
+        for (int i = 0; i < cargo.Count; i++)
+        {
+            yield return new WaitForSeconds(vehicle.delayPerCargo);
+            RpcDeactivateCargo(i);
+            port.ReceiveCargoBox(cargo[i]);
+            cargoBoxes[i].SetActive(false);
+        }
+    }
 
-            for(int i = 0; i < cargoBoxes.Count; i++)
-            {
-                RpcDeactivateCargo(i);
-            }
+    [ClientRpc]
+    void RpcPlayAudio(string audioType)
+    {
+        switch(audioType)
+        {
+            case "boat-delivery":
+                AudioManager.Instance.PlayBoatDelivery();
+                break;
+            case "boat-collision":
+                AudioManager.Instance.PlayBoatCollision();
+                break;
         }
     }
 
     [Server]
-    public void EnterCrashState()
+    public void EnterCrashState(bool multipleCollisions)
     {
         // Prevent multiple triggers
         if (hasCrashed)
         {
             return;
+        }
+
+        if (!multipleCollisions)
+        {
+            // Only trigger the collision sound once
+            RpcPlayAudio("boat-collision");
         }
         hasCrashed = true;
 

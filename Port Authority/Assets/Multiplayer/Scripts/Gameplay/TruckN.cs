@@ -48,9 +48,14 @@ public class TruckN : NetworkBehaviour
         // land vehicle crash state
         // if land vehicle collides into another land vehicle, both land vehicles enter land crash state
         // land crash state == stuck in place, no fade out
+        bool multipleCollisions = true;
         if (other.CompareTag("Truck"))
         {
-            EnterCrashState();
+            if (GetInstanceID() < other.GetInstanceID())
+            {
+                multipleCollisions = false;
+            }
+            EnterCrashState(multipleCollisions);
         }
         if (other.CompareTag("Port") && cargo.Count <= 3)
         {
@@ -206,8 +211,13 @@ public class TruckN : NetworkBehaviour
     }
 
     [Server]
-    public void EnterCrashState()
+    public void EnterCrashState(bool multipleCollisions)
     {
+        if (!multipleCollisions)
+        {
+            AudioManager.Instance.PlayTruckCollision();
+        }
+
         vehicle.SetIsCrashed(true);
         ShowRepairButton();
 
@@ -218,9 +228,11 @@ public class TruckN : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
     private void ShowRepairButton()
     {
         repairButtonInstance = Instantiate(repairButtonPrefab, trucksUICanvas.transform);
+        repairButtonInstance.transform.localScale = new Vector3(3, 3, 3);
 
         // Position the repair button at the truck's position + offset
         Vector3 buttonPosition = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
@@ -231,6 +243,7 @@ public class TruckN : NetworkBehaviour
         button.onClick.AddListener(RepairTruck);
     }
 
+    [Command (requiresAuthority = false)]
     public void RepairTruck()
     {
         int repairCost = 50;
@@ -238,8 +251,14 @@ public class TruckN : NetworkBehaviour
         {
             StartCoroutine(RestoreMaterialAfterDelay());
             ScoreManagerN.Instance.UpdateSpendableScore(-repairCost);
-            Destroy(repairButtonInstance);
+            RpcDestroyRepairButton();
         }
+    }
+
+    [ClientRpc]
+    void RpcDestroyRepairButton()
+    {
+        Destroy(repairButtonInstance);
     }
 
     [Server]

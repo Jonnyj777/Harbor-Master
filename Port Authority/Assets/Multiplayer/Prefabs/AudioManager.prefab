@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7828171445958163296
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3638922832118605152}
+  - component: {fileID: 4875889160766650997}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3638922832118605152
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7828171445958163296}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -691.8689, y: -109.255325, z: 158.36601}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4875889160766650997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7828171445958163296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 062102266c85fd54a80afe45bb7512cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHover: {fileID: 8300000, guid: 29bde6326b4c34ad8a12da475f79b50a, type: 3}
+  buttonClick: {fileID: 8300000, guid: b43d102aac6b145468dcaa94a5cccae1, type: 3}
+  buttonBack: {fileID: 0}
+  buttonCreate: {fileID: 0}
+  buttonCancel: {fileID: 0}
+  buttonJoin: {fileID: 0}
+  gameMusic: {fileID: 8300000, guid: ea0fe5505a6335d42818f4b59b346de2, type: 3}
+  boatEntrance: {fileID: 8300000, guid: 7a7172e6e1e97554e95338d507d8c2bd, type: 3}
+  boatDelivery: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
+  boatCollision: {fileID: 8300000, guid: 9184d33469b23ba41bc2699f815b158f, type: 3}
+  truckDelivery: {fileID: 8300000, guid: a57980bbabefa4546b09fa6fd0be4092, type: 3}
+  truckCollision: {fileID: 8300000, guid: 10787058314562243aae3f538c3b2efe, type: 3}
+  ambientWaves: {fileID: 0}
+  sfxEnabled: 1
+  musicEnabled: 1
+  masterVolume: 1
+  sfxVolume: 1
+  musicVolume: 1
+  masterSlider: {fileID: 0}
+  sfxSlider: {fileID: 0}
+  musicSlider: {fileID: 0}
+  sfxToggle: {fileID: 0}
+  musicToggle: {fileID: 0}

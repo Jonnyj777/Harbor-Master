@@ -9,6 +9,9 @@ public class SpawnTrucksN : NetworkBehaviour
 
     [SerializeField]
     private Transform[] spawnLocations;
+
+    [SerializeField]
+    private Canvas truckUICanvas;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,6 +25,7 @@ public class SpawnTrucksN : NetworkBehaviour
     void SpawnTruck(Transform t)
     {
         GameObject newTruck = Instantiate(truck, t.position, t.rotation);
+        newTruck.GetComponent<TruckN>().trucksUICanvas = truckUICanvas;
         newTruck.AddComponent<AuthorityCheckerDebug>();
         NetworkServer.Spawn(newTruck);
     }
