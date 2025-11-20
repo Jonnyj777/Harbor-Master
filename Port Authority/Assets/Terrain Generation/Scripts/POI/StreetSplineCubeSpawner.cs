@@ -2,31 +2,15 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
-
-/// <summary>
-/// Simple street helper that walks a spline and drops primitive cubes alongside it every few meters.
-/// Attach this to any street prefab that already holds a <see cref="SplineContainer"/> and 3D collider tagged "Street".
-/// </summary>
-[RequireComponent(typeof(SplineContainer))]
-[RequireComponent(typeof(Collider))]
-[DisallowMultipleComponent]
 public class StreetSplineCubeSpawner : MonoBehaviour
 {
     [SerializeField, Min(0.1f)] private float spacing = 40f;
     [SerializeField] private float lateralOffset = 10f;
     [SerializeField] private Vector3 cubeScale = new Vector3(1f, 1f, 1f);
-    [SerializeField] private List<TagAvoidance> avoidanceRules = new List<TagAvoidance>();
 
     private readonly List<GameObject> spawnedCubes = new List<GameObject>();
     private SplineContainer splineContainer;
-
-    [System.Serializable]
-    private struct TagAvoidance
-    {
-        public string tag;
-        public float radius;
-    }
-
+    
     private void Awake()
     {
         splineContainer = GetComponent<SplineContainer>();
@@ -59,8 +43,7 @@ public class StreetSplineCubeSpawner : MonoBehaviour
     {
         for (int i = spawnedCubes.Count - 1; i >= 0; i--)
         {
-            var cube = spawnedCubes[i];
-            Destroy(cube);
+            Destroy(spawnedCubes[i]);
         }
 
         spawnedCubes.Clear();
@@ -91,8 +74,6 @@ public class StreetSplineCubeSpawner : MonoBehaviour
         cube.transform.SetParent(transform);
         cube.transform.SetPositionAndRotation(spawnPosition, spawnRotation);
         cube.transform.localScale = cubeScale;
-
-        var cubeCollider = cube.GetComponent<Collider>();
         
         spawnedCubes.Add(cube);
     }
