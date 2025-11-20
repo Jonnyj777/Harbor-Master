@@ -10,6 +10,9 @@ public class Port : MonoBehaviour
     public GameObject loadingArea;
     public GameObject cargoPrefab;
 
+    public Transform startPoint;
+    public Transform endPoint;
+
     private float spawnOffset = 3f;
     private Vector3 minBounds;
     private Vector3 maxBounds;

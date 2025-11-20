@@ -753,7 +753,7 @@ MonoBehaviour:
   rotationSpeed: 2
   smoothPath: 1
   smoothingIterations: 3
-  delayPerCargo: 2
+  boatLoadingDelay: 2
 --- !u!120 &8097109745329419055
 LineRenderer:
   serializedVersion: 2

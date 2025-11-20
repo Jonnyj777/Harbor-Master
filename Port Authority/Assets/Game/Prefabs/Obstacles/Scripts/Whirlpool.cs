@@ -11,7 +11,7 @@ public class Whirlpool : MonoBehaviour
     public float totalDuration = 7f;  // how long whirlpool lasts before disappearing
     public float suckDuration = 3f;  // duration for boats to spin to the center
 
-    private List<VehicleMovement> activeBoats = new List<VehicleMovement>();
+    private List<Boat> activeBoats = new List<Boat>();
     private bool readyToDestroy = false; 
 
     private void Start()
@@ -30,8 +30,8 @@ public class Whirlpool : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        VehicleMovement boat = other.GetComponent<VehicleMovement>();
-        if (boat != null && boat.vehicleType == VehicleType.Boat)
+        Boat boat = other.GetComponent<Boat>();
+        if (boat != null)
         {
             // prevent duplicates
             if (!activeBoats.Contains(boat))
@@ -46,7 +46,7 @@ public class Whirlpool : MonoBehaviour
         }
     }
 
-    private void OnBoatFinished(VehicleMovement boat)
+    private void OnBoatFinished(Boat boat)
     {
         if (activeBoats.Contains(boat))
         {

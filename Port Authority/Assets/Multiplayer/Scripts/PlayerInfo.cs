@@ -5,6 +5,7 @@ using static UnityEngine.UI.Toggle;
 public class PlayerInfo
 {
     public GameObject playerObj;
+    public PlayerCard playerCardObj;
 
     private bool _isReady;
 
@@ -32,6 +33,12 @@ public class PlayerInfo
         //{
         //    isReady = !isReady;
         //});
+    }
+
+    public PlayerInfo(PlayerCard obj)
+    {
+        playerCardObj = obj;
+        IsReady = false;
     }
 
     public PlayerInfo()

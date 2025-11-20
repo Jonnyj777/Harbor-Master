@@ -27,6 +27,8 @@ public class LobbyEntry : MonoBehaviour
     private UnityEngine.Color countFullColor;
     private bool isFull = false;
 
+    public Button joinButton;
+
     void Start()
     {
         // get colors for lobby entries

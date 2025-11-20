@@ -39,7 +39,8 @@ public class LineFollow : MonoBehaviour
     private float simplifyEpsilon = 1f; // RDP tolerance (world units)
 
     [Header("Delivery Settings")]
-    public float delayPerCargo = 2.0f; // To be shared across child classes
+    [SerializeField] public float boatLoadingDelay = 2.0f;
+    public static float globalTruckLoadingDelay = 2.0f;  // Modified by StoreScript.cs
 
     private Rigidbody rb;
     private bool lineFollowing = false;
@@ -384,6 +385,17 @@ public class LineFollow : MonoBehaviour
     public void SetAtPort(bool value)
     {
         atPort = value;
+    }
+
+    public bool GetIsCrashed()
+    {
+        return isCrashed;
+    }
+
+    public float TruckSpeed
+    {
+        get => truckSpeed;
+        set => truckSpeed = value;
     }
 
     public void SetIsCrashed(bool value)

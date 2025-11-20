@@ -9,6 +9,10 @@ public class CameraControls : MonoBehaviour
     [SerializeField] private float maxHeight = 50f;
     [SerializeField] private float minZoom = 5f;
     [SerializeField] private float maxZoom = 120f;
+    [SerializeField] private float minX = -500f;
+    [SerializeField] private float maxX = 1300f;
+    [SerializeField] private float minZ = -500f;
+    [SerializeField] private float maxZ = 1300f;
 
     [Header("Input Multipliers")]
     [SerializeField] private float shiftMultiplier = 2f;
@@ -74,7 +78,7 @@ public class CameraControls : MonoBehaviour
         float speed = moveSpeed * (IsShiftHeld() ? shiftMultiplier : 1f);
         Vector3 position = transform.position + moveDirection * speed * Time.deltaTime;
         position.y = transform.position.y;
-        transform.position = position;
+        transform.position = ClampPosition(position);
     }
 
     private void HandleZoom()
@@ -97,7 +101,15 @@ public class CameraControls : MonoBehaviour
             Transform basis = mainCamera != null ? mainCamera.transform : transform;
             Vector3 planarForward = Vector3.ProjectOnPlane(basis.forward, Vector3.up).normalized;
             float zSpeed = zoomSpeed * (IsShiftHeld() ? shiftMultiplier : 1f);
-            transform.position += planarForward * (zoomInput * zSpeed * Time.deltaTime);
+            Vector3 position = transform.position + planarForward * (zoomInput * zSpeed * Time.deltaTime);
+            transform.position = ClampPosition(position);
         }
+    }
+
+    private Vector3 ClampPosition(Vector3 position)
+    {
+        position.x = Mathf.Clamp(position.x, minX, maxX);
+        position.z = Mathf.Clamp(position.z, minZ, maxZ);
+        return position;
     }
 }

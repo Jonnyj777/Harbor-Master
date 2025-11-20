@@ -20,6 +20,14 @@ public class StoreScript : MonoBehaviour
     private int currentRepairSpeedLevel = 0;
     private int currentRepairSpeedCost;
 
+    [Header("Loading Speed Upgrade Settings")]
+    public int baseLoadingSpeedCost = 1000;
+    public float loadingSpeedMult = 0.5f;   // Each upgrade reduces current loading speed by 50%
+    public int maxLoadingSpeedLevel = 2;
+
+    private int currentLoadingSpeedLevel = 0;
+    private int currentLoadingSpeedCost;
+
     [Header("Durability Upgrade Settings")]
     public int baseDurabilityCost = 15000;
     public int maxDurabilityLevel = 2;
@@ -63,6 +71,7 @@ public class StoreScript : MonoBehaviour
 
     [Header("Stat Upgrade Cards")]
     public StatUpgradeCard repairSpeedCard;
+    public StatUpgradeCard loadingSpeedCard;
     public StatUpgradeCard durabilityCard;
     public StatUpgradeCard speedCard;
 
@@ -80,10 +89,12 @@ public class StoreScript : MonoBehaviour
     {
         currentUpgradeMenu = boatUpgradeMenu;
         currentRepairSpeedCost = baseRepairSpeedCost;
+        currentLoadingSpeedCost = baseLoadingSpeedCost;
         currentDurabilityCost = baseDurabilityCost;
         currentSpeedCost = baseSpeedCost;
 
         UpdateRepairSpeedEntry();
+        UpdateLoadingSpeedEntry();
         UpdateDurabilityEntry();
         UpdateSpeedEntry();
 
@@ -112,6 +123,25 @@ public class StoreScript : MonoBehaviour
             currentRepairSpeedCost = Mathf.RoundToInt(baseRepairSpeedCost * Mathf.Pow(costMultiplier, currentRepairSpeedLevel));
 
             UpdateRepairSpeedEntry();
+        }
+    }
+
+    public void PurchaseLoadingSpeedUpgrade()
+    {
+        if (ScoreManager.Instance.GetSpendableScore() >= currentLoadingSpeedCost
+                && currentLoadingSpeedLevel <= maxLoadingSpeedLevel)
+        {
+            ScoreManager.Instance.UpdateSpendableScore(-currentLoadingSpeedCost);
+
+            currentLoadingSpeedLevel++;
+
+            float reductionFactor = 1f - (loadingSpeedMult * currentLoadingSpeedLevel);
+            
+            LineFollow.globalTruckLoadingDelay *= reductionFactor;
+
+            currentLoadingSpeedCost = Mathf.RoundToInt(baseLoadingSpeedCost * Mathf.Pow(costMultiplier, currentLoadingSpeedLevel));
+
+            UpdateLoadingSpeedEntry();
         }
     }
 
@@ -240,6 +270,24 @@ public class StoreScript : MonoBehaviour
             currentRepairSpeedLevel, 
             maxRepairSpeedLevel, 
             PurchaseRepairSpeedUpgrade
+        );
+    }
+
+    private void UpdateLoadingSpeedEntry()
+    {
+        string title = "Loading Speed";
+        string current = $"(Current Effect: -{100 * loadingSpeedMult * currentLoadingSpeedLevel}%)";
+        string price = $"${currentLoadingSpeedCost}";
+        string effect = $"Bonus: -{100 * loadingSpeedMult}% Load Speed";
+
+        loadingSpeedCard.SetUpgradeInfo(
+            title,
+            current,
+            price,
+            effect,
+            currentLoadingSpeedLevel,
+            maxLoadingSpeedLevel,
+            PurchaseLoadingSpeedUpgrade
         );
     }
 
