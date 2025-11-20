@@ -215,7 +215,7 @@ public class TruckN : NetworkBehaviour
     {
         if (!multipleCollisions)
         {
-            AudioManager.Instance.PlayTruckCollision();
+            RpcPlayAudio();
         }
 
         vehicle.SetIsCrashed(true);
@@ -259,6 +259,12 @@ public class TruckN : NetworkBehaviour
     void RpcDestroyRepairButton()
     {
         Destroy(repairButtonInstance);
+    }
+
+    [ClientRpc]
+    void RpcPlayAudio()
+    {
+        AudioManager.Instance.PlayTruckCollision();
     }
 
     [Server]

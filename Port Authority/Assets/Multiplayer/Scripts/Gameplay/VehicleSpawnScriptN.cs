@@ -94,6 +94,7 @@ public class VehicleSpawnScriptN : NetworkBehaviour
 
     }
 
+    /*
     [Server]
     void spawnVehicle()
     {
@@ -107,6 +108,48 @@ public class VehicleSpawnScriptN : NetworkBehaviour
 
         GameObject spawnedShip = Instantiate(unlockedShipPrefabs[Random.Range(0, unlockedShipPrefabs.Count)], spawnPos, new Quaternion(0, rotation.y, rotation.z, rotation.w));
         NetworkServer.Spawn(spawnedShip);
+    }
+    */
+
+    [Server]
+    void spawnVehicle()
+    {
+        Vector3 top = new Vector3(500f, 0f, 1000f);
+        Vector3 right = new Vector3(1000f, 0f, 500f);
+        Vector3 left = new Vector3(0f, 0f, 500f);
+        Vector3 bottom = new Vector3(500f, 0f, 0);
+
+        // Each spawn point uses a base rotation of 0 degrees.
+        List<Vector3> spawnPoints = new()
+        {
+            right,
+            left,
+            bottom,
+            top
+        };
+        List<int> rotations = new()
+        {
+            270, //right
+            90, //left
+            0, //bottom
+            180 //top
+        };
+        int index = Random.Range(0, spawnPoints.Count);
+        Vector3 spawnPos = spawnPoints[index];
+        spawnPos.y = waterLevel + spawnHeightOffset;
+
+        // Base rotation is 0 for all spawn points; only a small random offset is applied.
+        RpcPlayAudio();
+        Quaternion rotation = Quaternion.Euler(0f, rotations[index], 0f);
+        GameObject ship = Instantiate(unlockedShipPrefabs[Random.Range(0, unlockedShipPrefabs.Count)], spawnPos, rotation);
+        NetworkServer.Spawn(ship);
+
+    }
+
+    [ClientRpc]
+    void RpcPlayAudio()
+    {
+        AudioManager.Instance.PlayBoatEntrance();
     }
 
     [Server]

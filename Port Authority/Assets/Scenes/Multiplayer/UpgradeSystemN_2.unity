@@ -6708,6 +6708,7 @@ MonoBehaviour:
   - {fileID: 1795839872}
   - {fileID: 1668649571}
   - {fileID: 1082009126}
+  truckUICanvas: {fileID: 0}
 --- !u!4 &280338079
 Transform:
   m_ObjectHideFlags: 0
@@ -8881,6 +8882,63 @@ MonoBehaviour:
   scoreText: {fileID: 842594801}
   popUpText: {fileID: 494108898}
   hasBonus: 0
+--- !u!1001 &807050695
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3638922832118605152, guid: 7ceb9e8c24cd07641b95685873064082, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -691.8689
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638922832118605152, guid: 7ceb9e8c24cd07641b95685873064082, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -109.255325
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638922832118605152, guid: 7ceb9e8c24cd07641b95685873064082, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 158.36601
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638922832118605152, guid: 7ceb9e8c24cd07641b95685873064082, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638922832118605152, guid: 7ceb9e8c24cd07641b95685873064082, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638922832118605152, guid: 7ceb9e8c24cd07641b95685873064082, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638922832118605152, guid: 7ceb9e8c24cd07641b95685873064082, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638922832118605152, guid: 7ceb9e8c24cd07641b95685873064082, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638922832118605152, guid: 7ceb9e8c24cd07641b95685873064082, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638922832118605152, guid: 7ceb9e8c24cd07641b95685873064082, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7828171445958163296, guid: 7ceb9e8c24cd07641b95685873064082, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7ceb9e8c24cd07641b95685873064082, type: 3}
 --- !u!1 &835385231
 GameObject:
   m_ObjectHideFlags: 0
@@ -11855,7 +11913,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1950620776}
-  - component: {fileID: 1950620775}
+  - component: {fileID: 1950620777}
   m_Layer: 0
   m_Name: GameManagers
   m_TagString: Untagged
@@ -11863,25 +11921,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1950620775
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1950620774}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e14b0fcf13584bd28d414c729efedb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  islandPrefabs:
-  - {fileID: 3462743686429670340, guid: 9f6711aad291245089b9fe2fc15c924b, type: 3}
-  - {fileID: 7764644875279157028, guid: e7ce344e7f3d14a378b04252a113941c, type: 3}
-  - {fileID: 3462743686429670340, guid: 062281539779747c883a5656036a3253, type: 3}
-  - {fileID: 3462743686429670340, guid: 6a626ad574baa4cd1a78768e8704f65c, type: 3}
-  gridSize: {x: 2, y: 2}
-  tileSize: {x: 500, y: 500}
 --- !u!4 &1950620776
 Transform:
   m_ObjectHideFlags: 0
@@ -11897,6 +11936,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1950620777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950620774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 473cfc32b3a80b64e98f376dde00cbd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  islandPrefabs:
+  - {fileID: 3462743686429670340, guid: 113ba4a864ce70b49865763657f8f19b, type: 3}
+  - {fileID: 7764644875279157028, guid: 0ab0097182cafcd42837b947968cbbfe, type: 3}
+  - {fileID: 3462743686429670340, guid: 3de270fdcb736534c89340ee9482a6e5, type: 3}
+  - {fileID: 3462743686429670340, guid: 85935981047dd9b44b8eab10c491d1a9, type: 3}
+  gridSize: {x: 2, y: 2}
+  tileSize: {x: 500, y: 500}
 --- !u!1 &1981562492
 GameObject:
   m_ObjectHideFlags: 0
@@ -12223,3 +12281,4 @@ SceneRoots:
   - {fileID: 681512671}
   - {fileID: 292845070}
   - {fileID: 1950620776}
+  - {fileID: 807050695}
