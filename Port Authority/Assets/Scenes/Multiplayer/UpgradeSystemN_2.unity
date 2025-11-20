@@ -8878,9 +8878,10 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  losePopUpText: {fileID: 1935808461}
   scoreText: {fileID: 842594801}
   popUpText: {fileID: 494108898}
+  losePopUpText: {fileID: 1935808461}
+  losePopUp: {fileID: 0}
   hasBonus: 0
 --- !u!1001 &807050695
 PrefabInstance:
@@ -10167,6 +10168,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1555651170887165856, guid: 7c6f1f1903e88d64ba6ef6d8060d5bf3, type: 3}
   m_PrefabInstance: {fileID: 1233983307}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1240079393
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5447581797830353572, guid: fa9ea2569b89855408d014335abca7a3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -8.365477
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447581797830353572, guid: fa9ea2569b89855408d014335abca7a3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -48.65658
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447581797830353572, guid: fa9ea2569b89855408d014335abca7a3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -98.78735
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447581797830353572, guid: fa9ea2569b89855408d014335abca7a3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447581797830353572, guid: fa9ea2569b89855408d014335abca7a3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447581797830353572, guid: fa9ea2569b89855408d014335abca7a3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447581797830353572, guid: fa9ea2569b89855408d014335abca7a3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447581797830353572, guid: fa9ea2569b89855408d014335abca7a3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447581797830353572, guid: fa9ea2569b89855408d014335abca7a3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447581797830353572, guid: fa9ea2569b89855408d014335abca7a3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5633543028585515438, guid: fa9ea2569b89855408d014335abca7a3, type: 3}
+      propertyPath: m_Name
+      value: WaterPlanes
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fa9ea2569b89855408d014335abca7a3, type: 3}
 --- !u!1 &1259722904
 GameObject:
   m_ObjectHideFlags: 0
@@ -10794,12 +10852,13 @@ MonoBehaviour:
   - {fileID: 3145206158688813664, guid: 7a80ef784e8b38749a7cb68935113248, type: 3}
   - {fileID: 551903078520605625, guid: ce64e3e673f01a44691cc7418588ce24, type: 3}
   - {fileID: 551903078520605625, guid: 477810ac8b5c90540ac018daf94d1035, type: 3}
-  spawnRate: 10
-  difficultyIncreaseRate: 60
   spawnMargin: 0
   cornerMargin: 10
   maxSpawnAngle: 15
   spawnHeightOffset: 5
+  spawnRate: 10
+  difficultyIncreaseRate: 60
+  islandPlacer: {fileID: 0}
 --- !u!1 &1494380407
 GameObject:
   m_ObjectHideFlags: 0
@@ -10839,6 +10898,10 @@ MonoBehaviour:
   maxHeight: 50
   minZoom: 5
   maxZoom: 200
+  minX: -500
+  maxX: 1300
+  minZ: -500
+  maxZ: 1300
   shiftMultiplier: 5
 --- !u!114 &1494380409
 MonoBehaviour:
@@ -12282,3 +12345,4 @@ SceneRoots:
   - {fileID: 292845070}
   - {fileID: 1950620776}
   - {fileID: 807050695}
+  - {fileID: 1240079393}

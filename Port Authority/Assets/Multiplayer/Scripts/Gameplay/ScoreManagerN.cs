@@ -8,9 +8,10 @@ public class ScoreManagerN : NetworkBehaviour
     public static ScoreManagerN Instance;
     [SyncVar] private int totalScore = 0;
     [SyncVar(hook = nameof(OnScoreChanged))] private int spendableScore = 0;
-    public TextMeshProUGUI losePopUpText;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI popUpText;
+    public TextMeshProUGUI losePopUpText;
+    public Transform losePopUp;
     public bool hasBonus = false;
 
     private void Start()

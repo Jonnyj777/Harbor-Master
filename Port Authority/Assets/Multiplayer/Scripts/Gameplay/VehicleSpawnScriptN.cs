@@ -8,27 +8,29 @@ public class VehicleSpawnScriptN : NetworkBehaviour
 
     [Header("Boat Prefabs")]
     public List<GameObject> allShipPrefabs;
+
+
     private SyncList<GameObject> unlockedShipPrefabs = new SyncList<GameObject>();
 
-    [Header("Technicals")]
-    public float spawnRate = 10f;
-    private float minSpawnRate;
-    private float currentSpawnInterval;
-    public float difficultyIncreaseRate = 60f;
+    [Header("Spawn Location")]
     public float spawnMargin = 0f;
     public float cornerMargin = 10f;
     public float maxSpawnAngle = 15f;
     public float spawnHeightOffset = 5f;
+
+    [Header("Spawn Rate")]
+    public float spawnRate = 10f;
+    public float difficultyIncreaseRate = 60f;
+    private float minSpawnRate;
+    private float currentSpawnInterval;
     private float spawnTimer = 0f;
     private float gameTimer = 0f;
 
-    // World Positions
-    private Vector3 terrainCenter;
-    private float waterLevel;
-
-
-    // Terrain vertices where terrainHeight <= waterLevel
-    private List<Vector3> validSpawnLocations;
+    [Header("World")]
+    [SerializeField] private IslandPlacerN islandPlacer;
+    private Vector3 gridCenter;
+    private float waterLevel = 1.27f;   // Hard-coded value (Potentially Dangerous!)
+    private float minX, maxX, minZ, maxZ;
 
     void Start()
     {
@@ -38,26 +40,19 @@ public class VehicleSpawnScriptN : NetworkBehaviour
             unlockedShipPrefabs.Add(allShipPrefabs[0]);
         }
 
-        // Calculate the world bounds after the game bounds object exists
-        GameObject terrain = GameObject.Find("TerrainGenerator");
-        MeshFilter terrainMeshFilter = terrain.GetComponent<MeshFilter>();
-        Bounds terrainMeshBounds = terrainMeshFilter.mesh.bounds;
-        Vector3 terrainUnscaledSize = terrainMeshBounds.size;
-        Vector3 terrainScaledSize = Vector3.Scale(terrainUnscaledSize, terrain.transform.localScale);
+        if (islandPlacer != null)
+        {
+            Bounds gridBounds = islandPlacer.GetGridBounds();
+            gridCenter = gridBounds.center;
 
-        float centerX = terrain.transform.position.x + terrainScaledSize.x / 2;
-        float centerZ = terrain.transform.position.z + terrainScaledSize.z / 2;
-        terrainCenter = new Vector3(centerX, 0, centerZ);
-
-        // Retrieve valid spawn locations
-        NoiseToTerrainGenerator terrainGenerator = terrain.GetComponent<NoiseToTerrainGenerator>();
-        validSpawnLocations = terrainGenerator.GetOceanEdgeVertices();
-
-        // Retrieve the water level for boats
-        waterLevel = terrainGenerator.GetWaterLevel();
-
+            minX = gridBounds.min.x;
+            maxX = gridBounds.max.x;
+            minZ = gridBounds.min.z;
+            maxZ = gridBounds.max.z;
+        }
         minSpawnRate = spawnRate - 2f;
         currentSpawnInterval = Random.Range(minSpawnRate, spawnRate);
+
         //Debug.Log("MinX: " + minX + "; " + "MaxX: " + maxX + "; " + "MinZ: " + minZ + "; " + "MaxZ: " + maxZ + "; ");
     }
 
@@ -85,7 +80,7 @@ public class VehicleSpawnScriptN : NetworkBehaviour
             {
                 minSpawnRate--;
             }
-            
+
             if (spawnRate > 1)
             {
                 spawnRate--;
@@ -114,36 +109,44 @@ public class VehicleSpawnScriptN : NetworkBehaviour
     [Server]
     void spawnVehicle()
     {
-        Vector3 top = new Vector3(500f, 0f, 1000f);
-        Vector3 right = new Vector3(1000f, 0f, 500f);
-        Vector3 left = new Vector3(0f, 0f, 500f);
-        Vector3 bottom = new Vector3(500f, 0f, 0);
+        // Choose a random side of the screen to spawn
+        int side = Random.Range(0, 4);
+        float xPos = 0f, zPos = 0f;
 
-        // Each spawn point uses a base rotation of 0 degrees.
-        List<Vector3> spawnPoints = new()
-        {
-            right,
-            left,
-            bottom,
-            top
-        };
-        List<int> rotations = new()
-        {
-            270, //right
-            90, //left
-            0, //bottom
-            180 //top
-        };
-        int index = Random.Range(0, spawnPoints.Count);
-        Vector3 spawnPos = spawnPoints[index];
-        spawnPos.y = waterLevel + spawnHeightOffset;
+        // Random positions within corner margins, before side margin adjustments
+        float randXPos = Random.Range(minX + cornerMargin, maxX - cornerMargin);
+        float randZPos = Random.Range(minZ + cornerMargin, maxZ - cornerMargin);
 
-        // Base rotation is 0 for all spawn points; only a small random offset is applied.
-        RpcPlayAudio();
-        Quaternion rotation = Quaternion.Euler(0f, rotations[index], 0f);
-        GameObject ship = Instantiate(unlockedShipPrefabs[Random.Range(0, unlockedShipPrefabs.Count)], spawnPos, rotation);
+        switch (side)
+        {
+            case 0: // Left
+                xPos = minX - spawnMargin;
+                zPos = randZPos;
+                break;
+            case 1: // Right
+                xPos = maxX + spawnMargin;
+                zPos = randZPos;
+                break;
+            case 2: // Bottom
+                xPos = randXPos;
+                zPos = minZ - spawnMargin;
+                break;
+            case 3: // Top
+                xPos = randXPos;
+                zPos = maxZ + spawnMargin;
+                break;
+        }
+
+        Vector3 spawnPos = new Vector3(xPos, waterLevel + spawnHeightOffset, zPos);
+        Vector3 shipDirection = (gridCenter - spawnPos).normalized;
+        shipDirection.y = 0f;
+
+        //RpcPlayAudio();
+        Quaternion rotation = Quaternion.LookRotation(shipDirection);
+        rotation *= Quaternion.Euler(0, Random.Range(-maxSpawnAngle, maxSpawnAngle), 0);
+
+       GameObject ship = Instantiate(unlockedShipPrefabs[Random.Range(0, unlockedShipPrefabs.Count)], spawnPos, rotation);
         NetworkServer.Spawn(ship);
-
     }
 
     [ClientRpc]
@@ -160,4 +163,5 @@ public class VehicleSpawnScriptN : NetworkBehaviour
             unlockedShipPrefabs.Add(ship);
         }
     }
+
 }

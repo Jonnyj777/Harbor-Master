@@ -494,6 +494,10 @@ MonoBehaviour:
   lineColor: {x: 0, y: 0, z: 0}
   lineWidth: 1.5
   truckSpeed: 20
+  smoothPath: 0
+  smoothingIterations: 3
+  delayPerCargo: 2
+  rotationSpeed: 2
 --- !u!120 &8097109745329419055
 LineRenderer:
   serializedVersion: 2

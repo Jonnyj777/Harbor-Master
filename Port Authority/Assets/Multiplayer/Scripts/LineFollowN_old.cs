@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class LineFollowN : NetworkBehaviour
+public class LineFollowNOld : NetworkBehaviour
 {
     [Header("Line Drawing Settings")]
 
@@ -43,18 +43,6 @@ public class LineFollowN : NetworkBehaviour
     private NetworkIdentity unitIdentity;
     [SyncVar] private bool lineFinished = false;
 
-    [Header("Path Processing")]
-    [SerializeField] private bool smoothPath = true;
-    [SerializeField][Range(1, 4)] private int smoothingIterations = 3;
-    // Increase epsilon to reduce jitter (THIS IS THE NOTICEABLE VALUE)
-    private float simplifyEpsilon = 1f; // RDP tolerance (world units)
-
-    [Header("Delivery Settings")]
-    public float delayPerCargo = 2.0f; // To be shared across child classes
-
-    [Header("Rotation")]
-    [Tooltip("How quickly the vehicle rotates to face the path direction.")]
-    public float rotationSpeed = 2f;
 
     private void Awake()
     {
@@ -146,12 +134,7 @@ public class LineFollowN : NetworkBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        int effectiveMask = layerMask.value;
-
-        if (CompareTag("Truck"))
-            effectiveMask |= LayerMask.GetMask("Default");
-
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, effectiveMask))
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
         {
             Vector3 pos = hit.point + Vector3.up * 0.75f;
 
@@ -223,89 +206,6 @@ public class LineFollowN : NetworkBehaviour
         }
     }
 
-    private List<Vector3> ChaikinSmooth(List<Vector3> points, int iterations)
-    {
-        if (points == null || points.Count < 2)
-            return new List<Vector3>(points);
-
-        List<Vector3> smoothed = new List<Vector3>(points);
-
-        for (int i = 0; i < iterations; i++)
-        {
-            List<Vector3> newPoints = new List<Vector3>();
-            newPoints.Add(smoothed[0]); // Keep the first point
-
-            for (int j = 0; j < smoothed.Count - 1; j++)
-            {
-                Vector3 p0 = smoothed[j];
-                Vector3 p1 = smoothed[j + 1];
-
-                Vector3 Q = 0.75f * p0 + 0.25f * p1;
-                Vector3 R = 0.25f * p0 + 0.75f * p1;
-
-                newPoints.Add(Q);
-                newPoints.Add(R);
-            }
-
-            newPoints.Add(smoothed[^1]); // Keep the last point
-            smoothed = newPoints;
-        }
-
-        return smoothed;
-    }
-
-    private List<Vector3> RamerDouglasPeucker(List<Vector3> points, float epsilon)
-    {
-        if (points == null || points.Count < 3)
-        {
-            return new List<Vector3>(points);
-        }
-
-        int index = -1;
-        float maxDistance = 0f;
-
-        // Find the furthest point
-        for (int i = 1; i < points.Count - 1; i++)
-        {
-            // We want to determine if a point is far enough to consider keeping it (greater than epsilon)
-            // Otherwise, we can throw it out (the line isn't changed by much in getting rid of it)
-            float distance = PerpendicularDistance(points[i], points[0], points[^1]);
-            if (distance > maxDistance)
-            {
-                maxDistance = distance;
-                index = i;
-            }
-        }
-
-        if (maxDistance > epsilon)
-        {
-            // Recursive split
-            List<Vector3> left = RamerDouglasPeucker(points.GetRange(0, index + 1), epsilon);
-            List<Vector3> right = RamerDouglasPeucker(points.GetRange(index, points.Count - index), epsilon);
-
-            left.RemoveAt(left.Count - 1);
-            left.AddRange(right);
-            return left;
-        }
-        else
-        {
-            return new List<Vector3> { points[0], points[^1] };
-        }
-    }
-    private float PerpendicularDistance(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
-    {
-        // Perpendicular distance from a point to a line segment
-        if (lineStart == lineEnd)
-        {
-            return Vector3.Distance(point, lineStart);
-        }
-
-        Vector3 direction = lineEnd - lineStart;
-        Vector3 projected = Vector3.Project(point - lineStart, direction.normalized) + lineStart;
-
-        return Vector3.Distance(point, projected);
-    }
-
     [Server]
     private void FollowLineTruck()
     {
@@ -323,7 +223,7 @@ public class LineFollowN : NetworkBehaviour
         if (direction.sqrMagnitude > 0.001f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
         }
 
         Vector3 currentPosXZ = new Vector3(transform.position.x, 0, transform.position.z);
@@ -335,66 +235,34 @@ public class LineFollowN : NetworkBehaviour
 
         SnapToSurface();
 
-        RemoveLineTraveled("truck");
+        RemoveLineTraveled();
         // remove the part of line already traveled on
     }
 
     [Server]
-    private void RemoveLineTraveled(string vehicleType)
+    private void RemoveLineTraveled()
     {
+
         if (line.positionCount > 1)
         {
-            if (vehicleType == "boat")
+            Vector3[] currentPositions = new Vector3[line.positionCount];
+            line.GetPositions(currentPositions);
+
+            currentPositions[0] = transform.position;
+
+            Vector3 flatCurrent = new Vector3(currentPositions[0].x, 0, currentPositions[0].z);
+            Vector3 flatNext = new Vector3(currentPositions[1].x, 0, currentPositions[1].z);
+
+            if (Vector3.Distance(flatCurrent, flatNext) < 0.5f)
             {
-                Vector3[] currentPositions = new Vector3[line.positionCount];
-                line.GetPositions(currentPositions);
-
-                currentPositions[0] = transform.position;
-
-                //Vector3 flatCurrent = new Vector3(currentPositions[0].x, 0, currentPositions[0].z);
-                //Vector3 flatNext = new Vector3(currentPositions[1].x, 0, currentPositions[1].z);
-
-                if (Vector3.Distance(currentPositions[0], currentPositions[1]) < 0.05f)
-                {
-                    List<Vector3> temp = new List<Vector3>(currentPositions);
-                    temp.RemoveAt(0);
-                    currentPositions = temp.ToArray();
-                    linePositions.RemoveAt(0);
-                }
-
-                //if (Vector3.Distance(flatCurrent, flatNext) < 0.5f)
-                //{
-                    //SyncList<Vector3> temp = new SyncList<Vector3>(currentPositions);
-                    //temp.RemoveAt(0);
-                    //currentPositions = temp.ToArray();
-                    //linePositions.RemoveAt(0);
-                //}
-                line.positionCount = currentPositions.Length;
-                line.SetPositions(currentPositions);
-                //line.positionCount = currentPositions.Length;
-                //line.SetPositions(currentPositions);
+                //SyncList<Vector3> temp = new SyncList<Vector3>(currentPositions);
+                //temp.RemoveAt(0);
+                //currentPositions = temp.ToArray();
+                linePositions.RemoveAt(0);
             }
-            else if(vehicleType == "truck")
-            {
-                Vector3[] currentPositions = new Vector3[line.positionCount];
-                line.GetPositions(currentPositions);
 
-                currentPositions[0] = transform.position;
-
-                Vector3 flatCurrent = new Vector3(currentPositions[0].x, 0, currentPositions[0].z);
-                Vector3 flatNext = new Vector3(currentPositions[1].x, 0, currentPositions[1].z);
-                print("dist: " + Vector3.Distance(flatCurrent, flatNext));
-                if (Vector3.Distance(flatCurrent, flatNext) < 1.5f)
-                {
-                    print("removeing");
-                    //List<Vector3> temp = new List<Vector3>(currentPositions);
-                    linePositions.RemoveAt(0);
-                    //currentPositions = temp.ToArray();
-                }
-
-                //line.positionCount = currentPositions.Length;
-                //line.SetPositions(currentPositions);
-            }
+            //line.positionCount = currentPositions.Length;
+            //line.SetPositions(currentPositions);
         }
     }
 
@@ -411,7 +279,7 @@ public class LineFollowN : NetworkBehaviour
         if (direction.sqrMagnitude > 0.001f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
         }
 
         float distance = Vector3.Distance(currentPos, transform.position);
@@ -420,7 +288,7 @@ public class LineFollowN : NetworkBehaviour
             moveIndex++;
         }
 
-        RemoveLineTraveled("boat");
+        RemoveLineTraveled();
         // remove the part of line already traveled on
         /*
         if (line.positionCount > 1)
@@ -468,18 +336,7 @@ public class LineFollowN : NetworkBehaviour
     {
         if (lineFinished) return;
         line.positionCount = linePositions.Count;
-        List<Vector3> raw = new List<Vector3>(linePositions);
-        List<Vector3> simplified = RamerDouglasPeucker(raw, simplifyEpsilon);
-
-        if (smoothPath && simplified.Count >= 2)
-        {
-            line.SetPositions(ChaikinSmooth(simplified, smoothingIterations).ToArray());
-        }
-        else
-        {
-            line.SetPositions(linePositions.ToArray());
-        }
-
+        line.SetPositions(linePositions.ToArray());
     }
 
     [Command]
@@ -548,25 +405,10 @@ public class LineFollowN : NetworkBehaviour
         switch (colorName)
         {
             case "Orange":
-                colorData = new Vector3(255f / 255f, 119f / 255f, 0f / 255f);
+                colorData = new Vector3(1.0f, 0.647f, 0.0f);
                 break;
             case "Blue":
-                colorData = new Vector3(14f / 255f, 165f / 255f, 233f / 255f);
-                break;
-            case "Pink":
-                colorData = new Vector3(255f / 255f, 31f / 255f, 139f / 255f);
-                break;
-            case "Purple":
-                colorData = new Vector3(182f / 255f, 27f / 255f, 243f / 255f);
-                break;
-            case "Red":
-                colorData = new Vector3(233f / 255f, 14f / 255f, 18f / 255f);
-                break;
-            case "Yellow":
-                colorData = new Vector3(255f / 255f, 217f / 255f, 0f / 255f);
-                break;
-            case "Green":
-                colorData = new Vector3(22f / 255f, 218f / 255f, 35f / 255f);
+                colorData = new Vector3(0.0f, 0.0f, 1.0f);
                 break;
             default:
                 colorData = new Vector3(1.0f, 1.0f, 1.0f);
@@ -618,7 +460,7 @@ public class LineFollowN : NetworkBehaviour
             }
             else if (!drawingLine && CompareTag("Boat") && !atPort)
             {
-                transform.position += globalBoatSpeed * Time.deltaTime * transform.forward;
+                transform.position += transform.forward * globalBoatSpeed * Time.deltaTime;
             }
         }
     }
