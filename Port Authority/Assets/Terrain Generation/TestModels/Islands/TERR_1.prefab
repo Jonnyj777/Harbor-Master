@@ -566,6 +566,7 @@ GameObject:
   - component: {fileID: 6459306141950008262}
   - component: {fileID: 1104920190160127245}
   - component: {fileID: 8538338836578894605}
+  - component: {fileID: 7057255234796766474}
   m_Layer: 0
   m_Name: Spline (1)
   m_TagString: Street
@@ -904,6 +905,30 @@ MonoBehaviour:
   height: 1
   offset: {x: 0, y: 0, z: 0}
   resolution: 30
+--- !u!114 &7057255234796766474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3012239138623368212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd17c6f5344a83b67edac90d6f57fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spacing: 40
+  lateralOffset: 10
+  spawnOnStart: 1
+  isDebug: 0
+  faceStreet: 1
+  buildingCount: 1
+  cubeScale: {x: 1, y: 1, z: 1}
+  avoidanceRules:
+  - tag: Street
+    radius: 5
+  buildingPrefabs:
+  - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
 --- !u!1 &3249264343883001238
 GameObject:
   m_ObjectHideFlags: 0
@@ -919,6 +944,7 @@ GameObject:
   - component: {fileID: 7981191064767942736}
   - component: {fileID: 2243841084390649551}
   - component: {fileID: 1631680481328576276}
+  - component: {fileID: 6769369674977239399}
   m_Layer: 0
   m_Name: Spline (3)
   m_TagString: Street
@@ -1257,6 +1283,30 @@ MonoBehaviour:
   height: 1
   offset: {x: 0, y: 0, z: 0}
   resolution: 30
+--- !u!114 &6769369674977239399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3249264343883001238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd17c6f5344a83b67edac90d6f57fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spacing: 40
+  lateralOffset: 10
+  spawnOnStart: 1
+  isDebug: 0
+  faceStreet: 1
+  buildingCount: 1
+  cubeScale: {x: 1, y: 1, z: 1}
+  avoidanceRules:
+  - tag: Street
+    radius: 5
+  buildingPrefabs:
+  - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
 --- !u!1 &3462743686429670340
 GameObject:
   m_ObjectHideFlags: 0
@@ -1267,8 +1317,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6556003409152238203}
   - component: {fileID: 5016637525208951732}
-  - component: {fileID: 1564121230953005881}
-  - component: {fileID: 1681427898111283358}
   - component: {fileID: 8377326264865600891}
   m_Layer: 0
   m_Name: TERR_1
@@ -1319,67 +1367,6 @@ MonoBehaviour:
   useRandomSelection: 1
   fallbackIndex: 0
   randomSeed: 0
---- !u!114 &1564121230953005881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3462743686429670340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 842ec089c5860324a91dd65d5d876187, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  storePrefabs:
-  - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
-  - {fileID: 100000, guid: 65abb0f1b521f834bae80ea4c9d93734, type: 3}
-  - {fileID: 100000, guid: 3667b1c4d7f532647b9156782c0c80f0, type: 3}
-  - {fileID: 100000, guid: 4c14ffc6a7f79e942885227ac141590c, type: 3}
-  - {fileID: 100000, guid: 4c14ffc6a7f79e942885227ac141590c, type: 3}
-  - {fileID: 100000, guid: 8b3eca4c34b9e1148a3c4d42a48dd5b8, type: 3}
-  - {fileID: 100000, guid: 0c7bcaa85c9494849bc7a0a18b7f3324, type: 3}
-  - {fileID: 100000, guid: e1d9101af5d96d94ca99efe2de0bac21, type: 3}
-  - {fileID: 100000, guid: 5dd9f8de2583df543859013bcdc56639, type: 3}
-  - {fileID: 100000, guid: 4dc7028a3a83758439585b7c7c98cb27, type: 3}
-  - {fileID: 100000, guid: 931fa17f0ab17504bbfc8903e54e6a16, type: 3}
-  - {fileID: 100000, guid: 260808cfd9b21994d8c3007a7bc9934c, type: 3}
-  - {fileID: 100000, guid: 9ccda285cd5f1ce4fa00133b50ba5cbc, type: 3}
-  dockPrefabs:
-  - {fileID: 2220100466157476232, guid: b8c02466a340343c19ea215f7963f868, type: 3}
-  factoriesPrefabs:
-  - {fileID: 100000, guid: f6674c1362ba984468bc1e71a2323d66, type: 3}
-  pointFinder: {fileID: 0}
-  commercialCount: 3
-  factoryCount: 2
-  dockCount: 2
-  shoreDistance: 10
-  shoreBuildingRadius: 80
-  shoreMaxAttempts: 99999
-  landBuildingRadius: 40
-  landShoreClearance: 40
-  maxAttemptsPerPoint: 99999
-  roadClearance: 25
-  factoryRoadPadding: 0
-  raycastHeight: 100
-  radialSamples: 16
---- !u!114 &1681427898111283358
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3462743686429670340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57f316afdf8c3488ebd18a5e02896e1c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  raycastHeight: 100
-  radialSamples: 16
-  shoreOrientationRadius: 15
-  shoreOrientationSamples: 72
-  shoreOrientationMinSequence: 2
 --- !u!114 &8377326264865600891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1411,6 +1398,7 @@ GameObject:
   - component: {fileID: 5993630779874632739}
   - component: {fileID: 2363243701953296375}
   - component: {fileID: 158401365929609770}
+  - component: {fileID: 4984366111265321131}
   m_Layer: 0
   m_Name: Spline (3)
   m_TagString: Street
@@ -1749,6 +1737,30 @@ MonoBehaviour:
   height: 1
   offset: {x: 0, y: 0, z: 0}
   resolution: 30
+--- !u!114 &4984366111265321131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4136792604106580938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd17c6f5344a83b67edac90d6f57fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spacing: 40
+  lateralOffset: 10
+  spawnOnStart: 1
+  isDebug: 0
+  faceStreet: 1
+  buildingCount: 1
+  cubeScale: {x: 1, y: 1, z: 1}
+  avoidanceRules:
+  - tag: Street
+    radius: 5
+  buildingPrefabs:
+  - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
 --- !u!1 &5149478544413957157
 GameObject:
   m_ObjectHideFlags: 0
@@ -1764,6 +1776,7 @@ GameObject:
   - component: {fileID: 3061569011667686948}
   - component: {fileID: 1701983042149940250}
   - component: {fileID: 8944773707664309021}
+  - component: {fileID: 2210006831915281368}
   m_Layer: 0
   m_Name: Spline (2)
   m_TagString: Street
@@ -2102,6 +2115,30 @@ MonoBehaviour:
   height: 1
   offset: {x: 0, y: 0, z: 0}
   resolution: 30
+--- !u!114 &2210006831915281368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5149478544413957157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd17c6f5344a83b67edac90d6f57fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spacing: 40
+  lateralOffset: 10
+  spawnOnStart: 1
+  isDebug: 0
+  faceStreet: 1
+  buildingCount: 1
+  cubeScale: {x: 1, y: 1, z: 1}
+  avoidanceRules:
+  - tag: Street
+    radius: 5
+  buildingPrefabs:
+  - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
 --- !u!1 &5906744261534732756
 GameObject:
   m_ObjectHideFlags: 0
@@ -2117,6 +2154,7 @@ GameObject:
   - component: {fileID: 3921209441193185634}
   - component: {fileID: 2992980883897293299}
   - component: {fileID: 5028762791644903815}
+  - component: {fileID: 4029274892510238787}
   m_Layer: 0
   m_Name: Spline (4)
   m_TagString: Street
@@ -2455,6 +2493,30 @@ MonoBehaviour:
   height: 1
   offset: {x: 0, y: 0, z: 0}
   resolution: 30
+--- !u!114 &4029274892510238787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5906744261534732756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd17c6f5344a83b67edac90d6f57fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spacing: 40
+  lateralOffset: 10
+  spawnOnStart: 1
+  isDebug: 0
+  faceStreet: 1
+  buildingCount: 1
+  cubeScale: {x: 1, y: 1, z: 1}
+  avoidanceRules:
+  - tag: Street
+    radius: 5
+  buildingPrefabs:
+  - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
 --- !u!1 &7293360004376554184
 GameObject:
   m_ObjectHideFlags: 0
@@ -2579,6 +2641,7 @@ GameObject:
   - component: {fileID: 7253402908750356218}
   - component: {fileID: 8096817113097174216}
   - component: {fileID: 6047786463391676279}
+  - component: {fileID: 2788825660058777804}
   m_Layer: 0
   m_Name: Spline (2)
   m_TagString: Street
@@ -2917,6 +2980,30 @@ MonoBehaviour:
   height: 1
   offset: {x: 0, y: 0, z: 0}
   resolution: 30
+--- !u!114 &2788825660058777804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556881747291204181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd17c6f5344a83b67edac90d6f57fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spacing: 40
+  lateralOffset: 10
+  spawnOnStart: 1
+  isDebug: 0
+  faceStreet: 1
+  buildingCount: 1
+  cubeScale: {x: 1, y: 1, z: 1}
+  avoidanceRules:
+  - tag: Street
+    radius: 5
+  buildingPrefabs:
+  - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
 --- !u!1 &8759446841941466663
 GameObject:
   m_ObjectHideFlags: 0

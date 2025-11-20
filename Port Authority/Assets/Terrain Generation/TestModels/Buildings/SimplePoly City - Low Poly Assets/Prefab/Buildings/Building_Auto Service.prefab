@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2300000}
   - component: {fileID: 5529315621815691159}
   - component: {fileID: -7311651347412995485}
-  - component: {fileID: -2512790944657868437}
+  - component: {fileID: 8426509525530633458}
   m_Layer: 0
   m_Name: Building_Auto Service
   m_TagString: Building
@@ -132,7 +132,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 18.271511, y: 6.9995446, z: 8.263669}
   m_Center: {x: -0.22107792, y: 3.5002534, z: 0.049095154}
---- !u!114 &-2512790944657868437
+--- !u!114 &8426509525530633458
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -141,9 +141,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c76da995081204b7b8c7b13f831bcddc, type: 3}
+  m_Script: {fileID: 11500000, guid: e9493eafee2a04be199215ed11744764, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collisionPadding: 0.25
+  colliders: []
+  isValid: 0
+  streetStatus: 0
 --- !u!1001 &1263157253853864754
 PrefabInstance:
   m_ObjectHideFlags: 0
