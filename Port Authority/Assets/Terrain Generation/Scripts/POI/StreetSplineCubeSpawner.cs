@@ -109,8 +109,13 @@ public class StreetSplineCubeSpawner : MonoBehaviour
         for (int i = 0; i < spawnPoints.Count; i++)
             availableIndices.Add(i);
 
-        while (spawnedObjects.Count < maxBuildings && availableIndices.Count > 0)
+        int placements = 0;
+        int attempts = 0;
+        while (placements < maxBuildings && availableIndices.Count > 0)
         {
+            if (attempts > spawnPoints.Count * 2)
+                break;
+
             int randomIndex = UnityEngine.Random.Range(0, availableIndices.Count);
             int spawnPointIndex = availableIndices[randomIndex];
             availableIndices.RemoveAt(randomIndex);
@@ -119,9 +124,19 @@ public class StreetSplineCubeSpawner : MonoBehaviour
 
             GameObject spawnedObject = SpawnBuilding(chosenPoint);
             if (spawnedObject == null)
+            {
+                attempts++;
                 continue;
+            }
 
             spawnedObjects.Add(spawnedObject);
+            placements++;
+            attempts++;
+        }
+
+        if (placements < maxBuildings)
+        {
+            Debug.LogWarning($"{nameof(StreetSplineCubeSpawner)} '{name}' could only place {placements}/{maxBuildings} buildings after validation.");
         }
     }
 
@@ -154,7 +169,11 @@ public class StreetSplineCubeSpawner : MonoBehaviour
         if (validator == null)
             validator = building.AddComponent<Building>();
 
-        validator.Validate();
+        if (!validator.Validate())
+        {
+            Destroy(building);
+            return null;
+        }
 
         return building;
     }
