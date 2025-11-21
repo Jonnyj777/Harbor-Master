@@ -7,8 +7,10 @@ public class StreetSplineCubeSpawner : MonoBehaviour
     [SerializeField, Min(0.1f)] private float spacing = 40f;
     [SerializeField] private float lateralOffset = 10f;
     [SerializeField] private Vector3 cubeScale = new Vector3(1f, 1f, 1f);
+    [SerializeField] private bool isDebug = true;
+    [SerializeField] private List<GameObject> buildingPrefabs = new List<GameObject>();
 
-    private readonly List<GameObject> spawnedCubes = new List<GameObject>();
+    private readonly List<GameObject> spawnedObjects = new List<GameObject>();
     private SplineContainer splineContainer;
     
     private void Awake()
@@ -41,12 +43,12 @@ public class StreetSplineCubeSpawner : MonoBehaviour
     [ContextMenu("Clear Spawned Cubes")]
     public void ClearSpawnedCubes()
     {
-        for (int i = spawnedCubes.Count - 1; i >= 0; i--)
+        for (int i = spawnedObjects.Count - 1; i >= 0; i--)
         {
-            Destroy(spawnedCubes[i]);
+            Destroy(spawnedObjects[i]);
         }
 
-        spawnedCubes.Clear();
+        spawnedObjects.Clear();
     }
 
     private void SpawnCube(float3 position, float3 tangent, float3 up)
@@ -69,13 +71,40 @@ public class StreetSplineCubeSpawner : MonoBehaviour
         
         Quaternion spawnRotation = tangentVector.sqrMagnitude > 0f ? Quaternion.LookRotation(tangentVector, upVector) : Quaternion.identity;
 
+        GameObject spawnedObject = isDebug ? SpawnDebugCube(spawnPosition, spawnRotation) : SpawnBuilding(spawnPosition, spawnRotation);
+        
+        spawnedObjects.Add(spawnedObject);
+    }
+
+    private GameObject SpawnDebugCube(Vector3 spawnPosition, Quaternion spawnRotation)
+    {
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.name = $"Street Cube {spawnedCubes.Count:000}";
+        cube.name = $"Street Cube {spawnedObjects.Count:000}";
         cube.transform.SetParent(transform);
         cube.transform.SetPositionAndRotation(spawnPosition, spawnRotation);
         cube.transform.localScale = cubeScale;
+        return cube;
+    }
+
+    private GameObject SpawnBuilding(Vector3 spawnPosition, Quaternion splineRotation)
+    {
+        if (buildingPrefabs == null || buildingPrefabs.Count == 0)
+        {
+            return null;
+        }
+
+        int randomIndex = UnityEngine.Random.Range(0, buildingPrefabs.Count);
+        GameObject prefab = buildingPrefabs[randomIndex];
+        if (prefab == null)
+        {
+            return null;
+        }
+
+        Quaternion prefabRotation = prefab.transform.rotation;
+        Quaternion finalRotation = splineRotation * prefabRotation;
         
-        spawnedCubes.Add(cube);
+        GameObject building = Instantiate(prefab, spawnPosition, finalRotation, transform);
+        return building;
     }
     
 }

@@ -919,14 +919,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spacing: 40
   lateralOffset: 10
-  spawnOnStart: 1
-  isDebug: 0
-  faceStreet: 1
-  buildingCount: 1
   cubeScale: {x: 1, y: 1, z: 1}
-  avoidanceRules:
-  - tag: Street
-    radius: 5
+  isDebug: 0
   buildingPrefabs:
   - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
 --- !u!1 &3249264343883001238
@@ -1297,14 +1291,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spacing: 40
   lateralOffset: 10
-  spawnOnStart: 1
-  isDebug: 0
-  faceStreet: 1
-  buildingCount: 1
   cubeScale: {x: 1, y: 1, z: 1}
-  avoidanceRules:
-  - tag: Street
-    radius: 5
+  isDebug: 0
   buildingPrefabs:
   - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
 --- !u!1 &3462743686429670340
@@ -1751,14 +1739,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spacing: 40
   lateralOffset: 10
-  spawnOnStart: 1
-  isDebug: 0
-  faceStreet: 1
-  buildingCount: 1
   cubeScale: {x: 1, y: 1, z: 1}
-  avoidanceRules:
-  - tag: Street
-    radius: 5
+  isDebug: 0
   buildingPrefabs:
   - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
 --- !u!1 &5149478544413957157
@@ -2129,14 +2111,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spacing: 40
   lateralOffset: 10
-  spawnOnStart: 1
-  isDebug: 0
-  faceStreet: 1
-  buildingCount: 1
   cubeScale: {x: 1, y: 1, z: 1}
-  avoidanceRules:
-  - tag: Street
-    radius: 5
+  isDebug: 0
   buildingPrefabs:
   - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
 --- !u!1 &5906744261534732756
@@ -2507,14 +2483,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spacing: 40
   lateralOffset: 10
-  spawnOnStart: 1
-  isDebug: 0
-  faceStreet: 1
-  buildingCount: 1
   cubeScale: {x: 1, y: 1, z: 1}
-  avoidanceRules:
-  - tag: Street
-    radius: 5
+  isDebug: 0
   buildingPrefabs:
   - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
 --- !u!1 &7293360004376554184
@@ -2994,14 +2964,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spacing: 40
   lateralOffset: 10
-  spawnOnStart: 1
-  isDebug: 0
-  faceStreet: 1
-  buildingCount: 1
   cubeScale: {x: 1, y: 1, z: 1}
-  avoidanceRules:
-  - tag: Street
-    radius: 5
+  isDebug: 0
   buildingPrefabs:
   - {fileID: 100000, guid: 121f662ea65e2cf40a50c66470757a9e, type: 3}
 --- !u!1 &8759446841941466663
