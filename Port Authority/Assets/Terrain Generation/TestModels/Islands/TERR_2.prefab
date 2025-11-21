@@ -3385,7 +3385,7 @@ MonoBehaviour:
   shoreDistance: 10
   shoreBuildingRadius: 80
   shoreMaxAttempts: 99999
-  landBuildingRadius: 50
+  landBuildingRadius: 40
   landShoreClearance: 40
   maxAttemptsPerPoint: 99999
   roadClearance: 25

@@ -15310,6 +15310,7 @@ GameObject:
   - component: {fileID: 1758113093}
   - component: {fileID: 1758113092}
   - component: {fileID: 1758113095}
+  - component: {fileID: 1758113096}
   m_Layer: 5
   m_Name: Play Button
   m_TagString: Untagged
@@ -15393,6 +15394,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1758113096}
+        m_TargetAssemblyTypeName: SceneManagerScript, Assembly-CSharp
+        m_MethodName: LoadSceneByIndex
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 4
+          m_FloatArgument: 0
+          m_StringArgument: SimpleLevelWithSFX
+          m_BoolArgument: 0
+        m_CallState: 1
 --- !u!114 &1758113093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15460,6 +15473,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1758113096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758113090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61ba627a478f13649bf4b4a7417bffd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1766973026
 GameObject:
   m_ObjectHideFlags: 0
@@ -20223,7 +20248,7 @@ MonoBehaviour:
   minPlayers: 1
   roomPlayerPrefab: {fileID: 338399410527955210, guid: 5404f5dab5d3a9d479529ca39aeaac81, type: 3}
   RoomScene: Assets/UI/MultiplayerMenuConnecting.unity
-  GameplayScene: Assets/Scenes/Multiplayer/ScoringSystemN.unity
+  GameplayScene: Assets/Scenes/Multiplayer/UpgradeSystemN.unity
   _allPlayersReady: 0
   clientIndex: 0
   lobbyCanvas: {fileID: 0}
