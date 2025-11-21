@@ -109,7 +109,7 @@ public class StreetSplineCubeSpawner : MonoBehaviour
         for (int i = 0; i < spawnPoints.Count; i++)
             availableIndices.Add(i);
 
-        for (int spawned = 0; spawned < maxBuildings && availableIndices.Count > 0; spawned++)
+        while (spawnedObjects.Count < maxBuildings && availableIndices.Count > 0)
         {
             int randomIndex = UnityEngine.Random.Range(0, availableIndices.Count);
             int spawnPointIndex = availableIndices[randomIndex];
@@ -119,7 +119,7 @@ public class StreetSplineCubeSpawner : MonoBehaviour
 
             GameObject spawnedObject = SpawnBuilding(chosenPoint);
             if (spawnedObject == null)
-                spawnedObject = SpawnDebugCube(chosenPoint.Position, chosenPoint.AlongSplineRotation);
+                continue;
 
             spawnedObjects.Add(spawnedObject);
         }
@@ -149,7 +149,13 @@ public class StreetSplineCubeSpawner : MonoBehaviour
         Quaternion streetRotation = spawnPoint.GetStreetFacingRotation();
         Quaternion finalRotation = streetRotation * prefabRotation;
         
-        GameObject building = Instantiate(prefab, spawnPoint.Position, finalRotation, transform);
+        GameObject building = Instantiate(prefab, spawnPoint.Position, finalRotation);
+        Building validator = building.GetComponent<Building>();
+        if (validator == null)
+            validator = building.AddComponent<Building>();
+
+        validator.Validate();
+
         return building;
     }
     
