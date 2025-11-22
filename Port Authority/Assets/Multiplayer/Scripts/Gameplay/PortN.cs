@@ -12,6 +12,9 @@ public class PortN : NetworkBehaviour
     public GameObject loadingArea;
     public GameObject cargoPrefab;
 
+    public Transform startPoint;
+    public Transform endPoint;
+
     private float spawnOffset = 3f;
     private Vector3 minBounds;
     private Vector3 maxBounds;
@@ -38,6 +41,7 @@ public class PortN : NetworkBehaviour
     [Server]
     private void SpawnCargoBox(CargoN cargo)
     {
+        print("spawning cargo");
         Vector3 spawnPos = new Vector3(Random.Range(minBounds.x + spawnOffset, maxBounds.x - spawnOffset), maxBounds.y + spawnOffset, Random.Range(minBounds.z + spawnOffset, maxBounds.z - spawnOffset));
         GameObject box = Instantiate(cargoPrefab, spawnPos, Quaternion.identity);
         NetworkServer.Spawn(box);

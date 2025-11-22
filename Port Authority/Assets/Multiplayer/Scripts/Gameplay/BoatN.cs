@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Mirror.BouncyCastle.Asn1.Cmp.Challenge;
 
 public class BoatN : NetworkBehaviour
 {
@@ -27,8 +28,19 @@ public class BoatN : NetworkBehaviour
     private List<Renderer> vehiclePartRenderers = new List<Renderer>();
     private float minX, maxX, minZ, maxZ;   // World bounds
 
+    [Header("Boat Snapping")]
+    public float dockingTime = 1.5f;
+    public float rotationSmooth = 10f;
+    public Renderer rend;
+    private Transform dockEndPoint;
+    private float t = 0f;
+    private Vector3 p0, p1, p2;
+    private bool isDelivering = false;
+    private float boatLength;
+
     private void Start()
     {
+        print("spawned");
         foreach (Renderer vehiclePartRenderer in GetComponentsInChildren<Renderer>())
         {
             if (vehiclePartRenderer.CompareTag("Boat"))
@@ -46,7 +58,7 @@ public class BoatN : NetworkBehaviour
 
             vehicle = GetComponent<LineFollowN>();
             //vehicleRenderer = GetComponent<Renderer>();
-
+            /*
             // Teach the boat the world bounds so it can destroy itself
             GameObject terrain = GameObject.Find("TerrainGenerator");
             MeshFilter terrainMeshFilter = terrain.GetComponent<MeshFilter>();
@@ -58,6 +70,15 @@ public class BoatN : NetworkBehaviour
             maxX = minX + terrainScaledSize.x;
             minZ = terrain.transform.position.z;
             maxZ = minZ + terrainScaledSize.z;
+            */
+
+            minX = 0;
+            maxX = 1000;
+            minZ = 0;
+            maxZ = 1000;
+
+            // Get boat size
+            boatLength = rend.bounds.size.z;
         }
     }
 
@@ -92,7 +113,8 @@ public class BoatN : NetworkBehaviour
             vehicle.SetAtPort(true);
             vehicle.DeleteLine();
             port = other.GetComponent<PortN>();
-            DeliverCargo();
+            //DeliverCargo();
+            StartCoroutine(ParkBoatAndDeliver());
             transform.Rotate(0f, 180f, 0f);
         }
     }
@@ -175,6 +197,7 @@ public class BoatN : NetworkBehaviour
             }
         }
 
+        print("delivering cargo num: " + cargo.Count);
         for (int i = 0; i < cargo.Count; i++)
         {
             yield return new WaitForSeconds(vehicle.delayPerCargo);
@@ -284,5 +307,53 @@ public class BoatN : NetworkBehaviour
 
         //Debug.Log($"Boat {name} went out of bounds and was destroyed.");
         Destroy(gameObject);
+    }
+
+    [Server]
+    private IEnumerator ParkBoatAndDeliver()
+    {
+        yield return ParkBoat();
+        DeliverCargo();
+
+    }
+
+    [Server]
+    private IEnumerator ParkBoat()
+    {
+        t = 0f;
+        dockEndPoint = port.endPoint;
+
+        Vector3 p0 = transform.position;
+        Vector3 p2 = dockEndPoint.position - dockEndPoint.forward * (boatLength / 2f);
+        p2.y = p0.y;
+
+        while (true)
+        {
+            if (hasCrashed)
+                yield break;
+
+            t += Time.deltaTime / dockingTime;
+            float easedT = Mathf.SmoothStep(0, 1, t);
+
+            transform.position = Vector3.Lerp(p0, p2, easedT);
+
+            Quaternion targetRot = Quaternion.LookRotation(dockEndPoint.forward);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                rotationSmooth * Time.deltaTime
+            );
+
+            if (t >= 1f)
+            {
+                transform.position = p2;
+                transform.rotation = dockEndPoint.rotation;
+                break;
+            }
+
+            yield return null;
+        }
+
+        transform.Rotate(0f, 180f, 0f);
     }
 }

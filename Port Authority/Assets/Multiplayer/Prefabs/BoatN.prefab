@@ -386,6 +386,10 @@ MonoBehaviour:
   lineColor: {x: 0, y: 0, z: 0}
   lineWidth: 1.5
   truckSpeed: 20
+  smoothPath: 1
+  smoothingIterations: 3
+  delayPerCargo: 2
+  rotationSpeed: 2
 --- !u!120 &1373061060865479387
 LineRenderer:
   serializedVersion: 2
@@ -513,6 +517,9 @@ MonoBehaviour:
   - {fileID: 2124991968752743807}
   - {fileID: 4825489036044855431}
   crashedColor: {r: 0, g: 1, b: 1, a: 1}
+  dockingTime: 1.5
+  rotationSmooth: 10
+  rend: {fileID: 6768941464760523500}
 --- !u!114 &123370551021672185
 MonoBehaviour:
   m_ObjectHideFlags: 0

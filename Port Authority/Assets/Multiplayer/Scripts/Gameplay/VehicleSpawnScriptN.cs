@@ -8,8 +8,6 @@ public class VehicleSpawnScriptN : NetworkBehaviour
 
     [Header("Boat Prefabs")]
     public List<GameObject> allShipPrefabs;
-
-
     private SyncList<GameObject> unlockedShipPrefabs = new SyncList<GameObject>();
 
     [Header("Spawn Location")]
