@@ -929,5 +929,5 @@ MonoBehaviour:
   originalMaterial: {fileID: 2100000, guid: 4174b7015dd69354d9ddf1e53f8dccca, type: 2}
   crashedMaterial: {fileID: 2100000, guid: 8323cb55a4ee1b54e86d565266062d98, type: 2}
   crashedColor: {r: 1, g: 0, b: 0.9537916, a: 1}
-  repairButtonPrefab: {fileID: 0}
+  repairButtonPrefab: {fileID: 2421748138931753100, guid: 56be3532b3f9f0248b3f01391d7075f7, type: 3}
   trucksUICanvas: {fileID: 0}
