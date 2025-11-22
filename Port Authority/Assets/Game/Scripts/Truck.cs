@@ -22,7 +22,7 @@ public class Truck : MonoBehaviour
     public static float globalRestartDelay; // The current effective value (changes when upgraded)
 
     public GameObject repairButtonPrefab;
-    public Canvas trucksUICanvas;
+    private Canvas trucksUICanvas;
     private GameObject repairButtonInstance;
 
     private bool mudEffected = false;
