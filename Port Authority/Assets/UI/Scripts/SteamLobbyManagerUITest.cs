@@ -599,6 +599,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         }
 
         OnColorClicked(colorChoices[0]);
+        SetUserLineColor(colorChoices[0].colorName);
 
         Texture2D tex;
         Sprite profileSprite;
