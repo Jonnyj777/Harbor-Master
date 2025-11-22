@@ -38,6 +38,7 @@ public class Truck : MonoBehaviour
         {
             globalRestartDelay = baseRestartDelay;
         }
+        trucksUICanvas = GetComponentInChildren<Canvas>();
     }
 
     private void Start()
@@ -52,6 +53,12 @@ public class Truck : MonoBehaviour
         {
             vehicle.DeleteLine();
             StartCoroutine(BounceBack());
+        }
+
+        // Keep the repair button on the truck when camera moves
+        if (repairButtonInstance != null)
+        {
+            repairButtonInstance.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
         }
     }
 
@@ -293,6 +300,7 @@ public class Truck : MonoBehaviour
     private void ShowRepairButton()
     {
         repairButtonInstance = Instantiate(repairButtonPrefab, trucksUICanvas.transform);
+
 
         // Position the repair button at the truck's position + offset
         Vector3 buttonPosition = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
