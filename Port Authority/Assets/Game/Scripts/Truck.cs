@@ -22,11 +22,15 @@ public class Truck : MonoBehaviour
     public static float globalRestartDelay; // The current effective value (changes when upgraded)
 
     public GameObject repairButtonPrefab;
-    public Canvas trucksUICanvas;
+    private Canvas trucksUICanvas;
     private GameObject repairButtonInstance;
 
     private bool mudEffected = false;
     private float originalTruckSpeed;
+
+    public float bounceBackTime = 1.25f;
+    public float retreatDistance = 15f;
+    private bool isBouncingBack = false;
 
     private void Awake()
     {
@@ -34,12 +38,39 @@ public class Truck : MonoBehaviour
         {
             globalRestartDelay = baseRestartDelay;
         }
+        trucksUICanvas = GetComponentInChildren<Canvas>();
     }
 
     private void Start()
     {
         vehicle = GetComponent<LineFollow>();
         vehicleRenderer = GetComponent<Renderer>();
+    }
+
+    private void Update()
+    {
+        if (IsOverWater() && !isBouncingBack)
+        {
+            vehicle.DeleteLine();
+            StartCoroutine(BounceBack());
+        }
+
+        // Keep the repair button on the truck when camera moves
+        if (repairButtonInstance != null)
+        {
+            repairButtonInstance.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
+        }
+    }
+
+    bool IsOverWater()
+    {
+        Vector3 origin = transform.position + Vector3.up * 1f;
+
+        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, 10f))
+        {
+            return hit.collider.CompareTag("Water");
+        }
+        return false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -220,9 +251,56 @@ public class Truck : MonoBehaviour
         }
     }
 
+    private IEnumerator BounceBack()
+    {
+        // Copies the smooth movement from ParkBoat() in Boat.cs
+        isBouncingBack = true;
+
+        float t = 0f;
+        Vector3 startPos = transform.position;
+
+
+        Vector3 retreatDirection = -transform.forward;
+        // The point on land where truck will retreat to
+        Vector3 safePoint = transform.position + retreatDirection * retreatDistance;
+        // Force the retreat point to be level with the truck
+        safePoint.y = startPos.y;
+
+        Quaternion startRot = transform.rotation;
+        Quaternion targetRot = Quaternion.LookRotation((safePoint - startPos).normalized);
+
+        while (true)
+        {
+            t += Time.deltaTime / bounceBackTime;
+            float easedT = Mathf.SmoothStep(0f, 1f, t);
+
+            // Smooth movement away from water
+            transform.position = Vector3.Lerp(startPos, safePoint, easedT);
+
+            // Smooth "turn away" rotation
+            transform.rotation = Quaternion.Slerp(
+                startRot,
+                targetRot,
+                easedT
+            );
+
+            if (t >= 1f)
+            {
+                transform.position = safePoint;
+                transform.rotation = targetRot;
+                break;
+            }
+
+            yield return null;
+        }
+
+        isBouncingBack = false;
+    }
+
     private void ShowRepairButton()
     {
         repairButtonInstance = Instantiate(repairButtonPrefab, trucksUICanvas.transform);
+
 
         // Position the repair button at the truck's position + offset
         Vector3 buttonPosition = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
