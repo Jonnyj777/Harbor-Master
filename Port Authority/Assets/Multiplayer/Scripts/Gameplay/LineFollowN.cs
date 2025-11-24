@@ -532,9 +532,7 @@ public class LineFollowN : NetworkBehaviour
         //NetworkPlayer localPlayer = NetworkClient.localPlayer.GetComponent<NetworkPlayer>();
         //lineColor = localPlayer.lineColorData;
         Friend self = new Friend(SteamClient.SteamId);
-        string colorName = SteamLobbyManager.Lobby.GetMemberData(self, "lineColor");
-        print("color: " + colorName);
-
+        string colorName = SteamLobbyManagerUITest.Lobby.GetMemberData(self, "lineColor");
         CmdSetLineColor(colorName);
         StartDrag();
 
