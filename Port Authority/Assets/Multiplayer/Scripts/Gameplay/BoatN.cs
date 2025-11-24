@@ -191,6 +191,7 @@ public class BoatN : NetworkBehaviour
         foreach (GameObject gameObject in cargoBoxes)
         {
             if (!gameObject.activeSelf) continue;
+            if (gameObject.CompareTag("deleting")) continue;
             if (gameObject.TryGetComponent<CargoN>(out CargoN c))
             {
                 cargo.Add(c);
@@ -200,6 +201,7 @@ public class BoatN : NetworkBehaviour
         print("delivering cargo num: " + cargo.Count);
         for (int i = 0; i < cargo.Count; i++)
         {
+            cargoBoxes[i].tag = "deleting";
             yield return new WaitForSeconds(vehicle.delayPerCargo);
             RpcDeactivateCargo(i);
             port.ReceiveCargoBox(cargo[i]);

@@ -113,11 +113,12 @@ public class StoreScriptUI : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseRepairSpeedUpgrade()
     {
+
         if (
-                 ScoreManagerN.Instance.GetSpendableScore() >= currentRepairSpeedCost
+                 ScoreManagerUI.Instance.GetSpendableScore() >= currentRepairSpeedCost
                 && currentRepairSpeedLevel <= maxRepairSpeedLevel)
         {
-            ScoreManagerN.Instance.UpdateSpendableScore(-currentRepairSpeedCost);
+            ScoreManagerUI.Instance.UpdateSpendableScore(-currentRepairSpeedCost);
 
             currentRepairSpeedLevel++;
 
@@ -131,10 +132,10 @@ public class StoreScriptUI : NetworkBehaviour
             UpdateRepairSpeedEntry(oldCost, currentRepairSpeedCost);
         }
 
-        if (ScoreManagerN.Instance.GetSpendableScore() >= currentRepairSpeedCost
+        if (ScoreManagerUI.Instance.GetSpendableScore() >= currentRepairSpeedCost
                 && currentRepairSpeedLevel <= maxRepairSpeedLevel)
         {
-            ScoreManagerN.Instance.UpdateSpendableScore(-currentRepairSpeedCost);
+            ScoreManagerUI.Instance.UpdateSpendableScore(-currentRepairSpeedCost);
 
             currentRepairSpeedLevel++;
 
@@ -152,10 +153,10 @@ public class StoreScriptUI : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseDurabilityUpgrade()
     {
-        if (ScoreManagerN.Instance.GetSpendableScore() >= currentDurabilityCost
+        if (ScoreManagerUI.Instance.GetSpendableScore() >= currentDurabilityCost
                 && currentDurabilityLevel <= maxDurabilityLevel)
         {
-            ScoreManagerN.Instance.UpdateSpendableScore(-currentDurabilityCost);
+            ScoreManagerUI.Instance.UpdateSpendableScore(-currentDurabilityCost);
 
             currentDurabilityLevel++;
 
@@ -171,10 +172,10 @@ public class StoreScriptUI : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseSpeedUpgrade()
     {
-        if (ScoreManagerN.Instance.GetSpendableScore() >= currentSpeedCost
+        if (ScoreManagerUI.Instance.GetSpendableScore() >= currentSpeedCost
                 && currentSpeedLevel <= maxSpeedLevel)
         {
-            ScoreManagerN.Instance.UpdateSpendableScore(-currentSpeedCost);
+            ScoreManagerUI.Instance.UpdateSpendableScore(-currentSpeedCost);
 
             currentSpeedLevel++;
 
@@ -193,10 +194,10 @@ public class StoreScriptUI : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseBigCargoShip()
     {
-        if (ScoreManagerN.Instance.GetSpendableScore() >= bigCargoShipCost
+        if (ScoreManagerUI.Instance.GetSpendableScore() >= bigCargoShipCost
                 && !bigCargoShipPurchased)
         {
-            ScoreManagerN.Instance.UpdateSpendableScore(-bigCargoShipCost);
+            ScoreManagerUI.Instance.UpdateSpendableScore(-bigCargoShipCost);
 
             vehicleSpawnScript.UnlockShip(bigCargoShip);
 
@@ -211,10 +212,10 @@ public class StoreScriptUI : NetworkBehaviour
     public void PurchaseBiggerCargoShip()
     {
 
-        if (ScoreManagerN.Instance.GetSpendableScore() >= biggerCargoShipCost
+        if (ScoreManagerUI.Instance.GetSpendableScore() >= biggerCargoShipCost
                 && !biggerCargoShipPurchased)
         {
-            ScoreManagerN.Instance.UpdateSpendableScore(-biggerCargoShipCost);
+            ScoreManagerUI.Instance.UpdateSpendableScore(-biggerCargoShipCost);
 
             vehicleSpawnScript.UnlockShip(biggerCargoShip);
 
@@ -227,10 +228,10 @@ public class StoreScriptUI : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseWhiskey()
     {
-        if (ScoreManagerN.Instance.GetSpendableScore() >= whiskeyCost
+        if (ScoreManagerUI.Instance.GetSpendableScore() >= whiskeyCost
                 && !whiskeyPurchased)
         {
-            ScoreManagerN.Instance.UpdateSpendableScore(-whiskeyCost);
+            ScoreManagerUI.Instance.UpdateSpendableScore(-whiskeyCost);
 
             CargoManager.Instance.UnlockCargo(whiskey);
 
@@ -243,10 +244,10 @@ public class StoreScriptUI : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseFurniture()
     {
-        if (ScoreManagerN.Instance.GetSpendableScore() >= furnitureCost
+        if (ScoreManagerUI.Instance.GetSpendableScore() >= furnitureCost
                 && !furniturePurchased)
         {
-            ScoreManagerN.Instance.UpdateSpendableScore(-furnitureCost);
+            ScoreManagerUI.Instance.UpdateSpendableScore(-furnitureCost);
 
             CargoManager.Instance.UnlockCargo(furniture);
 
@@ -259,10 +260,10 @@ public class StoreScriptUI : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void PurchaseIndustrialEquipment()
     {
-        if (ScoreManagerN.Instance.GetSpendableScore() >= industrialEquipmentCost
+        if (ScoreManagerUI.Instance.GetSpendableScore() >= industrialEquipmentCost
                 && !industrialEquipmentPurchased)
         {
-            ScoreManagerN.Instance.UpdateSpendableScore(-industrialEquipmentCost);
+            ScoreManagerUI.Instance.UpdateSpendableScore(-industrialEquipmentCost);
 
             CargoManager.Instance.UnlockCargo(industrialEquipment);
 
