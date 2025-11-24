@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class IslandPlacerN : MonoBehaviour
+public class IslandPlacerN : NetworkBehaviour
 {
     [SerializeField] private List<GameObject> islandPrefabs = new List<GameObject>();
     [SerializeField] private Vector2 gridSize = new Vector2(2f, 2f);
@@ -23,6 +23,7 @@ public class IslandPlacerN : MonoBehaviour
         GetGridBounds();
     }
 
+    [Server]
     private void SpawnIslands()
     {
         int gridWidth = Mathf.Max(0, Mathf.RoundToInt(gridSize.x));
@@ -46,6 +47,7 @@ public class IslandPlacerN : MonoBehaviour
             }
         }
     }
+
 
     private void InitializeIndices()
     {
