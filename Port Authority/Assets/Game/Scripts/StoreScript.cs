@@ -69,6 +69,7 @@ public class StoreScript : MonoBehaviour
     private bool furniturePurchased = false;
     private bool industrialEquipmentPurchased = false;
 
+    
     [Header("Stat Upgrade Cards")]
     public StatUpgradeCard repairSpeedCard;
     public StatUpgradeCard loadingSpeedCard;

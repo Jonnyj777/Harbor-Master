@@ -38,9 +38,17 @@ public class Boat : MonoBehaviour
     private LineFollow vehicle;
     private List<Renderer> vehiclePartRenderers = new List<Renderer>();
     private float minX, maxX, minZ, maxZ;   // World bounds
+    private const float boundsBuffer = 5f;
+    private BoatBehaviourLogic boatBehaviourLogic;
+    private IBoatMonoWrapper boatWrapper;
 
     [Header("Whirlpool Settings")]
     [SerializeField] private float whirlpoolSinkLength = 7f;
+
+    private void Awake()
+    {
+        boatWrapper = new BoatMonoBehaviourWrapper(this);
+    }
 
     private void Start()
     {
@@ -72,11 +80,16 @@ public class Boat : MonoBehaviour
 
         // Get boat size
         boatLength = rend.bounds.size.z;
+
+        boatBehaviourLogic = new BoatBehaviourLogic(
+            new BoatWorldBounds(minX, maxX, minZ, maxZ),
+            boundsBuffer
+        );
     }
 
     private void Update()
     {
-        CheckBounds();
+        boatBehaviourLogic?.ApplyBounds(boatWrapper, transform.position);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -393,20 +406,6 @@ public class Boat : MonoBehaviour
         callback?.Invoke(this);
     }
 
-    private void CheckBounds()
-    {
-        Vector3 pos = transform.position;
-
-        // Small buffer to prevent boats from being deleted too early if their model origin isnt centered
-        float buffer = 5f;
-
-        if (pos.x < minX - buffer || pos.x > maxX + buffer ||
-            pos.z < minZ - buffer || pos.z > maxZ + buffer)
-        {
-            DestroyBoatOutOfBounds();
-        }
-    }
-
     private void DestroyBoatOutOfBounds()
     {
         // Avoid duplicate calls if already crashing/sinking
@@ -417,5 +416,23 @@ public class Boat : MonoBehaviour
 
         //Debug.Log($"Boat {name} went out of bounds and was destroyed.");
         Destroy(gameObject);
+    }
+
+    private sealed class BoatMonoBehaviourWrapper : IBoatMonoWrapper
+    {
+        private readonly Boat boat;
+
+        public BoatMonoBehaviourWrapper(Boat boat)
+        {
+            this.boat = boat;
+        }
+
+        public bool HasVehicle => boat.vehicle != null;
+        public bool HasCrashed => boat.hasCrashed;
+
+        public void DestroyOutOfBounds()
+        {
+            boat.DestroyBoatOutOfBounds();
+        }
     }
 }
