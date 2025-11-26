@@ -8,10 +8,12 @@ public class ScoreManagerUI : NetworkBehaviour
     public static ScoreManagerUI Instance;
     [SyncVar] private int totalScore = 0;
     [SyncVar(hook = nameof(OnScoreChanged))] private int spendableScore = 0;
-    public TextMeshProUGUI losePopUpText;
+    public TextMeshProUGUI losePopUpHostText;
+    public TextMeshProUGUI losePopUpNonHostText;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI popUpText;
-    public Transform losePopUp;
+    public Transform losePopUpHost;
+    public Transform losePopUpNonHost;
     public bool hasBonus = false;
 
     private void Start()
@@ -56,8 +58,16 @@ public class ScoreManagerUI : NetworkBehaviour
 
     public void ShowLosePopUp()
     {
-        losePopUp.gameObject.SetActive(true);
-        losePopUpText.text = "$" + totalScore;
+        if(isServer)
+        {
+            losePopUpHost.gameObject.SetActive(true);
+            losePopUpHostText.text = "$" + totalScore;
+        }
+        else
+        {
+            losePopUpNonHost.gameObject.SetActive(true);
+            losePopUpNonHostText.text = "$" + totalScore;
+        }
     }
 
     [Server]

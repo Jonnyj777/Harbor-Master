@@ -219,7 +219,7 @@ public class TruckN : NetworkBehaviour
         }
 
         vehicle.SetIsCrashed(true);
-        ShowRepairButton();
+        RpcShowRepairButton();
 
         if (vehicleRenderer != null)
         {
@@ -229,7 +229,7 @@ public class TruckN : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void ShowRepairButton()
+    private void RpcShowRepairButton()
     {
         repairButtonInstance = Instantiate(repairButtonPrefab, trucksUICanvas.transform);
         repairButtonInstance.transform.localScale = new Vector3(3, 3, 3);

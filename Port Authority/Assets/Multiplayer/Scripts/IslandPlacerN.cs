@@ -10,6 +10,7 @@ public class IslandPlacerN : NetworkBehaviour
 
     private readonly HashSet<int> availableIslandIndices = new HashSet<int>();
 
+    [ServerCallback]
     private void Start()
     {
         if (islandPrefabs == null || islandPrefabs.Count == 0)
