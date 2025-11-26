@@ -25,6 +25,14 @@ public class TruckN : NetworkBehaviour
     public Canvas trucksUICanvas;
     private GameObject repairButtonInstance;
 
+
+    private bool mudEffected = false;
+    private float originalTruckSpeed;
+
+    public float bounceBackTime = 1.25f;
+    public float retreatDistance = 15f;
+    private bool isBouncingBack = false;
+
     private void Awake()
     {
         if (globalRestartDelay == 0)
@@ -39,6 +47,27 @@ public class TruckN : NetworkBehaviour
         {
             vehicle = GetComponent<LineFollowN>();
             vehicleRenderer = GetComponent<Renderer>();
+        }
+
+        if (trucksUICanvas == null)
+        {
+            trucksUICanvas = GetComponentInChildren<Canvas>();
+        }
+    }
+
+    [ServerCallback]
+    private void Update()
+    {
+        if (IsOverWater() && !isBouncingBack)
+        {
+            vehicle.DeleteLine();
+            StartCoroutine(BounceBack());
+        }
+
+        // Keep the repair button on the truck when camera moves
+        if (repairButtonInstance != null)
+        {
+            repairButtonInstance.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
         }
     }
 
@@ -161,7 +190,7 @@ public class TruckN : NetworkBehaviour
                 scoreUpdate += Mathf.RoundToInt(c.price * c.amount * bonusMultiplier);
             }
 
-            ScoreManagerN.Instance.AddScore(scoreUpdate, bonus);
+            ScoreManagerUI.Instance.AddScore(scoreUpdate, bonus);
             cargo.Clear();
         }
     }
@@ -232,7 +261,7 @@ public class TruckN : NetworkBehaviour
     private void RpcShowRepairButton()
     {
         repairButtonInstance = Instantiate(repairButtonPrefab, trucksUICanvas.transform);
-        repairButtonInstance.transform.localScale = new Vector3(3, 3, 3);
+        //repairButtonInstance.transform.localScale = new Vector3(3, 3, 3);
 
         // Position the repair button at the truck's position + offset
         Vector3 buttonPosition = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
@@ -274,5 +303,63 @@ public class TruckN : NetworkBehaviour
 
         vehicleRenderer.material = originalMaterial;
         vehicle.SetIsCrashed(false);
+    }
+
+    bool IsOverWater()
+    {
+        Vector3 origin = transform.position + Vector3.up * 1f;
+
+        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, 10f))
+        {
+            return hit.collider.CompareTag("Water");
+        }
+        return false;
+    }
+
+    [Server]
+    private IEnumerator BounceBack()
+    {
+        // Copies the smooth movement from ParkBoat() in Boat.cs
+        isBouncingBack = true;
+
+        float t = 0f;
+        Vector3 startPos = transform.position;
+
+
+        Vector3 retreatDirection = -transform.forward;
+        // The point on land where truck will retreat to
+        Vector3 safePoint = transform.position + retreatDirection * retreatDistance;
+        // Force the retreat point to be level with the truck
+        safePoint.y = startPos.y;
+
+        Quaternion startRot = transform.rotation;
+        Quaternion targetRot = Quaternion.LookRotation((safePoint - startPos).normalized);
+
+        while (true)
+        {
+            t += Time.deltaTime / bounceBackTime;
+            float easedT = Mathf.SmoothStep(0f, 1f, t);
+
+            // Smooth movement away from water
+            transform.position = Vector3.Lerp(startPos, safePoint, easedT);
+
+            // Smooth "turn away" rotation
+            transform.rotation = Quaternion.Slerp(
+                startRot,
+                targetRot,
+                easedT
+            );
+
+            if (t >= 1f)
+            {
+                transform.position = safePoint;
+                transform.rotation = targetRot;
+                break;
+            }
+
+            yield return null;
+        }
+
+        isBouncingBack = false;
     }
 }

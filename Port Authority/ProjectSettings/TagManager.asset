@@ -15,6 +15,7 @@ TagManager:
   - Street
   - Road
   - Tree
+  - deleting
   layers:
   - Default
   - TransparentFX

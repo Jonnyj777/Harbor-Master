@@ -176,9 +176,12 @@ public class BoatN : NetworkBehaviour
     [Server]
     void DeliverCargo()
     {
-
-        StartCoroutine(DelayCargo());
-        RpcPlayAudio("boat-delivery");
+        if(!isDelivering)
+        {
+            isDelivering = true;
+            StartCoroutine(DelayCargo());
+            RpcPlayAudio("boat-delivery");
+        }
         
        
     }
@@ -187,11 +190,9 @@ public class BoatN : NetworkBehaviour
     private IEnumerator DelayCargo()
     {
         List<CargoN> cargo = new List<CargoN>();
-
         foreach (GameObject gameObject in cargoBoxes)
         {
             if (!gameObject.activeSelf) continue;
-            if (gameObject.CompareTag("deleting")) continue;
             if (gameObject.TryGetComponent<CargoN>(out CargoN c))
             {
                 cargo.Add(c);
@@ -201,7 +202,6 @@ public class BoatN : NetworkBehaviour
         print("delivering cargo num: " + cargo.Count);
         for (int i = 0; i < cargo.Count; i++)
         {
-            cargoBoxes[i].tag = "deleting";
             yield return new WaitForSeconds(vehicle.delayPerCargo);
             RpcDeactivateCargo(i);
             port.ReceiveCargoBox(cargo[i]);

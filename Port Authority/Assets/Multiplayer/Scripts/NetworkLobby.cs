@@ -56,4 +56,14 @@ public class NetworkLobby : NetworkRoomManager
         }
     }
 
+    public override void OnServerDisconnect(NetworkConnectionToClient conn)
+    {
+        base.OnServerDisconnect(conn);
+
+        if(numPlayers == 0)
+        {
+            StopServer();
+        }
+    }
+
 }
