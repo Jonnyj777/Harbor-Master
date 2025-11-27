@@ -62,7 +62,7 @@ public class NetworkLobby : NetworkRoomManager
 
         if(numPlayers == 0)
         {
-            StopServer();
+            //StopHost();
         }
     }
 

@@ -14,7 +14,7 @@ public class SteamManager : MonoBehaviour
         if (Singleton == null)
         {
             Singleton = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
             try
             {
                 //SteamClient.Init(appId, true);

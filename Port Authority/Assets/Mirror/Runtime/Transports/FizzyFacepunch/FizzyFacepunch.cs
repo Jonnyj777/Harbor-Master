@@ -2,6 +2,7 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 namespace Mirror.FizzySteam
@@ -45,6 +46,8 @@ namespace Mirror.FizzySteam
       
       Debug.Log("SteamWorks initialised");
       FetchSteamID();
+      SceneManager.LoadScene("MultiplayerMenuConnecting2");
+            DontDestroyOnLoad(this);
     }
     
     public override void ClientEarlyUpdate()

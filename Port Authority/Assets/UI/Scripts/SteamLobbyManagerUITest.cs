@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -86,22 +87,39 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     private UnityEngine.Color notReadyColor;
     private bool joiningCreatedLobby = false;
 
-
-    private void Start()
+    private Button hostButton;
+    private Button refreshButton;
+    private Button createLobbyButton;
+    private Button leaveButton;
+    private void Awake()
     {
+        // Singleton setup
         if (instance == null)
         {
             instance = this;
+            //DontDestroyOnLoad(gameObject);
         }
-        else
+        else if (instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject); // destroy duplicates
+            return;
         }
 
-        DontDestroyOnLoad(this);
+    }
+
+    public void InitializeMenu(ReferenceGrab refGrab)
+    {
+        GameObject[] oldPlayerObjects = GameObject.FindGameObjectsWithTag("Player");
+
+        for(int i = 0; i < oldPlayerObjects.Length; i++)
+        {
+            Destroy(oldPlayerObjects[i]);
+        }
 
         Request = new Steamworks.ServerList.Internet();
         Request.RunQueryAsync(30);
+
+        GetReferences(refGrab);
         startButton.interactable = false;
 
         //attach functions to event listeners
@@ -119,18 +137,102 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         GetLobbyInfo();
 
-        
 
-        newLobbyColorChoice = newLobbyColorChoices[0];
+
+        //newLobbyColorChoice = newLobbyColorChoices[0];
         StartCoroutine(SetDefaultColors());
 
         // ui colors
         readyColor = new UnityEngine.Color(22f / 255f, 218f / 255f, 35f / 255f, 1f);
         notReadyColor = new UnityEngine.Color(157f / 255f, 157f / 255f, 157f / 255f, 1f);
+        print(" test: " + createLobbyButton.name);
+        hostButton.onClick.AddListener(Host);
+        createLobbyButton.onClick.AddListener(OpenCreatePrompt);
+        refreshButton.onClick.AddListener(GetLobbyInfo);
+        startButton.onClick.AddListener(ClearLobbyForStart);
+        leaveButton.onClick.AddListener(LeaveLobby);
+
+        NetworkLobby networkLobby = NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>();
+
+        if(networkLobby != null)
+        {
+            startButton.onClick.AddListener(NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>().MoveToGameplayScene);
+        }
+        else
+        {
+            Debug.LogError("ERROR: network lobby is null and did not properly add listener of - MoveToGameplayScene");
+        }
+    }
+
+    private void GetReferences(ReferenceGrab refs)
+    {
+        startButton = refs.startButton;
+        lobbyEntryPrefab = refs.lobbyEntryPrefab;
+        lobbyListContainer = refs.lobbyListContainer;
+        noLobbyText = refs.noLobbyText;
+
+        playerCardPrefab = refs.playerCardPrefab;
+        playersGrid = refs.playersGrid;
+        waitingCardPrefab = refs.waitingCardPrefab  ;
+
+        multiplayerMenuScreen = refs.multiplayerMenuScreen;
+        joinedLobbyScreen = refs.joinedLobbyScreen;
+        selectedLobbySection = refs.selectedLobbySection;
+        joinedLobbyNameText = refs.joinedLobbyNameText;
+        joinedHostNameText = refs.joinedHostNameText;
+        joinedLobbyContainer = refs.joinedLobbyContainer;
+
+
+        joinedPlayerCardPrefab = refs.joinedPlayerCardPrefab;
+        joinedPlayersGrid = refs.joinedPlayersGrid;
+
+        inviteCardPrefab = refs.inviteCardPrefab;
+        joinedLobbyReadyButton = refs.joinedLobbyReadyButton;
+
+        colorChoicesContainer = refs.colorChoicesContainer;
+
+        lobbyNameInput = refs.lobbyNameInput;
+        lobbySizeInput = refs.lobbySizeInput;
+
+        hostButton = refs.hostButton;
+        refreshButton = refs.refreshButton;
+        createLobbyButton = refs.createLobbyButton;
+        leaveButton = refs.leaveButton;
+}
+
+    public void RemoveCallbacks()
+    {
+        SteamMatchmaking.OnLobbyCreated -= OnLobbyCreated;
+        SteamMatchmaking.OnLobbyEntered -= OnLobbyEntered;
+        SteamMatchmaking.OnLobbyMemberJoined -= OnLobbyMemberJoined;
+        SteamMatchmaking.OnLobbyMemberDisconnected -= OnLobbyMemberDisconnected;
+        SteamMatchmaking.OnLobbyMemberLeave -= OnLobbyMemberDisconnected;
+        SteamMatchmaking.OnLobbyGameCreated -= OnLobbyGameCreated;
+        SteamFriends.OnGameLobbyJoinRequested -= OnGameLobbyJoinRequest;
+        SteamMatchmaking.OnLobbyInvite -= OnLobbyInvite;
+        SteamMatchmaking.OnLobbyMemberDataChanged -= SetReadyStatus;
+        SteamMatchmaking.OnLobbyMemberDataChanged -= SetColor;
+        hostButton.onClick.RemoveListener(Host);
+        createLobbyButton.onClick.RemoveListener(OpenCreatePrompt);
+        refreshButton.onClick.RemoveListener(GetLobbyInfo);
+        startButton.onClick.RemoveListener(ClearLobbyForStart);
+        leaveButton.onClick.RemoveListener(LeaveLobby);
+
+        NetworkLobby networkLobby = NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>();
+
+        if (networkLobby != null)
+        {
+            startButton.onClick.RemoveListener(NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>().MoveToGameplayScene);
+        }
+        else
+        {
+            Debug.LogError("ERROR: network lobby is null and did not properly add listener of - MoveToGameplayScene");
+        }
     }
 
     public void OpenCreatePrompt()
     {
+        print("open prompt update");
         lobbyNameInput.text = SteamClient.Name + "'s Lobby";
         lobbySizeInput.text = "4";
     }
@@ -305,7 +407,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             Debug.Log(l.GetData("name"));
 
             LobbyEntry lobbyObj = Instantiate(lobbyEntryPrefab, lobbyListContainer);
-
+            print("name: " + l.GetData("name"));
             lobbyObj.lobbyNameText.text = l.GetData("name"); // name of lobby
             lobbyObj.lobbyNameText.ForceMeshUpdate();
             LayoutRebuilder.ForceRebuildLayoutImmediate(lobbyObj.lobbyNameText.rectTransform);

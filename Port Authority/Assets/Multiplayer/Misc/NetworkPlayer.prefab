@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6436432168758051595}
   m_Layer: 0
   m_Name: NetworkPlayer
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -84,3 +84,5 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  isReady: 0
+  lineColorData: {x: 0, y: 0, z: 0}
