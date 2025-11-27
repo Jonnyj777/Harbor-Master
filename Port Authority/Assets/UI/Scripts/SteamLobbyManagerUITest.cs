@@ -978,4 +978,12 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         }
     }
 
+    private void OnApplicationQuit()
+    {
+        if(NetworkClient.active)
+        {
+            LeaveLobby();
+        }
+    }
+
 }
