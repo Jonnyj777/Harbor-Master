@@ -16,6 +16,7 @@ public class ProductCard : MonoBehaviour
 
     private bool isPurchased;
     private System.Action onBuyCallback;
+    private readonly PurchaseCardLogic logic = new PurchaseCardLogic();
 
     public void SetUpgradeInfo(string title, string price, string effect, System.Action onBuy, bool isPurchased = false)
     {
@@ -30,38 +31,33 @@ public class ProductCard : MonoBehaviour
 
         TMP_Text label = currentButton.GetComponentInChildren<TMP_Text>();
 
-        if (isPurchased)
-        {
-            if (boughtButtonPrefab != null)
-            {
-                currentButton.image.sprite = boughtButtonPrefab.image.sprite;
-                currentButton.image.color = boughtButtonPrefab.image.color;
-            }
+        PurchaseCardState state = logic.BuildState(isPurchased);
 
-            currentButton.interactable = false;
-            if (label != null) label.text = "Owned";
-            currentButton.onClick.RemoveAllListeners();
+        if (state.UseBoughtVisual && boughtButtonPrefab != null)
+        {
+            currentButton.image.sprite = boughtButtonPrefab.image.sprite;
+            currentButton.image.color = boughtButtonPrefab.image.color;
         }
-        else
+        else if (!state.UseBoughtVisual && buyButtonPrefab != null)
         {
-            if (buyButtonPrefab != null)
-            {
-                currentButton.image.sprite = buyButtonPrefab.image.sprite;
-                currentButton.image.color = buyButtonPrefab.image.color;
-            }
+            currentButton.image.sprite = buyButtonPrefab.image.sprite;
+            currentButton.image.color = buyButtonPrefab.image.color;
+        }
 
-            if (label != null)
-            {
-                label.text = "Buy";
-            }
+        currentButton.interactable = state.IsInteractable;
+        if (label != null)
+        {
+            label.text = state.ButtonLabel;
+        }
 
-            currentButton.onClick.RemoveAllListeners();
+        currentButton.onClick.RemoveAllListeners();
 
+        if (state.IsInteractable)
+        {
             currentButton.onClick.AddListener(() =>
             {
                 onBuyCallback?.Invoke();
             });
-
         }
     }
 }

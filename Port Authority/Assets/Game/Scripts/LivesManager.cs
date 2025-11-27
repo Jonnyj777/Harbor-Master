@@ -5,33 +5,35 @@ using UnityEngine;
 public class LivesManager : MonoBehaviour
 {
     public static LivesManager Instance;
-    private int lives = 6;
+    [SerializeField] private int startingLives = 6;
     public TextMeshProUGUI livesText;
     public Button resetButton;
     public Button menuButton;
+    private LivesManagerLogic logic;
+
+    void Awake()
+    {
+        Instance = this;
+        logic = new LivesManagerLogic(startingLives);
+    }
 
     void Start()
     {
         UpdateLivesEntry();
     }
 
-    void Awake()
-    {
-        Instance = this;
-    }
-
     public void AddLife()
     {
-        lives++;
+        logic.AddLife();
         UpdateLivesEntry();
     }
 
     public void LoseLife()
     {
-        lives--;
+        bool outOfLives = logic.LoseLife();
         UpdateLivesEntry();
 
-        if (lives < 1)
+        if (outOfLives)
         {
             // End the game
             Time.timeScale = 0f;
@@ -49,6 +51,6 @@ public class LivesManager : MonoBehaviour
 
     private void UpdateLivesEntry()
     {
-        livesText.text = "Lives: " + lives;
+        livesText.text = "Lives: " + logic.Lives;
     }
 }

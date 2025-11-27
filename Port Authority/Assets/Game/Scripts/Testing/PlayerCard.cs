@@ -25,6 +25,7 @@ public class PlayerCard : MonoBehaviour
     public SteamId id;
 
     public PlayerInfo playerInfo;
+    private readonly PlayerCardVisualLogic visualLogic = new PlayerCardVisualLogic();
 
 
     private void Start()
@@ -66,49 +67,14 @@ public class PlayerCard : MonoBehaviour
     public void UpdateReadyButton(bool ready)
     {
         isReady = ready;
-
-        if (isReady)
-        {
-            readyButtonText.text = "Ready";
-            readyButtonBackground.color = readyColor;
-        }
-        else
-        {
-            readyButtonText.text = "Not Ready";
-            readyButtonBackground.color = notReadyColor;
-        }
+        PlayerReadyState state = visualLogic.GetReadyState(ready);
+        readyButtonText.text = state.Label;
+        readyButtonBackground.color = state.IsReady ? readyColor : notReadyColor;
     }
 
     public void UpdateColorVisual(string colorName)
     {
-        UnityEngine.Color colorData;
-        switch (colorName)
-        {
-            case "Orange":
-                colorData = new UnityEngine.Color(255f / 255f, 119f / 255f, 0f / 255f);
-                break;
-            case "Blue":
-                colorData = new UnityEngine.Color(14f / 255f, 165f / 255f, 233f / 255f);
-                break;
-            case "Pink":
-                colorData = new UnityEngine.Color(255f / 255f, 31f / 255f, 139f / 255f);
-                break;
-            case "Purple":
-                colorData = new UnityEngine.Color(182f / 255f, 27f / 255f, 243f / 255f);
-                break;
-            case "Red":
-                colorData = new UnityEngine.Color(233f / 255f, 14f / 255f, 18f / 255f);
-                break;
-            case "Yellow":
-                colorData = new UnityEngine.Color(255f / 255f, 217f / 255f, 0f / 255f);
-                break;
-            case "Green":
-                colorData = new UnityEngine.Color(22f / 255f, 218f / 255f, 35f / 255f);
-                break;
-            default:
-                colorData = new UnityEngine.Color(1.0f, 1.0f, 1.0f);
-                break;
-        }
+        Color colorData = visualLogic.ResolveColor(colorName);
 
         colorNameText.text = colorName;
         outline.color = colorData;

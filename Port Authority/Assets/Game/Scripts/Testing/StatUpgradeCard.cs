@@ -22,6 +22,7 @@ public class StatUpgradeCard : MonoBehaviour
     private int currentLevel;
     private int maxLevel;
     private System.Action onBuyCallback;
+    private readonly StatUpgradeCardLogic logic = new StatUpgradeCardLogic();
 
     public void SetUpgradeInfo(string title, string currentEffect, string price, string effect, int currentLevel, int maxLevel, System.Action onBuy)
     {
@@ -35,49 +36,44 @@ public class StatUpgradeCard : MonoBehaviour
         this.maxLevel = maxLevel;
         this.onBuyCallback = onBuy;
 
+        StatUpgradeCardState state = logic.BuildState(currentLevel, maxLevel);
+
         // reset notches
         foreach (Transform child in notchesContainer)
             Destroy(child.gameObject);
 
-        for (int i = 0; i < maxLevel; i++)
+        for (int i = 0; i < state.TotalNotches; i++)
         {
-            var prefab = i < currentLevel ? fullNotchPrefab : emptyNotchPrefab;
+            var prefab = i < state.FilledNotches ? fullNotchPrefab : emptyNotchPrefab;
             GameObject notch = Instantiate(prefab, notchesContainer);
 
-            if (i == currentLevel - 1 && prefab == fullNotchPrefab)
+            if (i == state.FilledNotches - 1 && prefab == fullNotchPrefab)
             {
                 StartCoroutine(PopIn(notch.transform));
             }
         }
 
-        // set button type
-        bool isMaxed = currentLevel >= maxLevel;
-
         TMP_Text label = currentButton.GetComponentInChildren<TMP_Text>();
-
-        if (isMaxed)
+        if (state.UseBoughtVisual && boughtButtonPrefab != null)
         {
-            if (boughtButtonPrefab != null)
-            {
-                currentButton.image.sprite = boughtButtonPrefab.image.sprite;
-                currentButton.image.color = boughtButtonPrefab.image.color;
-            }
-
-            currentButton.interactable = false;
-            if (label != null) label.text = "Max";
-            currentButton.onClick.RemoveAllListeners();
+            currentButton.image.sprite = boughtButtonPrefab.image.sprite;
+            currentButton.image.color = boughtButtonPrefab.image.color;
         }
-        else
+        else if (!state.UseBoughtVisual && buyButtonPrefab != null)
         {
-            if (buyButtonPrefab != null)
-            {
-                currentButton.image.sprite = buyButtonPrefab.image.sprite;
-                currentButton.image.color = buyButtonPrefab.image.color;
-            }
+            currentButton.image.sprite = buyButtonPrefab.image.sprite;
+            currentButton.image.color = buyButtonPrefab.image.color;
+        }
 
-            currentButton.interactable = true;
-            if (label != null) label.text = "Buy";
-            currentButton.onClick.RemoveAllListeners();
+        currentButton.interactable = state.Interactable;
+        if (label != null)
+        {
+            label.text = state.ButtonLabel;
+        }
+
+        currentButton.onClick.RemoveAllListeners();
+        if (state.Interactable)
+        {
             currentButton.onClick.AddListener(() => onBuyCallback?.Invoke());
         }
 

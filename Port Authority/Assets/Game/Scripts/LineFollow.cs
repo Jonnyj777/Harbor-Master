@@ -14,6 +14,7 @@ public class LineFollow : MonoBehaviour
     private LineRenderer line;
     private List<Vector3> linePositions;
     private float timer;
+    private readonly LineFollowPathLogic pathLogic = new LineFollowPathLogic();
 
     [Header("Path Output (movement)")]
     // Positions is the smoothed path that boats follow
@@ -160,12 +161,12 @@ public class LineFollow : MonoBehaviour
 
         // Apply simplification via Ramer-Douglas-Peucker algo:
         // Reduces the "noise" in the path causing jitters.
-        List<Vector3> simplified = RamerDouglasPeucker(raw, simplifyEpsilon);
+        List<Vector3> simplified = pathLogic.Simplify(raw, simplifyEpsilon);
 
         // Optionally apply Chaikin smoothing
         if (smoothPath && simplified.Count >= 2)
         {
-            positions = ChaikinSmooth(simplified, smoothingIterations).ToArray();
+            positions = pathLogic.Smooth(simplified, smoothingIterations).ToArray();
         }
         else
         {
@@ -193,91 +194,6 @@ public class LineFollow : MonoBehaviour
             transform.position = hit.point + transform.up * heightOffset;
         }
     }
-
-    private List<Vector3> ChaikinSmooth(List<Vector3> points, int iterations)
-    {
-        if (points == null || points.Count < 2)
-            return new List<Vector3>(points);
-
-        List<Vector3> smoothed = new List<Vector3>(points);
-
-        for (int i = 0; i < iterations; i++)
-        {
-            List<Vector3> newPoints = new List<Vector3>();
-            newPoints.Add(smoothed[0]); // Keep the first point
-
-            for (int j = 0; j < smoothed.Count - 1; j++)
-            {
-                Vector3 p0 = smoothed[j];
-                Vector3 p1 = smoothed[j + 1];
-
-                Vector3 Q = 0.75f * p0 + 0.25f * p1;
-                Vector3 R = 0.25f * p0 + 0.75f * p1;
-
-                newPoints.Add(Q);
-                newPoints.Add(R);
-            }
-
-            newPoints.Add(smoothed[^1]); // Keep the last point
-            smoothed = newPoints;
-        }
-
-        return smoothed;
-    }
-
-    private List<Vector3> RamerDouglasPeucker(List<Vector3> points, float epsilon)
-    {
-        if (points == null || points.Count < 3)
-        {
-            return new List<Vector3>(points);
-        }
-
-        int index = -1;
-        float maxDistance = 0f;
-
-        // Find the furthest point
-        for (int i = 1; i < points.Count - 1; i++)
-        {
-            // We want to determine if a point is far enough to consider keeping it (greater than epsilon)
-            // Otherwise, we can throw it out (the line isn't changed by much in getting rid of it)
-            float distance = PerpendicularDistance(points[i], points[0], points[^1]);
-            if (distance > maxDistance)
-            {
-                maxDistance = distance;
-                index = i;
-            }
-        }
-
-        if (maxDistance > epsilon)
-        {
-            // Recursive split
-            List<Vector3> left = RamerDouglasPeucker(points.GetRange(0, index + 1), epsilon);
-            List<Vector3> right = RamerDouglasPeucker(points.GetRange(index, points.Count - index), epsilon);
-
-            left.RemoveAt(left.Count - 1);
-            left.AddRange(right);
-            return left;
-        }
-        else
-        {
-            return new List<Vector3> { points[0], points[^1] };
-        }
-    }
-
-    private float PerpendicularDistance(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
-    {
-        // Perpendicular distance from a point to a line segment
-        if (lineStart == lineEnd)
-        {
-            return Vector3.Distance(point, lineStart);
-        }
-
-        Vector3 direction = lineEnd - lineStart;
-        Vector3 projected = Vector3.Project(point - lineStart, direction.normalized) + lineStart;
-        
-        return Vector3.Distance(point, projected);
-    }
-
     private void FollowLineTruck()
     {
         // update position, direction, and rotation of object

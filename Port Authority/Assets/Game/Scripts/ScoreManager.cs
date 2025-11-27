@@ -5,12 +5,11 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
-    private int totalScore = 0;
-    private int spendableScore = 0;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI popUpText;
     public TextMeshProUGUI losePopUpText;
     public Transform losePopUp;
+    private ScoreManagerLogic logic;
 
     private void Start()
     {
@@ -20,12 +19,12 @@ public class ScoreManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        logic = new ScoreManagerLogic();
     }
 
     public void AddScore(int scoreUpdate, bool bonus)
     {
-        totalScore += scoreUpdate;
-        spendableScore += scoreUpdate;
+        logic.AddScore(scoreUpdate);
 
         UpdateScoreEntry();
 
@@ -50,23 +49,23 @@ public class ScoreManager : MonoBehaviour
     public void ShowLosePopUp()
     {
         losePopUp.gameObject.SetActive(true);
-        losePopUpText.text = "$" + totalScore;
+        losePopUpText.text = "$" + logic.TotalScore;
     }
 
     public void UpdateSpendableScore(int scoreUpdate)
     {
-        spendableScore += scoreUpdate;
+        logic.AdjustSpendable(scoreUpdate);
 
         UpdateScoreEntry();
     }
 
     public int GetSpendableScore()
     {
-        return spendableScore;
+        return logic.SpendableScore;
     }
 
     private void UpdateScoreEntry()
     {
-        scoreText.text = "$ " + spendableScore;
+        scoreText.text = "$ " + logic.SpendableScore;
     }
 }

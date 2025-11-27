@@ -31,6 +31,7 @@ public class Truck : MonoBehaviour
     public float bounceBackTime = 1.25f;
     public float retreatDistance = 15f;
     private bool isBouncingBack = false;
+    private readonly TruckStateLogic truckLogic = new TruckStateLogic();
 
     private void Awake()
     {
@@ -49,7 +50,7 @@ public class Truck : MonoBehaviour
 
     private void Update()
     {
-        if (IsOverWater() && !isBouncingBack)
+        if (truckLogic.ShouldBounceBack(IsOverWater(), isBouncingBack))
         {
             vehicle.DeleteLine();
             StartCoroutine(BounceBack());
@@ -193,15 +194,12 @@ public class Truck : MonoBehaviour
 
     private void PickUpCargo()
     {
-        if (cargo.Count >= cargoBoxes.Count || isPickingUp)
+        if (!truckLogic.CanStartPickup(cargo.Count, cargoBoxes.Count, isPickingUp, port.portCargo.Count))
         {
             return;
         }
 
-        if (port.portCargo.Count > 0)
-        {
-            StartCoroutine(PickUpCargoRoutine());
-        }
+        StartCoroutine(PickUpCargoRoutine());
     }
 
     private IEnumerator PickUpCargoRoutine()
@@ -332,7 +330,7 @@ public class Truck : MonoBehaviour
 
     public void ApplyMudEffect(float slowdownMultiplier, float duration)
     {
-        if (mudEffected || vehicle.GetIsCrashed())
+        if (!truckLogic.CanApplyMudEffect(mudEffected, vehicle.GetIsCrashed()))
         {
             return;
         }

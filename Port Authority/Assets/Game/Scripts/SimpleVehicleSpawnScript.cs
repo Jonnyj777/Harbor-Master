@@ -9,15 +9,13 @@ public class SimpleVehicleSpawnScript : MonoBehaviour
 
     [Header("Technicals")]
     public float spawnRate = 10f;
-    private float minSpawnRate;
-    private float currentSpawnInterval;
     public float difficultyIncreaseRate = 60f;
     public float spawnMargin = 0f;
     public float cornerMargin = 10f;
     public float maxSpawnAngle = 15f;
     public float spawnHeightOffset = 5f;
-    private float spawnTimer = 0f;
-    private float gameTimer = 0f;
+    private SpawnSchedulerLogic spawnScheduler;
+    private readonly IRandomProvider randomProvider = new UnityRandomProvider();
 
     // World Positions
     private Vector3 terrainCenter;
@@ -53,42 +51,22 @@ public class SimpleVehicleSpawnScript : MonoBehaviour
         // Retrieve the water level for boats
         waterLevel = terrainGenerator.GetWaterLevel();
 
-        minSpawnRate = spawnRate - 2f;
-        currentSpawnInterval = Random.Range(minSpawnRate, spawnRate);
-        //Debug.Log("MinX: " + minX + "; " + "MaxX: " + maxX + "; " + "MinZ: " + minZ + "; " + "MaxZ: " + maxZ + "; ");
+        spawnScheduler = new SpawnSchedulerLogic(spawnRate, difficultyIncreaseRate, randomProvider);
     }
 
     // Update is called once per frame
     void Update()
     {
-        spawnTimer += Time.deltaTime;
-        gameTimer += Time.deltaTime;
-
-        if (spawnTimer >= currentSpawnInterval)
+        if (spawnScheduler != null && spawnScheduler.Tick(Time.deltaTime))
         {
             spawnVehicle();
-            spawnTimer = 0f;
-
-            // Pick a new random delay for the next spawn
-            currentSpawnInterval = Random.Range(minSpawnRate, spawnRate);
         }
 
-        // Increase game difficulty every minute
-        if (gameTimer >= difficultyIncreaseRate)
+        // keep serialized values in sync with logic for debugging/inspector purposes
+        if (spawnScheduler != null)
         {
-            gameTimer = 0;
-
-            if (minSpawnRate > 1)
-            {
-                minSpawnRate--;
-            }
-
-            if (spawnRate > 1)
-            {
-                spawnRate--;
-            }
+            spawnRate = spawnScheduler.CurrentSpawnRate;
         }
-
     }
 
     void spawnVehicle()

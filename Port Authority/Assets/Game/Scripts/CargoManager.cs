@@ -11,28 +11,24 @@ public class CargoManager : MonoBehaviour
     [Header("Unlocked Cargo Types")]
     public List<CargoType> unlockedCargoTypes = new List<CargoType>();
 
+    private CargoManagerLogic logic;
+
     void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        // Unlock the first/default cargo type
-        if (allCargoTypes.Count > 0)
-        {
-            unlockedCargoTypes.Add(allCargoTypes[0]);
-        }
+        logic = new CargoManagerLogic(unlockedCargoTypes);
+        logic.EnsureDefaultUnlocked(allCargoTypes);
     }
 
     public void UnlockCargo(CargoType cargoType)
     {
-        if (!unlockedCargoTypes.Contains(cargoType))
-        {
-            unlockedCargoTypes.Add(cargoType);
-        }
+        logic.UnlockCargo(cargoType);
     }
 
     public List<CargoType> GetUnlockedCargo()
     {
-        return unlockedCargoTypes;
+        return logic.GetUnlockedCargo();
     }
 }

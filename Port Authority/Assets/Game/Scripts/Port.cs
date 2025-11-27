@@ -16,6 +16,8 @@ public class Port : MonoBehaviour
     private float spawnOffset = 3f;
     private Vector3 minBounds;
     private Vector3 maxBounds;
+    private readonly PortCargoLogic cargoLogic = new PortCargoLogic();
+    private readonly IRandomProvider randomProvider = new UnityRandomProvider();
 
     private void Start()
     {
@@ -29,13 +31,13 @@ public class Port : MonoBehaviour
 
     public void ReceiveCargoBox(Cargo cargo)
     {
-        portCargo.Add(cargo);
+        cargoLogic.ReceiveCargo(portCargo, cargo);
         SpawnCargoBox(cargo);
     }
 
     private void SpawnCargoBox(Cargo cargo)
     {
-        Vector3 spawnPos = new Vector3(Random.Range(minBounds.x + spawnOffset, maxBounds.x - spawnOffset), maxBounds.y + spawnOffset, Random.Range(minBounds.z + spawnOffset, maxBounds.z - spawnOffset));
+        Vector3 spawnPos = cargoLogic.ComputeSpawnPosition(minBounds, maxBounds, spawnOffset, randomProvider);
 
         GameObject box = Instantiate(cargoPrefab, spawnPos, Quaternion.identity);
         Renderer rend = box.GetComponent<Renderer>();
@@ -50,11 +52,8 @@ public class Port : MonoBehaviour
 
     public void RemoveCargoBox(Cargo cargo)
     {
-        int index = portCargo.IndexOf(cargo);
-
-        if (index >= 0 )
+        if (cargoLogic.TryRemoveCargo(portCargo, cargo, out int index))
         {
-            portCargo.RemoveAt(index);
             GameObject obj = cargoBoxes[index];
             cargoBoxes.RemoveAt(index);
             Destroy(obj);

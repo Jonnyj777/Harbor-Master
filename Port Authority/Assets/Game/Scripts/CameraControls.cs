@@ -18,6 +18,7 @@ public class CameraControls : MonoBehaviour
     [SerializeField] private float shiftMultiplier = 2f;
 
     private Quaternion spawnRotation;
+    private CameraControlsLogic logic;
 
     private void Awake()
     {
@@ -31,6 +32,18 @@ public class CameraControls : MonoBehaviour
             mainCamera = Camera.main;
 
         spawnRotation = transform.rotation;
+
+        logic = new CameraControlsLogic(
+            moveSpeed,
+            zoomSpeed,
+            shiftMultiplier,
+            minX,
+            maxX,
+            minZ,
+            maxZ,
+            minZoom,
+            maxZoom
+        );
     }
     
     private void Update()
@@ -75,10 +88,10 @@ public class CameraControls : MonoBehaviour
 
         Vector3 moveDirection = (forward * input.y + right * input.x).normalized;
         
-        float speed = moveSpeed * (IsShiftHeld() ? shiftMultiplier : 1f);
+        float speed = logic.GetMovementSpeed(IsShiftHeld());
         Vector3 position = transform.position + moveDirection * speed * Time.deltaTime;
         position.y = transform.position.y;
-        transform.position = ClampPosition(position);
+        transform.position = logic.ClampPosition(position);
     }
 
     private void HandleZoom()
@@ -93,23 +106,20 @@ public class CameraControls : MonoBehaviour
         if (mainCamera != null && mainCamera.orthographic)
         {
             float zSpeed = zoomSpeed * (IsShiftHeld() ? shiftMultiplier : 1f);
-            float newSize = Mathf.Clamp(mainCamera.orthographicSize + zoomInput * zSpeed * Time.deltaTime, minZoom, maxZoom);
+            float newSize = logic.ClampZoom(mainCamera.orthographicSize + zoomInput * zSpeed * Time.deltaTime);
             mainCamera.orthographicSize = newSize;
         }
         else
         {
             Transform basis = mainCamera != null ? mainCamera.transform : transform;
             Vector3 planarForward = Vector3.ProjectOnPlane(basis.forward, Vector3.up).normalized;
-            float zSpeed = zoomSpeed * (IsShiftHeld() ? shiftMultiplier : 1f);
-            Vector3 position = transform.position + planarForward * (zoomInput * zSpeed * Time.deltaTime);
-            transform.position = ClampPosition(position);
+            transform.position = logic.ApplyPlanarZoom(
+                transform.position,
+                planarForward,
+                zoomInput,
+                Time.deltaTime,
+                IsShiftHeld()
+            );
         }
-    }
-
-    private Vector3 ClampPosition(Vector3 position)
-    {
-        position.x = Mathf.Clamp(position.x, minX, maxX);
-        position.z = Mathf.Clamp(position.z, minZ, maxZ);
-        return position;
     }
 }

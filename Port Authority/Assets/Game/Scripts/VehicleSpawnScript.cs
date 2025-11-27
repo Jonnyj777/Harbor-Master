@@ -19,10 +19,8 @@ public class VehicleSpawnScript : MonoBehaviour
     [Header("Spawn Rate")]
     public float spawnRate = 10f;
     public float difficultyIncreaseRate = 60f;
-    private float minSpawnRate;
-    private float currentSpawnInterval;
-    private float spawnTimer = 0f;
-    private float gameTimer = 0f;
+    private SpawnSchedulerLogic spawnScheduler;
+    private readonly IRandomProvider randomProvider = new UnityRandomProvider();
 
     [Header("World")]
     [SerializeField] private IslandPlacer islandPlacer;
@@ -51,39 +49,20 @@ public class VehicleSpawnScript : MonoBehaviour
         }
         //Debug.Log("MinX: " + minX + "; " + "MaxX: " + maxX + "; " + "MinZ: " + minZ + "; " + "MaxZ: " + maxZ + "; ");
 
-        minSpawnRate = spawnRate - 2f;
-        currentSpawnInterval = Random.Range(minSpawnRate, spawnRate);
+        spawnScheduler = new SpawnSchedulerLogic(spawnRate, difficultyIncreaseRate, randomProvider);
     }
 
     // Update is called once per frame
     void Update()
     {
-        spawnTimer += Time.deltaTime;
-        gameTimer += Time.deltaTime;
-
-        if (spawnTimer >= currentSpawnInterval)
+        if (spawnScheduler != null && spawnScheduler.Tick(Time.deltaTime))
         {
             spawnVehicle();
-            spawnTimer = 0f;
-
-            // Pick a new random delay for the next spawn
-            currentSpawnInterval = Random.Range(minSpawnRate, spawnRate);
         }
 
-        // Increase game difficulty every minute
-        if (gameTimer >= difficultyIncreaseRate)
+        if (spawnScheduler != null)
         {
-            gameTimer = 0;
-
-            if (minSpawnRate > 1)
-            {
-                minSpawnRate--;
-            }
-
-            if (spawnRate > 1)
-            {
-                spawnRate--;
-            }
+            spawnRate = spawnScheduler.CurrentSpawnRate;
         }
     }
 

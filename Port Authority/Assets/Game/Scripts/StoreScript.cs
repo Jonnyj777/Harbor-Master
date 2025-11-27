@@ -17,31 +17,19 @@ public class StoreScript : MonoBehaviour
     public float repairSpeedMult = 0.1f;  // Each upgrade reduces base repair speed by 10% of original
     public int maxRepairSpeedLevel = 4;
 
-    private int currentRepairSpeedLevel = 0;
-    private int currentRepairSpeedCost;
-
     [Header("Loading Speed Upgrade Settings")]
     public int baseLoadingSpeedCost = 1000;
     public float loadingSpeedMult = 0.5f;   // Each upgrade reduces current loading speed by 50%
     public int maxLoadingSpeedLevel = 2;
 
-    private int currentLoadingSpeedLevel = 0;
-    private int currentLoadingSpeedCost;
-
     [Header("Durability Upgrade Settings")]
     public int baseDurabilityCost = 15000;
     public int maxDurabilityLevel = 2;
-
-    private int currentDurabilityLevel = 0;
-    private int currentDurabilityCost;
 
     [Header("Boat Speed Upgrade Settings")]
     public int baseSpeedCost = 3000;
     public float speedMult = 0.1f;  // Each upgrade increases boat speed by 10% of original
     public int maxSpeedLevel = 4;
-
-    private int currentSpeedLevel = 0;
-    private int currentSpeedCost;
 
     [Header("New Ship Purchase Settings")]
     public VehicleSpawnScript vehicleSpawnScript;
@@ -52,9 +40,6 @@ public class StoreScript : MonoBehaviour
     public int biggerCargoShipCost = 30000;
     public GameObject biggerCargoShip;
 
-    private bool bigCargoShipPurchased = false;
-    private bool biggerCargoShipPurchased = false;
-
     [Header("New Cargo Purchase Settings")]
     public int whiskeyCost = 1500;
     public CargoType whiskey;
@@ -64,10 +49,6 @@ public class StoreScript : MonoBehaviour
 
     public int industrialEquipmentCost = 10000;
     public CargoType industrialEquipment;
-
-    private bool whiskeyPurchased = false;
-    private bool furniturePurchased = false;
-    private bool industrialEquipmentPurchased = false;
 
     
     [Header("Stat Upgrade Cards")]
@@ -86,13 +67,30 @@ public class StoreScript : MonoBehaviour
     public ProductCard industrialEquipmentCard;
 
     float fadeDuration = 0.2f;
+    private StoreLogic logic;
     private void Start()
     {
         currentUpgradeMenu = boatUpgradeMenu;
-        currentRepairSpeedCost = baseRepairSpeedCost;
-        currentLoadingSpeedCost = baseLoadingSpeedCost;
-        currentDurabilityCost = baseDurabilityCost;
-        currentSpeedCost = baseSpeedCost;
+
+        logic = new StoreLogic(
+            costMultiplier,
+            baseRepairSpeedCost,
+            repairSpeedMult,
+            maxRepairSpeedLevel,
+            baseLoadingSpeedCost,
+            loadingSpeedMult,
+            maxLoadingSpeedLevel,
+            baseDurabilityCost,
+            maxDurabilityLevel,
+            baseSpeedCost,
+            speedMult,
+            maxSpeedLevel,
+            bigCargoShipCost,
+            biggerCargoShipCost,
+            whiskeyCost,
+            furnitureCost,
+            industrialEquipmentCost
+        );
 
         UpdateRepairSpeedEntry();
         UpdateLoadingSpeedEntry();
@@ -110,75 +108,44 @@ public class StoreScript : MonoBehaviour
     // stat upgrades
     public void PurchaseRepairSpeedUpgrade()
     {
-        if (ScoreManager.Instance.GetSpendableScore() >= currentRepairSpeedCost
-                && currentRepairSpeedLevel <= maxRepairSpeedLevel)
+        int spendable = ScoreManager.Instance.GetSpendableScore();
+        if (logic.TryPurchaseRepairSpeed(spendable, out int remaining, out float reductionFactor))
         {
-            ScoreManager.Instance.UpdateSpendableScore(-currentRepairSpeedCost);
-
-            currentRepairSpeedLevel++;
-
-            float reductionFactor = 1f - (repairSpeedMult * currentRepairSpeedLevel);
-
+            ScoreManager.Instance.UpdateSpendableScore(remaining - spendable);
             Truck.globalRestartDelay = Truck.baseRestartDelay * reductionFactor;
-
-            currentRepairSpeedCost = Mathf.RoundToInt(baseRepairSpeedCost * Mathf.Pow(costMultiplier, currentRepairSpeedLevel));
-
             UpdateRepairSpeedEntry();
         }
     }
 
     public void PurchaseLoadingSpeedUpgrade()
     {
-        if (ScoreManager.Instance.GetSpendableScore() >= currentLoadingSpeedCost
-                && currentLoadingSpeedLevel <= maxLoadingSpeedLevel)
+        int spendable = ScoreManager.Instance.GetSpendableScore();
+        if (logic.TryPurchaseLoadingSpeed(spendable, out int remaining, out float reductionFactor))
         {
-            ScoreManager.Instance.UpdateSpendableScore(-currentLoadingSpeedCost);
-
-            currentLoadingSpeedLevel++;
-
-            float reductionFactor = 1f - (loadingSpeedMult * currentLoadingSpeedLevel);
-            
+            ScoreManager.Instance.UpdateSpendableScore(remaining - spendable);
             LineFollow.globalTruckLoadingDelay *= reductionFactor;
-
-            currentLoadingSpeedCost = Mathf.RoundToInt(baseLoadingSpeedCost * Mathf.Pow(costMultiplier, currentLoadingSpeedLevel));
-
             UpdateLoadingSpeedEntry();
         }
     }
 
     public void PurchaseDurabilityUpgrade()
     {
-        if (ScoreManager.Instance.GetSpendableScore() >= currentDurabilityCost
-                && currentDurabilityLevel <= maxDurabilityLevel)
+        int spendable = ScoreManager.Instance.GetSpendableScore();
+        if (logic.TryPurchaseDurability(spendable, out int remaining))
         {
-            ScoreManager.Instance.UpdateSpendableScore(-currentDurabilityCost);
-
-            currentDurabilityLevel++;
-
+            ScoreManager.Instance.UpdateSpendableScore(remaining - spendable);
             LivesManager.Instance.AddLife();
-
-            currentDurabilityCost += baseDurabilityCost;
-
             UpdateDurabilityEntry();
         }
     }
 
     public void PurchaseSpeedUpgrade()
     {
-        if (ScoreManager.Instance.GetSpendableScore() >= currentSpeedCost
-                && currentSpeedLevel <= maxSpeedLevel)
+        int spendable = ScoreManager.Instance.GetSpendableScore();
+        if (logic.TryPurchaseSpeed(spendable, out int remaining, out float increaseFactor))
         {
-            ScoreManager.Instance.UpdateSpendableScore(-currentSpeedCost);
-
-            currentSpeedLevel++;
-
-            float increaseFactor = 1f + (speedMult * currentSpeedLevel);
-
-            // Apply globally to all LineFollow boats
+            ScoreManager.Instance.UpdateSpendableScore(remaining - spendable);
             LineFollow.globalBaseBoatSpeed *= increaseFactor;
-
-            currentSpeedCost = Mathf.RoundToInt(baseSpeedCost * Mathf.Pow(costMultiplier, currentSpeedLevel));
-
             UpdateSpeedEntry();
         }
     }
@@ -186,28 +153,22 @@ public class StoreScript : MonoBehaviour
     // boat purchases
     public void PurchaseBigCargoShip()
     {
-        if (ScoreManager.Instance.GetSpendableScore() >= bigCargoShipCost
-                && !bigCargoShipPurchased)
+        int spendable = ScoreManager.Instance.GetSpendableScore();
+        if (logic.TryPurchaseBigCargoShip(spendable, out int remaining))
         {
-            ScoreManager.Instance.UpdateSpendableScore(-bigCargoShipCost);
-
+            ScoreManager.Instance.UpdateSpendableScore(remaining - spendable);
             vehicleSpawnScript.UnlockShip(bigCargoShip);
-
-            bigCargoShipPurchased = true;
             UpdateBigCargoShipEntry();
         }
     }
    
     public void PurchaseBiggerCargoShip()
     {
-        if (ScoreManager.Instance.GetSpendableScore() >= biggerCargoShipCost
-                && !biggerCargoShipPurchased)
+        int spendable = ScoreManager.Instance.GetSpendableScore();
+        if (logic.TryPurchaseBiggerCargoShip(spendable, out int remaining))
         {
-            ScoreManager.Instance.UpdateSpendableScore(-biggerCargoShipCost);
-
+            ScoreManager.Instance.UpdateSpendableScore(remaining - spendable);
             vehicleSpawnScript.UnlockShip(biggerCargoShip);
-
-            biggerCargoShipPurchased = true;
             UpdateBiggerCargoShipEntry();
         }
     }
@@ -215,42 +176,33 @@ public class StoreScript : MonoBehaviour
     // product purchases
     public void PurchaseWhiskey()
     {
-        if (ScoreManager.Instance.GetSpendableScore() >= whiskeyCost
-                && !whiskeyPurchased)
+        int spendable = ScoreManager.Instance.GetSpendableScore();
+        if (logic.TryPurchaseWhiskey(spendable, out int remaining))
         {
-            ScoreManager.Instance.UpdateSpendableScore(-whiskeyCost);
-
+            ScoreManager.Instance.UpdateSpendableScore(remaining - spendable);
             CargoManager.Instance.UnlockCargo(whiskey);
-
-            whiskeyPurchased = true;
             UpdateWhiskeyEntry();
         }
     }
 
     public void PurchaseFurniture()
     {
-        if (ScoreManager.Instance.GetSpendableScore() >= furnitureCost
-                && !furniturePurchased)
+        int spendable = ScoreManager.Instance.GetSpendableScore();
+        if (logic.TryPurchaseFurniture(spendable, out int remaining))
         {
-            ScoreManager.Instance.UpdateSpendableScore(-furnitureCost);
-
+            ScoreManager.Instance.UpdateSpendableScore(remaining - spendable);
             CargoManager.Instance.UnlockCargo(furniture);
-
-            furniturePurchased = true;
             UpdateFurnitureEntry();
         }
     }
 
     public void PurchaseIndustrialEquipment()
     {
-        if (ScoreManager.Instance.GetSpendableScore() >= industrialEquipmentCost
-                && !industrialEquipmentPurchased)
+        int spendable = ScoreManager.Instance.GetSpendableScore();
+        if (logic.TryPurchaseIndustrialEquipment(spendable, out int remaining))
         {
-            ScoreManager.Instance.UpdateSpendableScore(-industrialEquipmentCost);
-
+            ScoreManager.Instance.UpdateSpendableScore(remaining - spendable);
             CargoManager.Instance.UnlockCargo(industrialEquipment);
-
-            industrialEquipmentPurchased = true;
             UpdateIndustrialEquipmentEntry();
         }
     }
@@ -258,9 +210,12 @@ public class StoreScript : MonoBehaviour
     // update stat upgrades
     private void UpdateRepairSpeedEntry()
     {
+        var state = logic?.RepairSpeedState;
+        int currentLevel = state?.CurrentLevel ?? 0;
+        int cost = state?.CurrentCost ?? baseRepairSpeedCost;
         string title = "Repair Speed";
-        string current = $"(Current Effect: -{100 * repairSpeedMult * currentRepairSpeedLevel}%)";
-        string price = $"${currentRepairSpeedCost}";
+        string current = $"(Current Effect: -{100 * repairSpeedMult * currentLevel}%)";
+        string price = $"${cost}";
         string effect = $"Bonus: -{100 * repairSpeedMult}% Repair Speed";
 
         repairSpeedCard.SetUpgradeInfo(
@@ -268,7 +223,7 @@ public class StoreScript : MonoBehaviour
             current, 
             price, 
             effect, 
-            currentRepairSpeedLevel, 
+            currentLevel, 
             maxRepairSpeedLevel, 
             PurchaseRepairSpeedUpgrade
         );
@@ -276,9 +231,12 @@ public class StoreScript : MonoBehaviour
 
     private void UpdateLoadingSpeedEntry()
     {
+        var state = logic?.LoadingSpeedState;
+        int currentLevel = state?.CurrentLevel ?? 0;
+        int cost = state?.CurrentCost ?? baseLoadingSpeedCost;
         string title = "Loading Speed";
-        string current = $"(Current Effect: -{100 * loadingSpeedMult * currentLoadingSpeedLevel}%)";
-        string price = $"${currentLoadingSpeedCost}";
+        string current = $"(Current Effect: -{100 * loadingSpeedMult * currentLevel}%)";
+        string price = $"${cost}";
         string effect = $"Bonus: -{100 * loadingSpeedMult}% Load Speed";
 
         loadingSpeedCard.SetUpgradeInfo(
@@ -286,7 +244,7 @@ public class StoreScript : MonoBehaviour
             current,
             price,
             effect,
-            currentLoadingSpeedLevel,
+            currentLevel,
             maxLoadingSpeedLevel,
             PurchaseLoadingSpeedUpgrade
         );
@@ -294,9 +252,12 @@ public class StoreScript : MonoBehaviour
 
     private void UpdateDurabilityEntry()
     {
+        var state = logic?.DurabilityState;
+        int currentLevel = state?.CurrentLevel ?? 0;
+        int cost = state?.CurrentCost ?? baseDurabilityCost;
         string title = "Durability";
-        string current = $"(Current Effect: +{currentDurabilityLevel})";
-        string price = $"${currentDurabilityCost}";
+        string current = $"(Current Effect: +{currentLevel})";
+        string price = $"${cost}";
         string effect = "Bonus: +1 Health";
 
         durabilityCard.SetUpgradeInfo(
@@ -304,7 +265,7 @@ public class StoreScript : MonoBehaviour
             current, 
             price, 
             effect, 
-            currentDurabilityLevel, 
+            currentLevel, 
             maxDurabilityLevel, 
             PurchaseDurabilityUpgrade
         );
@@ -312,9 +273,12 @@ public class StoreScript : MonoBehaviour
 
     private void UpdateSpeedEntry()
     {
+        var state = logic?.SpeedState;
+        int currentLevel = state?.CurrentLevel ?? 0;
+        int cost = state?.CurrentCost ?? baseSpeedCost;
         string title = "Speed";
-        string current = $"(Current Effect: +{100 * speedMult * currentSpeedLevel}%)";
-        string price = $"${currentSpeedCost}";
+        string current = $"(Current Effect: +{100 * speedMult * currentLevel}%)";
+        string price = $"${cost}";
         string effect = $"Bonus: +{100 * speedMult}% Speed";
 
         speedCard.SetUpgradeInfo(
@@ -322,7 +286,7 @@ public class StoreScript : MonoBehaviour
             current, 
             price, 
             effect, 
-            currentSpeedLevel, 
+            currentLevel, 
             maxSpeedLevel,  
             PurchaseSpeedUpgrade
         );
@@ -336,7 +300,7 @@ public class StoreScript : MonoBehaviour
             $"${bigCargoShipCost}",
             "Max Cargo: 5",
             PurchaseBigCargoShip,
-            isPurchased: bigCargoShipPurchased
+            isPurchased: logic?.BigCargoShipState.IsPurchased ?? false
         );
     }
 
@@ -347,7 +311,7 @@ public class StoreScript : MonoBehaviour
             $"${biggerCargoShipCost}",
             "Max Cargo: 10",
             PurchaseBiggerCargoShip,
-            isPurchased: biggerCargoShipPurchased
+            isPurchased: logic?.BiggerCargoShipState.IsPurchased ?? false
         );
     }
 
@@ -359,7 +323,7 @@ public class StoreScript : MonoBehaviour
             $"${whiskeyCost}",
             "+200/Delivery",
             PurchaseWhiskey,
-            isPurchased: whiskeyPurchased
+            isPurchased: logic?.WhiskeyState.IsPurchased ?? false
         );
     }
 
@@ -370,7 +334,7 @@ public class StoreScript : MonoBehaviour
             $"${furnitureCost}",
             "+500/Delivery",
             PurchaseFurniture,
-            isPurchased: furniturePurchased
+            isPurchased: logic?.FurnitureState.IsPurchased ?? false
         );
     }
 
@@ -381,7 +345,7 @@ public class StoreScript : MonoBehaviour
             $"${industrialEquipmentCost}",
             "+1,700/Delivery",
             PurchaseIndustrialEquipment,
-            isPurchased: industrialEquipmentPurchased
+            isPurchased: logic?.IndustrialEquipmentState.IsPurchased ?? false
         );
     }
 

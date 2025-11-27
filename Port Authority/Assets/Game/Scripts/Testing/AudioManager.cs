@@ -47,6 +47,10 @@ public class AudioManager : MonoBehaviour
     public Toggle sfxToggle;
     public Toggle musicToggle;
 
+    private AudioSettingsLogic audioLogic;
+    private bool IsSfxEnabled => audioLogic?.SfxEnabled ?? sfxEnabled;
+    private bool IsMusicEnabled => audioLogic?.MusicEnabled ?? musicEnabled;
+
     private void Awake()
     {
         // ensure one AudioManager exists
@@ -73,6 +77,12 @@ public class AudioManager : MonoBehaviour
 
         // restores volume of player choice (persistence)
         LoadVolumeSettings();
+        audioLogic = new AudioSettingsLogic(masterVolume, sfxVolume, musicVolume, sfxEnabled, musicEnabled);
+        masterVolume = audioLogic.MasterVolume;
+        sfxVolume = audioLogic.SfxVolume;
+        musicVolume = audioLogic.MusicVolume;
+        sfxEnabled = audioLogic.SfxEnabled;
+        musicEnabled = audioLogic.MusicEnabled;
 
         // if in scene, initialize sliders
         InitializeSliders();
@@ -88,7 +98,7 @@ public class AudioManager : MonoBehaviour
 
         if (musicToggle != null)
         {
-            musicEnabled = musicToggle.isOn;
+            musicToggle.SetIsOnWithoutNotify(musicEnabled);
             musicToggle.onValueChanged.AddListener(ToggleMusic);
         }
         else
@@ -101,7 +111,7 @@ public class AudioManager : MonoBehaviour
     {
         Scene currentScene = SceneManager.GetActiveScene();
 
-        if (currentScene.name == "LevelWithSFX" && musicEnabled)
+        if (currentScene.name == "LevelWithSFX" && IsMusicEnabled)
         {
             PlayMusic();
         }
@@ -109,7 +119,7 @@ public class AudioManager : MonoBehaviour
     
     public void PlayMusic()
     {
-        if (!musicEnabled || musicSource == null || gameMusic == null)
+        if (!IsMusicEnabled || musicSource == null || gameMusic == null)
         {
             return;
         }
@@ -179,37 +189,40 @@ public class AudioManager : MonoBehaviour
     {
         if (sfxSource != null)
         {
-            sfxSource.volume = masterVolume * sfxVolume;
+            sfxSource.volume = audioLogic.GetEffectiveSfxVolume();
         }
 
         if (musicSource != null)
         {
-            musicSource.volume = 0.15f;
+            musicSource.volume = audioLogic.GetEffectiveMusicVolume();
         }
 
         if (ambientSource != null)
         {
-            ambientSource.volume = masterVolume * musicVolume;
+            ambientSource.volume = audioLogic.GetEffectiveMusicVolume();
         }
     }
 
     public void SetMasterVolume(float volume)
     {
-        masterVolume = volume;
+        audioLogic.SetMasterVolume(volume);
+        masterVolume = audioLogic.MasterVolume;
         ApplyVolume();
         SaveVolumeSettings();
     }
 
     public void SetSfxVolume(float volume)
     {
-        sfxVolume = volume;
+        audioLogic.SetSfxVolume(volume);
+        sfxVolume = audioLogic.SfxVolume;
         ApplyVolume();
         SaveVolumeSettings();
     }
 
     public void SetMusicVolume(float volume)
     {
-        musicVolume = volume;
+        audioLogic.SetMusicVolume(volume);
+        musicVolume = audioLogic.MusicVolume;
         ApplyVolume();
         SaveVolumeSettings();
     }
@@ -266,7 +279,7 @@ public class AudioManager : MonoBehaviour
     // GAMEPLAY SFX
     public void PlayBoatEntrance()
     {
-        if (!sfxEnabled || boatEntrance == null)
+        if (!IsSfxEnabled || boatEntrance == null)
         {
             return;
         }
@@ -279,7 +292,7 @@ public class AudioManager : MonoBehaviour
     public void PlayBoatDelivery()
     {
         // DM-CGS-24
-        if (!sfxEnabled || boatDelivery == null)
+        if (!IsSfxEnabled || boatDelivery == null)
         {
             return;
         }
@@ -291,7 +304,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayBoatCollision()
     {
-        if (!sfxEnabled || boatCollision == null)
+        if (!IsSfxEnabled || boatCollision == null)
         {
             return;
         }
@@ -303,7 +316,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayTruckDelivery()
     {
-        if (!sfxEnabled || truckDelivery == null)
+        if (!IsSfxEnabled || truckDelivery == null)
         {
             return;
         }
@@ -315,7 +328,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayTruckCollision()
     {
-        if (!sfxEnabled || truckCollision == null)
+        if (!IsSfxEnabled || truckCollision == null)
         {
             return;
         }
@@ -327,8 +340,9 @@ public class AudioManager : MonoBehaviour
 
     public void ToggleSFX(bool enabled)
     {
-        sfxEnabled = enabled;
-        //Debug.Log("SFX Enabled: " + sfxEnabled);
+        audioLogic.SetSfxEnabled(enabled);
+        sfxEnabled = audioLogic.SfxEnabled;
+        ApplyVolume();
     }
 
     // SAVING VOLUME STATES
@@ -362,7 +376,9 @@ public class AudioManager : MonoBehaviour
 
     public void ToggleMusic(bool enabled)
     {
-        musicEnabled = enabled;
+        audioLogic.SetMusicEnabled(enabled);
+        musicEnabled = audioLogic.MusicEnabled;
+        ApplyVolume();
         if (musicEnabled)
         {
             PlayMusic();

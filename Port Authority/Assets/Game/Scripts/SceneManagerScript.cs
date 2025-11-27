@@ -10,6 +10,7 @@ public class SceneManagerScript : MonoBehaviour
     private Coroutine currentFade;
     private bool fadeInStarted = false;
     public TextMeshProUGUI loadingText;
+    private readonly SceneFadeLogic fadeLogic = new SceneFadeLogic();
 
 
     private void Awake()
@@ -73,7 +74,7 @@ public class SceneManagerScript : MonoBehaviour
         while (elapsedTime < duration)
         {
             elapsedTime += Time.unscaledDeltaTime;
-            cg.alpha = Mathf.Lerp(start, end, elapsedTime / duration);
+            cg.alpha = fadeLogic.CalculateAlpha(start, end, elapsedTime, duration);
             yield return null;
         }
 
