@@ -138,8 +138,11 @@ public class StructurePlacerN : MonoBehaviour
         {
             Vector3 pos = pointFinder.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, landAreaCenter, landAreaSize, roadClearance);
             if (pos != Vector3.zero)
-                Instantiate(GetStorePrefab(), pos, Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0));
-            else 
+            {
+                GameObject store = Instantiate(GetStorePrefab(), pos, Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0));
+                NetworkServer.Spawn(store);
+            }
+            else
                 Debug.LogWarning("Store Prefab Not Found or Invalid Position");
 
         }
@@ -157,7 +160,8 @@ public class StructurePlacerN : MonoBehaviour
             {
                 pos.y = 5;
                 Quaternion dockRotation = GetDockOrientation(pos);
-                Instantiate(GetDockPrefab(), pos, dockRotation);
+                GameObject dock = Instantiate(GetDockPrefab(), pos, dockRotation);
+                NetworkServer.Spawn(dock);
             }
             else 
                 Debug.LogWarning("Dock Prefab Not Found or Invalid Position");
@@ -173,7 +177,11 @@ public class StructurePlacerN : MonoBehaviour
         {
             Vector3 pos = pointFinder.FindLandPoint(landBuildingRadius, landShoreClearance, maxAttemptsPerPoint, landAreaCenter, landAreaSize, roadClearance + factoryRoadPadding);
             if (pos != Vector3.zero)
-                Instantiate(GetFactoryPrefab(), pos, Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0));
+            {
+                GameObject factory = Instantiate(GetFactoryPrefab(), pos, Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0));
+                NetworkServer.Spawn(factory);
+
+            }
             else 
                 Debug.LogWarning("Factory Prefab Not Found or Invalid Position");
         }
