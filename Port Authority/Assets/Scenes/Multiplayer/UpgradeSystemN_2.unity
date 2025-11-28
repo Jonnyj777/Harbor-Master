@@ -8788,7 +8788,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   livesText: {fileID: 1728380114}
-  resetButton: {fileID: 0}
   menuButton: {fileID: 1728380112}
 --- !u!114 &1657950188 stripped
 MonoBehaviour:

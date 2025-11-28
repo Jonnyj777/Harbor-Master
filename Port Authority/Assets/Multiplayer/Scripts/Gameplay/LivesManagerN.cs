@@ -43,7 +43,7 @@ public class LivesManagerN : NetworkBehaviour
             // End the game
             //Time.timeScale = 0f;
 
-            ScoreManagerUI.Instance.ShowLosePopUp();
+            ScoreManagerUI.Instance.RpcShowLosePopUp();
             ShowOptionsPopUp();
         }
     }

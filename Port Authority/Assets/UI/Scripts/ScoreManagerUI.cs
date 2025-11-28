@@ -56,7 +56,8 @@ public class ScoreManagerUI : NetworkBehaviour
         popUpText.gameObject.SetActive(false);
     }
 
-    public void ShowLosePopUp()
+    [ClientRpc]
+    public void RpcShowLosePopUp()
     {
         losePopUpHost.gameObject.SetActive(true);
         losePopUpHostText.text = "$" + totalScore;
