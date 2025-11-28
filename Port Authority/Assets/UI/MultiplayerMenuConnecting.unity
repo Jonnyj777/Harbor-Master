@@ -7046,7 +7046,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &776697651
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12408,7 +12408,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1632551793}
   m_TextViewport: {fileID: 965248461}
   m_TextComponent: {fileID: 446815310}
@@ -12523,7 +12523,7 @@ MonoBehaviour:
   incrementButton: {fileID: 776697652}
   decrementButton: {fileID: 1929804871}
   step: 1
-  minValue: 2
+  minValue: 1
   maxValue: 5
 --- !u!1 &1635478691
 GameObject:
@@ -15070,7 +15070,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1929804870
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16436,7 +16436,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 2091759979}
   m_TextViewport: {fileID: 220001518}
   m_TextComponent: {fileID: 645793001}

@@ -132,7 +132,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     public void OpenCreatePrompt()
     {
         lobbyNameInput.text = SteamClient.Name + "'s Lobby";
-        lobbySizeInput.text = "4";
     }
 
     private void OnColorClicked(ColorChoice color)
@@ -309,7 +308,9 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             lobbyObj.lobbyNameText.text = l.GetData("name"); // name of lobby
             lobbyObj.lobbyNameText.ForceMeshUpdate();
             LayoutRebuilder.ForceRebuildLayoutImmediate(lobbyObj.lobbyNameText.rectTransform);
-            lobbyObj.countText.text = l.MemberCount + "/4"; // count
+            int maxMembers = 4;
+            int.TryParse(l.GetData("maxMembers"), out maxMembers);
+            lobbyObj.countText.text = l.MemberCount + "/" + maxMembers; // count
 
             String host = l.Owner.Name;
             
@@ -386,7 +387,40 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     private void AttemptJoin(Steamworks.Data.Lobby l)
     {
-        l.Join();
+        int maxMembers = 4;
+        int.TryParse(l.GetData("maxMembers"), out maxMembers);
+
+        if (l.MemberCount < maxMembers)
+        {
+            l.Join();
+        }
+        else
+        {
+            StartCoroutine(LobbyFullCoroutine(l));
+        }
+    }
+
+    private IEnumerator LobbyFullCoroutine(Steamworks.Data.Lobby l)
+    {
+        if (!lobbyList.TryGetValue(l.Id, out LobbyEntry entry))
+            yield break;
+
+        Button joinButton = entry.joinButton;
+        TMP_Text buttonText = joinButton.GetComponentInChildren<TMP_Text>();
+
+        UnityEngine.Color originalColor = joinButton.image.color;
+        string originalText = buttonText.text;
+
+        joinButton.image.color = UnityEngine.Color.red;
+        buttonText.text = "Full";
+
+        joinButton.interactable = false;
+
+        yield return new WaitForSeconds(1f);
+
+        joinButton.image.color = originalColor;
+        buttonText.text = originalText;
+        joinButton.interactable = true;
     }
     
     public void SetLobby(Steamworks.Data.Lobby newLobbyData)
@@ -407,11 +441,26 @@ public class SteamLobbyManagerUITest : MonoBehaviour
                 return false;
             }
 
+            // validate lobby name
+            string lobbyName = lobbyNameInput.text.Trim();
+            if (string.IsNullOrEmpty(lobbyName))
+            {
+                Debug.LogWarning("Lobby name cannot be empty!");
+            }
+
+            // validate lobby size
+            int maxMembers = 4;
+            if (!int.TryParse(lobbySizeInput.text, out maxMembers))
+            {
+                Debug.LogWarning("Invalid lobby size!");
+            }
+
             SetLobby(lobbyOutput.Value);
             Lobby.SetPublic();
             // Lobby.SetFriendsOnly();
             Lobby.SetJoinable(true);
-            Lobby.SetData("name", SteamClient.Name + "'s Lobby");
+            Lobby.SetData("name", lobbyName);
+            Lobby.SetData("maxMembers", maxMembers.ToString());
             Lobby.SetData("game", "PORTAUTH");
             Lobby.SetData("HostAddress", SteamClient.SteamId.Value.ToString());
 
@@ -459,6 +508,9 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         PlayerInfo info = new PlayerInfo(playerObj);
         inLobby.Add(friend.Id, info);
 
+        int maxMembers = 4;
+        int.TryParse(lobby.GetData("maxMembers"), out maxMembers);
+
         // update ready
         string readyString = Lobby.GetMemberData(friend, "isReady");
         if (!string.IsNullOrEmpty(readyString))
@@ -481,7 +533,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             player.playerCardObj.UpdateHost(player.playerCardObj.playerNameText.text == lobby.Owner.Name);
         }
 
-        int remaining = 4 - lobby.MemberCount;
+        int remaining = maxMembers - lobby.MemberCount;
         for (int i = 0; i < remaining; i++)
         {
             GameObject waitObj = Instantiate(waitingCardPrefab, joinedPlayersGrid);
@@ -656,6 +708,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         joinedLobbyNameText.text = lobby.GetData("name");
         joinedHostNameText.text = "Host: " + lobby.Owner.Name;
+        int maxMembers = 4;
+        int.TryParse(lobby.GetData("maxMembers"), out maxMembers);
 
         // get profile picture
         tex = await SteamProfileManager.GetTextureFromId(SteamClient.SteamId);
@@ -705,7 +759,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         popInCards.Add(playerObj.transform);
 
         // fill waiting slots
-        int remaining = 4 - lobby.MemberCount;
+        int remaining = maxMembers - lobby.MemberCount;
         for (int i = 0; i < remaining; i++)
         {
             Instantiate(waitingCardPrefab, joinedPlayersGrid);

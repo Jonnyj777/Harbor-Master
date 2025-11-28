@@ -19,7 +19,6 @@ public class Spinner : MonoBehaviour
     private void Awake()
     {
         inputField = GetComponent<TMP_InputField>();
-        inputField.readOnly = true;
 
         incrementButton.onClick.AddListener(Increment);
         decrementButton.onClick.AddListener(Decrement);
