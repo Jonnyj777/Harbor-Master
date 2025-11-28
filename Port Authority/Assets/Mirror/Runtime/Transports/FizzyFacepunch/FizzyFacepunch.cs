@@ -295,7 +295,8 @@ namespace Mirror.FizzySteam
       }
       catch ( Exception e )
       {
-        Debug.LogError($"Could be one of the following: Steam is closed, Can't find steam_api dlls or Don't have permission to open appid. Exception: {e.Message}");
+         SceneManager.LoadScene("MultiplayerMenuConnecting2Offline");
+         Debug.LogError($"Could be one of the following: Steam is closed, Can't find steam_api dlls or Don't have permission to open appid. Exception: {e.Message}");
         return false;
       }
       return true;
