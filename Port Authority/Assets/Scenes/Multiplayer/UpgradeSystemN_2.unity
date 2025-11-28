@@ -8324,21 +8324,21 @@ MonoBehaviour:
   baseRepairSpeedCost: 150
   repairSpeedMult: 0.1
   maxRepairSpeedLevel: 4
-  baseDurabilityCost: 15000
+  baseDurabilityCost: 150
   maxDurabilityLevel: 2
-  baseSpeedCost: 3000
+  baseSpeedCost: 30
   speedMult: 0.1
   maxSpeedLevel: 4
-  vehicleSpawnScript: {fileID: 0}
-  bigCargoShipCost: 12000
+  vehicleSpawnScriptN: {fileID: 1363419204}
+  bigCargoShipCost: 120
   bigCargoShip: {fileID: 551903078520605625, guid: ce64e3e673f01a44691cc7418588ce24, type: 3}
-  biggerCargoShipCost: 30000
+  biggerCargoShipCost: 300
   biggerCargoShip: {fileID: 551903078520605625, guid: 477810ac8b5c90540ac018daf94d1035, type: 3}
-  whiskeyCost: 1500
+  whiskeyCost: 15
   whiskey: {fileID: 11400000, guid: a016815ba342d3743996d17bd3b7260a, type: 2}
-  furnitureCost: 5000
+  furnitureCost: 50
   furniture: {fileID: 11400000, guid: 2eba2e6b0c8c0ff4d816cba2d2b48ce0, type: 2}
-  industrialEquipmentCost: 10000
+  industrialEquipmentCost: 100
   industrialEquipment: {fileID: 11400000, guid: 1d476a28631bb3c4b9c60e4b8be221c0, type: 2}
   repairSpeedCard: {fileID: 984931144}
   durabilityCard: {fileID: 984931145}

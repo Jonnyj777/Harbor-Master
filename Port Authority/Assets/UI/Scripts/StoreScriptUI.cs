@@ -39,7 +39,7 @@ public class StoreScriptUI : NetworkBehaviour
     [SyncVar(hook = nameof(UpdateSpeedEntry))] private int currentSpeedCost;
 
     [Header("New Ship Purchase Settings")]
-    public VehicleSpawnScript vehicleSpawnScript;
+    public VehicleSpawnScriptN vehicleSpawnScriptN;
 
     public int bigCargoShipCost = 12000;
     public GameObject bigCargoShip;
@@ -199,7 +199,7 @@ public class StoreScriptUI : NetworkBehaviour
         {
             ScoreManagerUI.Instance.UpdateSpendableScore(-bigCargoShipCost);
 
-            vehicleSpawnScript.UnlockShip(bigCargoShip);
+            vehicleSpawnScriptN.UnlockShip(bigCargoShip);
 
             bigCargoShipPurchased = true;
             bool oldStatus = bigCargoShipPurchased;
@@ -217,7 +217,7 @@ public class StoreScriptUI : NetworkBehaviour
         {
             ScoreManagerUI.Instance.UpdateSpendableScore(-biggerCargoShipCost);
 
-            vehicleSpawnScript.UnlockShip(biggerCargoShip);
+            vehicleSpawnScriptN.UnlockShip(biggerCargoShip);
 
             bool oldStatus = biggerCargoShipPurchased;
             biggerCargoShipPurchased = true;
