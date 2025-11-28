@@ -7,7 +7,7 @@ public class ScoreManagerUI : NetworkBehaviour
 {
     public static ScoreManagerUI Instance;
     [SyncVar] private int totalScore = 0;
-    [SyncVar(hook = nameof(OnScoreChanged))] private int spendableScore = 0;
+    [SyncVar(hook = nameof(OnScoreChanged))] private int spendableScore = 5000;
     public TextMeshProUGUI losePopUpHostText;
     public TextMeshProUGUI losePopUpNonHostText;
     public TextMeshProUGUI scoreText;
