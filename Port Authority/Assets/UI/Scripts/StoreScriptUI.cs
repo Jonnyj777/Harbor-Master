@@ -160,7 +160,7 @@ public class StoreScriptUI : NetworkBehaviour
 
             currentDurabilityLevel++;
 
-            LivesManager.Instance.AddLife();
+            LivesManagerN.Instance.AddLife();
 
             int oldCost = currentDurabilityCost;
             currentDurabilityCost += baseDurabilityCost;
