@@ -552,7 +552,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         if (inLobby.ContainsKey(friend.Id))
         {
-            Destroy(inLobby[friend.Id].playerCardObj);
+            Destroy(inLobby[friend.Id].playerCardObj.gameObject);
             inLobby.Remove(friend.Id);
 
             Instantiate(waitingCardPrefab, joinedPlayersGrid);
@@ -751,11 +751,19 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             OnReadyButtonPressed(playerInfo.IsReady);
         });
 
-        playerObj.UpdateHost(SteamClient.SteamId == ownerId);
+        bool isHost = SteamClient.SteamId == ownerId;
+        playerObj.UpdateHost(isHost);
 
-        
+        if (isHost)
+        {
+            startButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            startButton.gameObject.SetActive(false);
+        }
 
-        inLobby.Add(SteamClient.SteamId, playerInfo);
+            inLobby.Add(SteamClient.SteamId, playerInfo);
         popInCards.Add(playerObj.transform);
 
         // fill waiting slots
