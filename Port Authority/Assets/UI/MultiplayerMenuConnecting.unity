@@ -5434,7 +5434,7 @@ MonoBehaviour:
         m_CallState: 1
       - m_Target: {fileID: 3443331923441883764}
         m_TargetAssemblyTypeName: SteamLobbyManagerUITest, Assembly-CSharp
-        m_MethodName: GetLobbyInfo
+        m_MethodName: GetLobbyInfoWithoutFade
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14756,6 +14756,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 1
+      - m_Target: {fileID: 3443331923441883764}
+        m_TargetAssemblyTypeName: SteamLobbyManagerUITest, Assembly-CSharp
+        m_MethodName: GetLobbyInfo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 1
 --- !u!114 &1882370838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17097,8 +17109,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 9151651499841198182}
   m_HandleRect: {fileID: 4215285891452754462}
   m_Direction: 2
-  m_Value: 1.0000036
-  m_Size: 0.8142659
+  m_Value: 1.0000067
+  m_Size: 0.88273597
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -20145,8 +20157,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 289.48947, y: -813.941}
-  m_SizeDelta: {x: 574.196, y: 395.02}
+  m_AnchoredPosition: {x: 289.48947, y: -771.25696}
+  m_SizeDelta: {x: 574.196, y: 323.48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3761553101604072882
 GameObject:
@@ -20691,7 +20703,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8409782849939566103}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.1857341}
+  m_AnchorMin: {x: 0, y: 0.11726403}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -21185,8 +21197,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 289.48947, y: -435.7475}
-  m_SizeDelta: {x: 574.196, y: 253.111}
+  m_AnchoredPosition: {x: 289.48947, y: -433.69098}
+  m_SizeDelta: {x: 574.196, y: 243.396}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &4578406721466486996
 RectTransform:
@@ -21231,7 +21243,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -1.8209229, y: -0.0006912435}
-  m_SizeDelta: {x: -3.637, y: 1011.4509}
+  m_SizeDelta: {x: -3.637, y: 932.99695}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &4679520185361601320
 GameObject:
@@ -21383,44 +21395,39 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Low poly trees - free nature pack - Nebula (Unity Asset Store)
 
-
-
-
+    
 
     Low
     Poly Pickup Truck - _its_sagar_bro (Sketchfab)
 
     Link: https://sketchfab.com/its_sagar_bro
 
-
-
-
+    
 
     Cargo
     Ship - AkaIntensity (Sketchfab)
 
     Link: https://sketchfab.com/AkaIntensity
 
-
-
-
+    
 
     Low
     Poly Boat Model - rmdshahariaz  (Sketchfab)
 
     Link: https://sketchfab.com/rmdshahariaz
 
-
+    
 
     Inland
     freighter - Nutical3D (Sketchfab)
 
     Link: https://sketchfab.com/Nutical3D
 
-
+    
 
     Uicons
     - Flaticon
+
 
 
 
@@ -21537,7 +21544,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 289.48947, y: -589.367}
+  m_AnchoredPosition: {x: 289.48947, y: -582.453}
   m_SizeDelta: {x: 574.196, y: 34.128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &4975014802473054814
@@ -22980,8 +22987,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 289.48947, y: -282.128}
-  m_SizeDelta: {x: 574.196, y: 34.128}
+  m_AnchoredPosition: {x: 289.48947, y: -283.5285}
+  m_SizeDelta: {x: 574.196, y: 36.929}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6582195338312156131
 MonoBehaviour:
@@ -23005,28 +23012,29 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'FREE Casual Game SFX Pack - Dustyroom (Unity Asset Store)
 
-
+    
 
     Nature
     Sound FX - Dustyroom (Unity Asset Store)
 
+    
 
+    Boat Horn - DRAGON-STUDIO
+    (Pixabay)
 
-    Boat Horn - DRAGON-STUDIO (Pixabay)
+    
 
+    Cash Register Kaching - DRAGON-STUDIO (Pixabay)
 
+    
 
-    Cash
-    Register Kaching - DRAGON-STUDIO (Pixabay)
+    Car
+    Honk - DRAGON-STUDIO (Pixabay)
 
+    
 
-
-    Car Honk - DRAGON-STUDIO (Pixabay)
-
-
-
-    Island
-    Meet and Greet - Kevin Macleod (incompetech.com) '
+    Island Meet and Greet - Kevin Macleod
+    (incompetech.com) '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 39f9c56a298a6b447b051dad31cd7fa3, type: 2}
   m_sharedMaterial: {fileID: 245302752653061000, guid: 39f9c56a298a6b447b051dad31cd7fa3, type: 2}

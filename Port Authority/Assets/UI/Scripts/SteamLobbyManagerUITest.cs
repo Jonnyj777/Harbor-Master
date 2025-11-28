@@ -117,8 +117,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         SteamMatchmaking.OnLobbyMemberDataChanged += SetReadyStatus;
         SteamMatchmaking.OnLobbyMemberDataChanged += SetColor;
 
-        GetLobbyInfo();
-
         
 
         newLobbyColorChoice = newLobbyColorChoices[0];
@@ -228,6 +226,11 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         lobbyList.Clear();
         lobbyData.Clear();
+
+        foreach (Transform child in lobbyListContainer)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     public void ClearLobbyForStart()
@@ -343,8 +346,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     public async void GetLobbyInfoWithoutFade() // refresh
     {
-
-        //StartCoroutine(RefreshCoroutineFadeOut());
+        CanvasGroup listCg = lobbyListContainer.GetComponent<CanvasGroup>();
+        listCg.alpha = 0;
 
         await Task.Delay(lobbyListDelayDuration);
 
@@ -618,10 +621,9 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         if (inLobby.ContainsKey(friend.Id))
         {
-            Destroy(inLobby[friend.Id].playerCardObj.gameObject);
+            StartCoroutine(PopOut(inLobby[friend.Id].playerCardObj.gameObject.transform));
+            
             inLobby.Remove(friend.Id);
-
-            Instantiate(waitingCardPrefab, joinedPlayersGrid);
         }
 
         var ownerId = lobby.Owner.Id;
@@ -632,6 +634,27 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         }
 
         StartCoroutine(LobbyMemberDisconnectedCoroutine());
+    }
+    public IEnumerator PopOut(Transform target, float endScale = 0.8f)
+    {
+        if (target == null)
+        {
+            yield break;
+        }
+
+        Vector3 originalScale = target.localScale;
+        target.localScale = originalScale;
+
+        for (float t = 0; t < popInDuration; t += Time.deltaTime)
+        {
+            float factor = Mathf.SmoothStep(1f, endScale, t / popInDuration);
+            target.localScale = originalScale * factor;
+            yield return null;
+        }
+
+        target.localScale = originalScale * endScale;
+        Destroy(target.gameObject);
+        Instantiate(waitingCardPrefab, joinedPlayersGrid);
     }
 
     private IEnumerator LobbyMemberDisconnectedCoroutine()
