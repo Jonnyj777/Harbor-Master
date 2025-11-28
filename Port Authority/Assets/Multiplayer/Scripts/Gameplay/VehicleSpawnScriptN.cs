@@ -8,7 +8,7 @@ public class VehicleSpawnScriptN : NetworkBehaviour
 
     [Header("Boat Prefabs")]
     public List<GameObject> allShipPrefabs;
-    private SyncList<GameObject> unlockedShipPrefabs = new SyncList<GameObject>();
+    private List<GameObject> unlockedShipPrefabs = new List<GameObject>();
 
     [Header("Spawn Location")]
     public float spawnMargin = 0f;
@@ -144,7 +144,7 @@ public class VehicleSpawnScriptN : NetworkBehaviour
         rotation *= Quaternion.Euler(0, Random.Range(-maxSpawnAngle, maxSpawnAngle), 0);
 
        GameObject ship = Instantiate(unlockedShipPrefabs[Random.Range(0, unlockedShipPrefabs.Count)], spawnPos, rotation);
-        NetworkServer.Spawn(ship);
+       NetworkServer.Spawn(ship);
     }
 
     [ClientRpc]
