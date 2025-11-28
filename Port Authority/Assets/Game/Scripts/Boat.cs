@@ -16,6 +16,7 @@ public class Boat : MonoBehaviour
 
     [Header("Boat Collisions Settings")]
     public Color crashedColor = Color.cyan;  // Color to when boat vehicles crash
+    public ParticleSystem explosionPrefab;
 
     private bool hasCrashed = false;
     private float sinkDelay = 2f;
@@ -33,6 +34,7 @@ public class Boat : MonoBehaviour
     private Vector3 p0, p1, p2;
     private bool isDelivering = false;
     private float boatLength;
+    private Collider boatCollider;
 
     [Header("Instance Settings")]
     private LineFollow vehicle;
@@ -72,6 +74,8 @@ public class Boat : MonoBehaviour
 
         // Get boat size
         boatLength = rend.bounds.size.z;
+
+        boatCollider = GetComponent<Collider>();
     }
 
     private void Update()
@@ -85,16 +89,21 @@ public class Boat : MonoBehaviour
         // Disappear off map after a few seconds (do NOT act as additional obstacles)
         if (other.CompareTag("Boat"))
         {
+
             bool multipleCollisions = true;
             if (GetInstanceID() < other.GetInstanceID())
             {
                 multipleCollisions = false;
             }
+
+            PlayExplosion(other);
             EnterCrashState(multipleCollisions);
         }
         if (other.CompareTag("Terrain"))
         {
+
             bool multipleCollisions = false;
+            PlayExplosion(other);
             EnterCrashState(multipleCollisions);
         }
         if (other.CompareTag("Port") && !isDelivering) 
@@ -184,6 +193,7 @@ public class Boat : MonoBehaviour
 
     private IEnumerator ParkBoat()
     {
+        boatCollider.enabled = false;
         t = 0f;
         dockEndPoint = port.endPoint;
 
@@ -219,6 +229,15 @@ public class Boat : MonoBehaviour
         }
 
         transform.Rotate(0f, 180f, 0f);
+        boatCollider.enabled = true;
+    }
+
+    private void PlayExplosion(Collider other)
+    {
+        if (explosionPrefab == null) return;
+
+        explosionPrefab.Play();
+        Destroy(explosionPrefab.gameObject, explosionPrefab.main.duration + explosionPrefab.main.startLifetime.constantMax);
     }
 
     public void EnterCrashState(bool multipleCollisions, bool skipFadeOut = false)

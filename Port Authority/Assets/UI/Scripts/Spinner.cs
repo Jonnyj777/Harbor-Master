@@ -19,10 +19,11 @@ public class Spinner : MonoBehaviour
     private void Awake()
     {
         inputField = GetComponent<TMP_InputField>();
-        inputField.readOnly = true;
 
         incrementButton.onClick.AddListener(Increment);
         decrementButton.onClick.AddListener(Decrement);
+
+        inputField.onEndEdit.AddListener(OnInputFieldChanged);
 
         SetValue(minValue);
     }
@@ -55,5 +56,12 @@ public class Spinner : MonoBehaviour
     private void SetValue(int value)
     {
         inputField.text = value.ToString();
+    }
+
+    private void OnInputFieldChanged(string text)
+    {
+        int value = GetCurrentValue();
+        value = Mathf.Clamp(value, minValue, maxValue);
+        SetValue(value);
     }
 }

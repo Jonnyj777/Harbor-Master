@@ -50,6 +50,37 @@ public class LineFollow : MonoBehaviour
     private bool isMovingCargo = false;
     private float heightOffset = 0;
 
+    private void Awake()
+    {
+        switch (LineColorManager.lineColorName)
+        {
+            case "Orange":
+                lineColor = new Color(255f / 255f, 119f / 255f, 0f / 255f);
+                break;
+            case "Blue":
+                lineColor = new Color(14f / 255f, 165f / 255f, 233f / 255f);
+                break;
+            case "Pink":
+                lineColor = new Color(255f / 255f, 31f / 255f, 139f / 255f);
+                break;
+            case "Purple":
+                lineColor = new Color(182f / 255f, 27f / 255f, 243f / 255f);
+                break;
+            case "Red":
+                lineColor = new Color(233f / 255f, 14f / 255f, 18f / 255f);
+                break;
+            case "Yellow":
+                lineColor = new Color(255f / 255f, 217f / 255f, 0f / 255f);
+                break;
+            case "Green":
+                lineColor = new Color(22f / 255f, 218f / 255f, 35f / 255f);
+                break;
+            default:
+                lineColor = new Color(1.0f, 1.0f, 1.0f);
+                break;
+        }
+    }
+
     private void Start()
     {
         linePositions = new List<Vector3>();
