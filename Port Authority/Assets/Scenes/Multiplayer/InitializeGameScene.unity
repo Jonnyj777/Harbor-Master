@@ -752,6 +752,70 @@ PrefabInstance:
       propertyPath: offlineScene
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: spawnPrefabs.Array.size
+      value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[12]'
+      value: 
+      objectReference: {fileID: 2220100466157476232, guid: c8f042ca97135ed47a6d324c58bb07b7, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[13]'
+      value: 
+      objectReference: {fileID: 100000, guid: fb8f79da8d0be1c468ec53ad4eb4fe63, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[14]'
+      value: 
+      objectReference: {fileID: 100000, guid: ca4aa9213a809d445b59702cd5a26467, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[15]'
+      value: 
+      objectReference: {fileID: 100000, guid: 539a65010e5f65d449af501642e3f316, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[16]'
+      value: 
+      objectReference: {fileID: 100000, guid: 1f42486235f54bd45860c0a8a43e2e99, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[17]'
+      value: 
+      objectReference: {fileID: 100000, guid: 51f11e0fab0bef445acaec67a150b0ca, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[18]'
+      value: 
+      objectReference: {fileID: 100000, guid: 51f11e0fab0bef445acaec67a150b0ca, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[19]'
+      value: 
+      objectReference: {fileID: 100000, guid: ba56b91cb91e8574ba8cdc23485819d5, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[20]'
+      value: 
+      objectReference: {fileID: 100000, guid: 727ca9d052de93248bb0e7cc80448010, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[21]'
+      value: 
+      objectReference: {fileID: 100000, guid: de49f4d5eb9cbd64ba00b2bdef2f4a2b, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[22]'
+      value: 
+      objectReference: {fileID: 100000, guid: 07f5ac99fdde5d242a28695cec6d10fe, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[23]'
+      value: 
+      objectReference: {fileID: 100000, guid: 740c4f8b3253a67499aedb41137e2465, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[24]'
+      value: 
+      objectReference: {fileID: 100000, guid: b2d2444d1567fa140bea834dcef1ac62, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[25]'
+      value: 
+      objectReference: {fileID: 100000, guid: cb033e5f9a9049947aa4edc4f93262f6, type: 3}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[26]'
+      value: 
+      objectReference: {fileID: 100000, guid: e3a289a05cc708c49a4734a86d66f9bf, type: 3}
     - target: {fileID: 9014430672533719307, guid: d677365b008a03344af2e757b275f8df, type: 3}
       propertyPath: appId
       value: 480
