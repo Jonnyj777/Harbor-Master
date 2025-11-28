@@ -132,6 +132,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     public void OpenCreatePrompt()
     {
         lobbyNameInput.text = SteamClient.Name + "'s Lobby";
+        lobbySizeInput.text = "4";
     }
 
     private void OnColorClicked(ColorChoice color)
@@ -314,6 +315,71 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
             String host = l.Owner.Name;
             
+
+            //lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
+
+
+            Button btn = lobbyObj.joinButton;
+            btn.onClick.RemoveAllListeners();
+
+            btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
+
+            btn.onClick.AddListener(() => AttemptJoin(l));
+
+            lobbyObj.hostText.text = "Host: " + host;
+
+            lobbyList.Add(l.Id, lobbyObj);
+            lobbyData.Add(l.Id, l);
+            Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("name")}.");
+
+            if (selectedLobbyId == 0)
+            {
+                selectedLobbyId = l.Id;
+            }
+        }
+
+        StartCoroutine(RefreshCoroutineFadeIn());
+    }
+
+    public async void GetLobbyInfoWithoutFade() // refresh
+    {
+
+        //StartCoroutine(RefreshCoroutineFadeOut());
+
+        await Task.Delay(lobbyListDelayDuration);
+
+        steamLobbyList = SteamMatchmaking.LobbyList;
+        //var LobbyList = SteamMatchmaking.LobbyList;
+
+        steamLobbyList = steamLobbyList.WithKeyValue("game", "PORTAUTH");
+        var LobbyResult = await steamLobbyList.RequestAsync();
+
+        selectedLobbyId = 0;
+
+        // clear old lobby entries
+        ClearLobby();
+
+        foreach (Transform child in lobbyListContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (var l in LobbyResult)
+        {
+            Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("HostAddress")}.");
+            Debug.Log(l.GetData("name"));
+
+            LobbyEntry lobbyObj = Instantiate(lobbyEntryPrefab, lobbyListContainer);
+
+            lobbyObj.lobbyNameText.text = l.GetData("name"); // name of lobby
+            lobbyObj.lobbyNameText.ForceMeshUpdate();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(lobbyObj.lobbyNameText.rectTransform);
+            int maxMembers = 4;
+            int.TryParse(l.GetData("maxMembers"), out maxMembers);
+            lobbyObj.countText.text = l.MemberCount + "/" + maxMembers; // count
+
+            String host = l.Owner.Name;
+
 
             //lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
 
