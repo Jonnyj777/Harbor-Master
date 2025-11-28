@@ -48,6 +48,7 @@ public class LivesManagerN : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
     public void ShowOptionsPopUp()
     {
         //resetButton.gameObject.SetActive(true);
