@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Mirror;
 
 public class StructurePlacerN : MonoBehaviour
 {
@@ -52,6 +53,7 @@ public class StructurePlacerN : MonoBehaviour
     private Vector2 dockAreaSize;
     private bool boundsInitialized;
 
+    [ServerCallback]
     private void Awake()
     {
         if (pointFinder == null)
@@ -65,11 +67,13 @@ public class StructurePlacerN : MonoBehaviour
         }
     }
 
+    [Server]
     private void OnValidate()
     {
         boundsInitialized = false;
     }
 
+    [ServerCallback]
     private void Start()
     {
         if (pointFinder == null)
@@ -87,7 +91,8 @@ public class StructurePlacerN : MonoBehaviour
         DockLoop();
         FactoryLoop();
     }
-    
+
+    [Server]
     private void InitializeIndices()
     {
         for (int i = 0; i < storePrefabs.Count; i++)
@@ -100,6 +105,7 @@ public class StructurePlacerN : MonoBehaviour
             availableFactoryIndices.Add(i);
     }
 
+    [Server]
     private void EnsurePlacementBounds()
     {
         if (boundsInitialized)
@@ -115,6 +121,7 @@ public class StructurePlacerN : MonoBehaviour
         boundsInitialized = true;
     }
 
+
     private Vector2 CalculateTileCenter()
     {
         float tileMinX = Mathf.Floor(transform.position.x / MaxPlacementSize) * MaxPlacementSize;
@@ -122,6 +129,7 @@ public class StructurePlacerN : MonoBehaviour
         return new Vector2(tileMinX + MaxPlacementSize * 0.5f, tileMinZ + MaxPlacementSize * 0.5f);
     }
 
+    [Server]
     private void StoreLoop()
     {
         EnsurePlacementBounds();
@@ -137,6 +145,7 @@ public class StructurePlacerN : MonoBehaviour
         }
     }
 
+    [Server]
     private void DockLoop()
     {
         EnsurePlacementBounds();
@@ -154,7 +163,8 @@ public class StructurePlacerN : MonoBehaviour
                 Debug.LogWarning("Dock Prefab Not Found or Invalid Position");
         }
     }
-    
+
+    [Server]
     private void FactoryLoop()
     {
         EnsurePlacementBounds();
@@ -169,6 +179,7 @@ public class StructurePlacerN : MonoBehaviour
         }
     }
 
+    [Server]
     private Quaternion GetDockOrientation(Vector3 spawnPosition)
     {
         if (pointFinder == null)
@@ -177,7 +188,8 @@ public class StructurePlacerN : MonoBehaviour
         Quaternion orientation = pointFinder.GetShoreFacingRotation(spawnPosition);
         return orientation;
     }
-    
+
+    [Server]
     private GameObject GetStorePrefab()
 {
     if (availableStoreIndices.Count == 0)
@@ -209,6 +221,7 @@ public class StructurePlacerN : MonoBehaviour
     return null;
 }
 
+    [Server]
     private GameObject GetFactoryPrefab()
 {
     if (availableFactoryIndices.Count == 0)
@@ -240,6 +253,7 @@ public class StructurePlacerN : MonoBehaviour
     return null;
 }
 
+    [Server]
     private GameObject GetDockPrefab()
 {
     if (availableDockIndices.Count == 0)

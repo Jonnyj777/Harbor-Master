@@ -49,7 +49,7 @@ public class IslandPlacerN : NetworkBehaviour
         }
     }
 
-
+    [Server]
     private void InitializeIndices()
     {
         availableIslandIndices.Clear();
@@ -58,6 +58,7 @@ public class IslandPlacerN : NetworkBehaviour
             availableIslandIndices.Add(i);
     }
 
+    [Server]
     private GameObject GetIslandPrefab()
     {
         if (availableIslandIndices.Count == 0)
@@ -94,6 +95,7 @@ public class IslandPlacerN : NetworkBehaviour
         return islandPrefabs[selectedIndex];
     }
 
+    [Server]
     public Bounds GetGridBounds()
     {
         Vector3 center = new Vector3((gridSize.x / 2) * tileSize.x, 0, (gridSize.y / 2) * tileSize.y); // Example: centered at the origin
