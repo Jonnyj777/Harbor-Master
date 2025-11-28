@@ -426,6 +426,9 @@ MonoBehaviour:
   - {fileID: 2785734754744876294}
   - {fileID: 4431593590029593766}
   crashedColor: {r: 0, g: 1, b: 1, a: 1}
+  dockingTime: 1.5
+  rotationSmooth: 10
+  rend: {fileID: 1192695934844977239}
 --- !u!114 &1948129903933888429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -448,6 +451,10 @@ MonoBehaviour:
   lineColor: {x: 0, y: 0, z: 0}
   lineWidth: 1.5
   truckSpeed: 20
+  smoothPath: 0
+  smoothingIterations: 3
+  delayPerCargo: 2
+  rotationSpeed: 2
 --- !u!1 &1705438446000358992
 GameObject:
   m_ObjectHideFlags: 0
