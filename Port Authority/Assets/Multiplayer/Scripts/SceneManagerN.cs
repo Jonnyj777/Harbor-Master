@@ -21,37 +21,24 @@ public class SceneManagerN : MonoBehaviour
 
     public void ChangeToMainMenuScene()
     {
-        //NetworkRoomManager.singleton.ServerChangeScene(MainMenuScene);
-        
-        if(NetworkClient.activeHost)
-        {
-            //NetworkRoomManager.singleton.StopHost();
-        }
-        else if(NetworkClient.isConnected)
-        {
-            //NetworkRoomManager.singleton.StopClient();
-        }
-
-        SteamLobbyManagerUITest.instance.RemoveCallbacks();
-        
-
+        //SteamLobbyManagerUITest.instance.RemoveCallbacks();
         SteamLobbyManagerUITest.Lobby.Leave();
-        /*
-        SteamLobbyManagerUITest inst = SteamLobbyManagerUITest.instance;
 
-        if(inst != null)
+        if (NetworkClient.activeHost)
         {
-            Destroy(inst.gameObject);
+            NetworkManager.singleton.StopHost();
+            SceneManager.LoadScene(MainMenuScene);
+            return;
+        }
+        
+        if(NetworkClient.isConnected)
+        {
+            NetworkManager.singleton.StopClient();
+            SceneManager.LoadScene(MainMenuScene);
+            return;
         }
 
-        if (NetworkLobby.singleton != null)
-        {
-            Destroy(NetworkLobby.singleton.gameObject);
-        }
-
-        Steamworks.SteamClient.Shutdown();
-        */
         SceneManager.LoadScene(MainMenuScene);
-   
+
     }
 }

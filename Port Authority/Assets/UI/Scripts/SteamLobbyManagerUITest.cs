@@ -109,6 +109,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     public void InitializeMenu(ReferenceGrab refGrab)
     {
+        //StopAllCoroutines();
+        Debug.LogError("Timescale = " + Time.timeScale);
         GameObject[] oldPlayerObjects = GameObject.FindGameObjectsWithTag("Player");
 
         for(int i = 0; i < oldPlayerObjects.Length; i++)
@@ -961,6 +963,11 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         for (float t = 0; t < popInDuration; t += Time.deltaTime)
         {
+            if(target == null)
+            {
+                yield break;
+            }
+
             float factor = Mathf.SmoothStep(startScale, 1f, t / popInDuration);
             target.localScale = originalScale * factor;
             yield return null;

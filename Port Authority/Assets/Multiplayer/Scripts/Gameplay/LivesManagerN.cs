@@ -9,7 +9,7 @@ public class LivesManagerN : NetworkBehaviour
     public static LivesManagerN Instance;
     [SyncVar(hook = nameof(UpdateLivesEntry))] private int lives = 6;
     public TextMeshProUGUI livesText;
-    public Button resetButton;
+    //public Button resetButton;
     public Button menuButton;
 
 
@@ -41,7 +41,7 @@ public class LivesManagerN : NetworkBehaviour
         if (lives < 1)
         {
             // End the game
-            Time.timeScale = 0f;
+            //Time.timeScale = 0f;
 
             ScoreManagerUI.Instance.ShowLosePopUp();
             ShowOptionsPopUp();
@@ -50,7 +50,7 @@ public class LivesManagerN : NetworkBehaviour
 
     public void ShowOptionsPopUp()
     {
-        resetButton.gameObject.SetActive(true);
+        //resetButton.gameObject.SetActive(true);
         menuButton.gameObject.SetActive(true);
     }
 

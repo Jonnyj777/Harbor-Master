@@ -58,16 +58,18 @@ public class ScoreManagerUI : NetworkBehaviour
 
     public void ShowLosePopUp()
     {
+        losePopUpHost.gameObject.SetActive(true);
+        losePopUpHostText.text = "$" + totalScore;
+        /*
         if(isServer)
         {
-            losePopUpHost.gameObject.SetActive(true);
-            losePopUpHostText.text = "$" + totalScore;
         }
         else
         {
             losePopUpNonHost.gameObject.SetActive(true);
             losePopUpNonHostText.text = "$" + totalScore;
         }
+        */
     }
 
     [Server]
