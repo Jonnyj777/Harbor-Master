@@ -21,6 +21,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     public static Steamworks.Data.Lobby Lobby { get; private set; }
 
     public static bool isLobbySet = false;
+
     Steamworks.ServerList.Internet Request;
 
     public UnityEvent OnLobbyCreatedEvent;
@@ -109,6 +110,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     public void InitializeMenu(ReferenceGrab refGrab)
     {
+        GetReferences(refGrab);
         selectedLobbyId = 0;
         selectedColorChoice = null;
         newLobbyColorChoice = null;
@@ -127,10 +129,10 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             Destroy(oldPlayerObjects[i]);
         }
 
-        Request = new Steamworks.ServerList.Internet();
-        Request.RunQueryAsync(30);
 
-        GetReferences(refGrab);
+        //Request = new Steamworks.ServerList.Internet();
+        //Request.RunQueryAsync(30);
+        GetLobbyInfo();
         startButton.interactable = false;
 
         //attach functions to event listeners
@@ -145,11 +147,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         SteamMatchmaking.OnLobbyInvite += OnLobbyInvite;
         SteamMatchmaking.OnLobbyMemberDataChanged += SetReadyStatus;
         SteamMatchmaking.OnLobbyMemberDataChanged += SetColor;
-
-        GetLobbyInfo();
-
-        
-
 
         //newLobbyColorChoice = newLobbyColorChoices[0];
         StartCoroutine(SetDefaultColors());
@@ -356,7 +353,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             ClearLobby();
         }
     }
-
+    /*
     void OnServersUpdated()
     {
         if (Request.Responsive.Count == 0)
@@ -377,6 +374,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     {
         Debug.Log($"{server.Name} Responded");
     }
+    */
     public async void Host()
     {
         print("Hosting started...");
@@ -464,7 +462,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     public async void GetLobbyInfoWithoutFade() // refresh
     {
-               CanvasGroup listCg = lobbyListContainer.GetComponent<CanvasGroup>();
+        CanvasGroup listCg = lobbyListContainer.GetComponent<CanvasGroup>();
         listCg.alpha = 0;
 
         await Task.Delay(lobbyListDelayDuration);
