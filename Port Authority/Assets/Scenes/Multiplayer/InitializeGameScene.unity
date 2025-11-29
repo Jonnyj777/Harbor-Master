@@ -741,6 +741,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: RoomScene
+      value: Assets/Scenes/Multiplayer/MultiplayerMenuConnecting2.unity
+      objectReference: {fileID: 0}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
       propertyPath: transport
       value: 
       objectReference: {fileID: 0}
@@ -751,6 +755,10 @@ PrefabInstance:
     - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
       propertyPath: offlineScene
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: GameplayScene
+      value: Assets/Scenes/Multiplayer/UpgradeSystemN_2.unity
       objectReference: {fileID: 0}
     - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
       propertyPath: spawnPrefabs.Array.size
