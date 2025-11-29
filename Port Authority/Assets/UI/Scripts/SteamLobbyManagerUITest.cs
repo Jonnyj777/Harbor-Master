@@ -345,7 +345,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
             btn.onClick.AddListener(() => AttemptJoin(l));
 
-            lobbyObj.hostText.text = "Host: " + l.Owner.Name;
+            lobbyObj.hostText.text = "Host: " + host;
 
             lobbyList.Add(l.Id, lobbyObj);
             lobbyData.Add(l.Id, l);
@@ -410,7 +410,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
             btn.onClick.AddListener(() => AttemptJoin(l));
 
-            lobbyObj.hostText.text = "Host: " + l.GetData("HostName");
+            lobbyObj.hostText.text = "Host: " + host;
 
             lobbyList.Add(l.Id, lobbyObj);
             lobbyData.Add(l.Id, l);
