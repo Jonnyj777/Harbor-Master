@@ -15,6 +15,7 @@ public class BoatN : NetworkBehaviour
 
     [Header("Boat Collisions Settings")]
     public Color crashedColor = Color.cyan;  // Color to when boat vehicles crash
+    public ParticleSystem explosionPrefab;
 
     private bool hasCrashed = false;
     private float sinkDelay = 2f;
@@ -97,6 +98,7 @@ public class BoatN : NetworkBehaviour
         if (other.CompareTag("Terrain"))
         {
             multipleCollisions = false;
+            PlayExplosion();
             EnterCrashState(multipleCollisions);
         }
         else if (other.CompareTag("Boat"))
@@ -106,6 +108,8 @@ public class BoatN : NetworkBehaviour
             {
                 multipleCollisions = false;
             }
+
+            PlayExplosion();
             EnterCrashState(multipleCollisions);
         }
         else if (other.CompareTag("Port"))
@@ -162,6 +166,15 @@ public class BoatN : NetworkBehaviour
         c.colorData = new Vector3(randomColor.r, randomColor.g, randomColor.b);
         c.spawnTime = Time.time;
         c.price = 20;
+    }
+
+    [ClientRpc]
+    private void PlayExplosion()
+    {
+        if (explosionPrefab == null) return;
+
+        explosionPrefab.Play();
+        Destroy(explosionPrefab.gameObject, explosionPrefab.main.duration + explosionPrefab.main.startLifetime.constantMax);
     }
 
 

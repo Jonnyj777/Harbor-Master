@@ -18,7 +18,7 @@ public class TruckN : NetworkBehaviour
     public Material crashedMaterial;
     public Color crashedColor = Color.magenta;  // Color to when truck vehicles crash
     private Renderer vehicleRenderer;
-    public static float baseRestartDelay = 15f;
+    public static float baseRestartDelay = 3f;
     public static float globalRestartDelay; // The current effective value (changes when upgraded)
 
     public GameObject repairButtonPrefab;
@@ -32,6 +32,8 @@ public class TruckN : NetworkBehaviour
     public float bounceBackTime = 1.25f;
     public float retreatDistance = 15f;
     private bool isBouncingBack = false;
+
+    public ParticleSystem smokePrefab;
 
     private void Awake()
     {
@@ -84,6 +86,7 @@ public class TruckN : NetworkBehaviour
             {
                 multipleCollisions = false;
             }
+            PlaySmoke();
             EnterCrashState(multipleCollisions);
         }
         if (other.CompareTag("Port") && cargo.Count <= 3)
@@ -258,6 +261,14 @@ public class TruckN : NetworkBehaviour
     }
 
     [ClientRpc]
+    private void PlaySmoke()
+    {
+        if (smokePrefab == null) return;
+
+        smokePrefab.Play();
+    }
+
+    [ClientRpc]
     private void RpcShowRepairButton()
     {
         repairButtonInstance = Instantiate(repairButtonPrefab, trucksUICanvas.transform);
@@ -300,6 +311,7 @@ public class TruckN : NetworkBehaviour
     [ClientRpc]
     private void RpcRestoreMaterial()
     {
+        smokePrefab.Stop();
         StartCoroutine(RestoreMaterialAfterDelay());
     }
     

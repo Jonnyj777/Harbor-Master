@@ -8554,7 +8554,7 @@ MonoBehaviour:
   - {fileID: 551903078520605625, guid: ce64e3e673f01a44691cc7418588ce24, type: 3}
   - {fileID: 551903078520605625, guid: 477810ac8b5c90540ac018daf94d1035, type: 3}
   spawnMargin: 0
-  cornerMargin: 10
+  cornerMargin: 400
   maxSpawnAngle: 15
   spawnHeightOffset: 5
   spawnRate: 10
