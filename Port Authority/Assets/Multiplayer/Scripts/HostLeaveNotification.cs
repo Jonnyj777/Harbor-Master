@@ -1,0 +1,34 @@
+using UnityEngine;
+using Mirror;
+
+public class HostLeaveNotification : NetworkBehaviour
+{
+    [SerializeField]
+    private RectTransform hostLeaveBox;
+
+    public static HostLeaveNotification instance; 
+
+    public void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    [Server]
+    public void HostLeft()
+    {
+        RpcShowHostLeftNotification();
+    }
+
+    [ClientRpc]
+    public void RpcShowHostLeftNotification()
+    {
+        hostLeaveBox.gameObject.SetActive(true);
+    }
+}
