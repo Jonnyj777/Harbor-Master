@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3300000}
   - component: {fileID: 2300000}
   - component: {fileID: 2008247716817953456}
-  - component: {fileID: 2641452804793505606}
   m_Layer: 0
   m_Name: Building_Stadium
   m_TagString: Building
@@ -109,15 +108,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 35.460045, y: 11.730206, z: 44.755478}
   m_Center: {x: -0.3217516, y: 5.823163, z: -0.0017976761}
---- !u!114 &2641452804793505606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c76da995081204b7b8c7b13f831bcddc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

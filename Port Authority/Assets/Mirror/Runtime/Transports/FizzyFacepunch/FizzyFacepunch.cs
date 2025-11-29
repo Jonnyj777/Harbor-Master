@@ -47,7 +47,8 @@ namespace Mirror.FizzySteam
       Debug.Log("SteamWorks initialised");
       FetchSteamID();
       SceneManager.LoadScene("MultiplayerMenuConnecting2");
-            DontDestroyOnLoad(this);
+      OnlineStatusManager.isOnline = true;
+      DontDestroyOnLoad(this);
     }
     
     public override void ClientEarlyUpdate()
@@ -296,6 +297,7 @@ namespace Mirror.FizzySteam
       catch ( Exception e )
       {
          SceneManager.LoadScene("MultiplayerMenuConnecting2Offline");
+         OnlineStatusManager.isOnline = false;
          Debug.LogError($"Could be one of the following: Steam is closed, Can't find steam_api dlls or Don't have permission to open appid. Exception: {e.Message}");
         return false;
       }

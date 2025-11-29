@@ -45,6 +45,9 @@ public class SceneManagerScript : MonoBehaviour
 
     private IEnumerator LoadScene(int sceneIndex)
     {
+        yield return new WaitForSeconds(1);
+        SceneManager.LoadScene(sceneIndex);
+        /*
         if (currentFade != null) StopCoroutine(currentFade);
         currentFade = StartCoroutine(FadeCanvasGroup(canvasGroup, canvasGroup.alpha, 1f, fadeDuration));
         yield return currentFade;
@@ -65,6 +68,19 @@ public class SceneManagerScript : MonoBehaviour
 
         canvasGroup.alpha = 1f;
         //yield return StartCoroutine(FadeCanvasGroup(canvasGroup, 1f, 0f, fadeDuration));
+        */
+    }
+
+    public void LoadMainMenu()
+    {
+        if(OnlineStatusManager.isOnline)
+        {
+            SceneManager.LoadScene(8);
+        }
+        else
+        {
+            SceneManager.LoadScene(9);
+        }
     }
 
     private IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float duration)

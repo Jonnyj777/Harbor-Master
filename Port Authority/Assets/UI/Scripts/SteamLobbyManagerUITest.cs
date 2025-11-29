@@ -120,8 +120,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         localNetworkPlayer = null;
         steamLobbyList = default;
         Lobby = default;
-        //StopAllCoroutines();
-        Debug.LogError("Timescale = " + Time.timeScale);
         GameObject[] oldPlayerObjects = GameObject.FindGameObjectsWithTag("Player");
 
         for(int i = 0; i < oldPlayerObjects.Length; i++)
@@ -266,8 +264,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     private IEnumerator SetDefaultColors()
     {
         yield return null;
-        OnColorClicked(newLobbyColorChoices[0]);
-        OnColorClicked(colorChoices[0]);
+        if(newLobbyColorChoices.Count > 0) OnColorClicked(newLobbyColorChoices[0]);
+        if(colorChoices.Count > 0) OnColorClicked(colorChoices[0]);
     }
 
     private void SetReadyStatus(Steamworks.Data.Lobby lobby, Friend friend)
@@ -419,43 +417,45 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-
-        foreach (var l in LobbyResult)
+        if(LobbyResult != null && LobbyResult.Length > 0)
         {
-            Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("HostAddress")}.");
-            Debug.Log(l.GetData("name"));
-
-            LobbyEntry lobbyObj = Instantiate(lobbyEntryPrefab, lobbyListContainer);
-
-            lobbyObj.lobbyNameText.text = l.GetData("name"); // name of lobby
-            lobbyObj.lobbyNameText.ForceMeshUpdate();
-            LayoutRebuilder.ForceRebuildLayoutImmediate(lobbyObj.lobbyNameText.rectTransform);
-            int maxMembers = 4;
-            int.TryParse(l.GetData("maxMembers"), out maxMembers);
-            lobbyObj.countText.text = l.MemberCount + "/" + maxMembers; // count
-
-            String host = l.Owner.Name;
-
-
-            //lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
-
-
-            Button btn = lobbyObj.joinButton;
-            btn.onClick.RemoveAllListeners();
-
-            btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
-
-            btn.onClick.AddListener(() => AttemptJoin(l));
-
-            lobbyObj.hostText.text = "Host: " + host;
-
-            lobbyList.Add(l.Id, lobbyObj);
-            lobbyData.Add(l.Id, l);
-            Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("name")}.");
-
-            if (selectedLobbyId == 0)
+            foreach (var l in LobbyResult)
             {
-                selectedLobbyId = l.Id;
+                Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("HostAddress")}.");
+                Debug.Log(l.GetData("name"));
+
+                LobbyEntry lobbyObj = Instantiate(lobbyEntryPrefab, lobbyListContainer);
+
+                lobbyObj.lobbyNameText.text = l.GetData("name"); // name of lobby
+                lobbyObj.lobbyNameText.ForceMeshUpdate();
+                LayoutRebuilder.ForceRebuildLayoutImmediate(lobbyObj.lobbyNameText.rectTransform);
+                int maxMembers = 4;
+                int.TryParse(l.GetData("maxMembers"), out maxMembers);
+                lobbyObj.countText.text = l.MemberCount + "/" + maxMembers; // count
+
+                String host = l.Owner.Name;
+
+
+                //lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
+
+
+                Button btn = lobbyObj.joinButton;
+                btn.onClick.RemoveAllListeners();
+
+                btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
+
+                btn.onClick.AddListener(() => AttemptJoin(l));
+
+                lobbyObj.hostText.text = "Host: " + host;
+
+                lobbyList.Add(l.Id, lobbyObj);
+                lobbyData.Add(l.Id, l);
+                Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("name")}.");
+
+                if (selectedLobbyId == 0)
+                {
+                    selectedLobbyId = l.Id;
+                }
             }
         }
 
