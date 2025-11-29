@@ -126,10 +126,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         // ui colors
         readyColor = new UnityEngine.Color(22f / 255f, 218f / 255f, 35f / 255f, 1f);
         notReadyColor = new UnityEngine.Color(157f / 255f, 157f / 255f, 157f / 255f, 1f);
-
-        //GetLobbyInfo();
-        
-        
     }
 
     private void Start()

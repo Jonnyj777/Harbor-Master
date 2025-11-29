@@ -1,7 +1,8 @@
+using Mirror;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
 
 public class SceneManagerScript : MonoBehaviour
 {
@@ -43,7 +44,7 @@ public class SceneManagerScript : MonoBehaviour
         currentFade = StartCoroutine(FadeCanvasGroup(canvasGroup, 1f, 0f, fadeDuration));
     }
 
-    private IEnumerator LoadScene(int sceneIndex)
+    private IEnumerator LoadSceneAsync(int sceneIndex)
     {
         if (currentFade != null) StopCoroutine(currentFade);
         currentFade = StartCoroutine(FadeCanvasGroup(canvasGroup, canvasGroup.alpha, 1f, fadeDuration));
@@ -67,7 +68,26 @@ public class SceneManagerScript : MonoBehaviour
         //yield return StartCoroutine(FadeCanvasGroup(canvasGroup, 1f, 0f, fadeDuration));
     }
 
-    private IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float duration)
+    private IEnumerator LoadScene(int sceneIndex)
+    {
+        // Fade out
+        if (currentFade != null) StopCoroutine(currentFade);
+        currentFade = StartCoroutine(FadeCanvasGroup(canvasGroup, canvasGroup.alpha, 1f, fadeDuration));
+        yield return currentFade;
+
+        // Optionally show loading text
+        loadingText.gameObject.SetActive(true);
+
+        // Synchronously load the scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneIndex);
+
+        // Make sure canvasGroup is fully visible
+        canvasGroup.alpha = 1f;
+
+        yield return null;
+    }
+
+    public IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float duration)
     {
         float elapsedTime = 0.0f;
         while (elapsedTime < duration)
@@ -78,5 +98,33 @@ public class SceneManagerScript : MonoBehaviour
         }
 
         cg.alpha = end;
+    }
+
+    public void FadeIn()
+    {
+        StartCoroutine(FadeCanvasGroupIn());
+    }
+    public IEnumerator FadeCanvasGroupIn()
+    {
+
+        float elapsedTime = 0.0f;
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.unscaledDeltaTime;
+            canvasGroup.alpha = Mathf.Lerp(0f, 1f, elapsedTime / fadeDuration);
+            yield return null;
+        }
+
+        canvasGroup.alpha = 1f;
+
+        loadingText.gameObject.SetActive(true);
+    }
+
+    public void ChangeScene(string sceneName)
+    {
+        if (NetworkServer.active && NetworkServer.connections.Count > 0)
+        {
+            NetworkRoomManager.singleton.ServerChangeScene(sceneName);
+        }
     }
 }

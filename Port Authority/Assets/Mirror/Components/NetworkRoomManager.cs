@@ -302,6 +302,9 @@ namespace Mirror
 
                 NetworkServer.AddPlayerForConnection(conn, newRoomGameObject);
             }
+            else if (Utils.IsSceneActive("LevelWithSFX"))
+            {
+            }
             else
             {
                 // Late joiners not supported...should've been kicked by OnServerDisconnect
