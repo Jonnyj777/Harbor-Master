@@ -109,6 +109,17 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     public void InitializeMenu(ReferenceGrab refGrab)
     {
+        selectedLobbyId = 0;
+        selectedColorChoice = null;
+        newLobbyColorChoice = null;
+        joiningCreatedLobby = false;
+        lobbyData.Clear();
+        inLobby.Clear();
+        lobbyList.Clear();
+        isAllReady = false;
+        localNetworkPlayer = null;
+        steamLobbyList = default;
+        Lobby = default;
         //StopAllCoroutines();
         Debug.LogError("Timescale = " + Time.timeScale);
         GameObject[] oldPlayerObjects = GameObject.FindGameObjectsWithTag("Player");

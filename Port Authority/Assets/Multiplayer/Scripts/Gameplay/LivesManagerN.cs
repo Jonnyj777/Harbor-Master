@@ -7,7 +7,7 @@ using System;
 public class LivesManagerN : NetworkBehaviour
 {
     public static LivesManagerN Instance;
-    [SyncVar(hook = nameof(UpdateLivesEntry))] private int lives = 6;
+    [SyncVar(hook = nameof(UpdateLivesEntry))] private int lives = 0;
     public TextMeshProUGUI livesText;
     //public Button resetButton;
     public Button menuButton;
