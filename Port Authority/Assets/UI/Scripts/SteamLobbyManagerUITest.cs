@@ -332,20 +332,12 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             int.TryParse(l.GetData("maxMembers"), out maxMembers);
             lobbyObj.countText.text = l.MemberCount + "/" + maxMembers; // count
 
-            String host = l.Owner.Name;
-            
-
-            //lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
-
-
             Button btn = lobbyObj.joinButton;
             btn.onClick.RemoveAllListeners();
 
             btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
 
             btn.onClick.AddListener(() => AttemptJoin(l));
-
-            lobbyObj.hostText.text = "Host: " + host;
 
             lobbyList.Add(l.Id, lobbyObj);
             lobbyData.Add(l.Id, l);
@@ -397,20 +389,12 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             int.TryParse(l.GetData("maxMembers"), out maxMembers);
             lobbyObj.countText.text = l.MemberCount + "/" + maxMembers; // count
 
-            String host = l.Owner.Name;
-
-
-            //lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
-
-
             Button btn = lobbyObj.joinButton;
             btn.onClick.RemoveAllListeners();
 
             btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
 
             btn.onClick.AddListener(() => AttemptJoin(l));
-
-            lobbyObj.hostText.text = "Host: " + host;
 
             lobbyList.Add(l.Id, lobbyObj);
             lobbyData.Add(l.Id, l);
