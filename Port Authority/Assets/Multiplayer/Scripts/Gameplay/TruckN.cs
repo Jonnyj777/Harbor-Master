@@ -276,11 +276,11 @@ public class TruckN : NetworkBehaviour
     public void RepairTruck()
     {
         int repairCost = 50;
-        if (ScoreManagerN.Instance.GetSpendableScore() >= repairCost)
+        if (ScoreManagerUI.Instance.GetSpendableScore() >= repairCost)
         {
             RpcRestoreMaterial();
             vehicle.SetIsCrashed(false);
-            ScoreManagerN.Instance.UpdateSpendableScoreCommand(-repairCost);
+            ScoreManagerUI.Instance.UpdateSpendableScore(-repairCost);
             RpcDestroyRepairButton();
         }
     }
