@@ -74,6 +74,12 @@ public class ScoreManagerN : NetworkBehaviour
         //UpdateScoreEntry();
     }
 
+    [Command(requiresAuthority = false)]
+    public void UpdateSpendableScoreCommand(int scoreUpdate)
+    {
+        spendableScore += scoreUpdate;
+    }
+
     public int GetSpendableScore()
     {
         return spendableScore;

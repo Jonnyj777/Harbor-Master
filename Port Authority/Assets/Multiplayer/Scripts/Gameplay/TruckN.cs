@@ -280,7 +280,7 @@ public class TruckN : NetworkBehaviour
         {
             RpcRestoreMaterial();
             vehicle.SetIsCrashed(false);
-            ScoreManagerN.Instance.UpdateSpendableScore(-repairCost);
+            ScoreManagerN.Instance.UpdateSpendableScoreCommand(-repairCost);
             RpcDestroyRepairButton();
         }
     }
