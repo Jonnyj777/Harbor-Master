@@ -114,7 +114,7 @@ public class VehicleSpawnScriptN : NetworkBehaviour
         // Random positions within corner margins, before side margin adjustments
         float randXPos = Random.Range(minX + cornerMargin, maxX - cornerMargin);
         float randZPos = Random.Range(minZ + cornerMargin, maxZ - cornerMargin);
-
+        
         switch (side)
         {
             case 0: // Left

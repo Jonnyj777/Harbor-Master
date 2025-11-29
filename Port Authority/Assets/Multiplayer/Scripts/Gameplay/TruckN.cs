@@ -278,7 +278,8 @@ public class TruckN : NetworkBehaviour
         int repairCost = 50;
         if (ScoreManagerN.Instance.GetSpendableScore() >= repairCost)
         {
-            StartCoroutine(RestoreMaterialAfterDelay());
+            RpcRestoreMaterial();
+            vehicle.SetIsCrashed(false);
             ScoreManagerN.Instance.UpdateSpendableScore(-repairCost);
             RpcDestroyRepairButton();
         }
@@ -296,13 +297,17 @@ public class TruckN : NetworkBehaviour
         AudioManager.Instance.PlayTruckCollision();
     }
 
-    [Server]
+    [ClientRpc]
+    private void RpcRestoreMaterial()
+    {
+        StartCoroutine(RestoreMaterialAfterDelay());
+    }
+    
     private IEnumerator RestoreMaterialAfterDelay()
     {
         yield return new WaitForSeconds(globalRestartDelay);
 
         vehicleRenderer.material = originalMaterial;
-        vehicle.SetIsCrashed(false);
     }
 
     bool IsOverWater()
