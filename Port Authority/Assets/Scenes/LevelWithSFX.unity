@@ -9345,6 +9345,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 961739752}
+    - target: {fileID: 4360623717773092234, guid: ca52af1052d3d794394d1cfb433789a7, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5485181466430528965, guid: ca52af1052d3d794394d1cfb433789a7, type: 3}
       propertyPath: m_Name
       value: TrucksUI
@@ -9556,6 +9560,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 1315793701}
+    - target: {fileID: 3237502834202472976, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -626.599
+      objectReference: {fileID: 0}
+    - target: {fileID: 3237502834202472976, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -81
+      objectReference: {fileID: 0}
     - target: {fileID: 3660961228902975659, guid: a8806e69149a76848864835b31b81e65, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -9636,10 +9648,62 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4555880708252222774, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 47.562
+      objectReference: {fileID: 0}
+    - target: {fileID: 4555880708252222774, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 96.219
+      objectReference: {fileID: 0}
+    - target: {fileID: 4786209407327790697, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4902615878030388860, guid: a8806e69149a76848864835b31b81e65, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 999221281}
+    - target: {fileID: 5225919560959883474, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 178
+      objectReference: {fileID: 0}
+    - target: {fileID: 5282181179013781501, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5282181179013781501, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5282181179013781501, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5282181179013781501, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5378056048284901114, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6044293604238921769, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6044293604238921769, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6044293604238921769, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6044293604238921769, guid: a8806e69149a76848864835b31b81e65, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6356962267460698982, guid: a8806e69149a76848864835b31b81e65, type: 3}
       propertyPath: m_Name
       value: LevelUI
@@ -10059,6 +10123,7 @@ MonoBehaviour:
   cargo: []
   unlockedCargo: []
   crashedColor: {r: 0, g: 1, b: 1, a: 1}
+  explosionPrefab: {fileID: 0}
   dockingTime: 1.5
   rotationSmooth: 10
   rend: {fileID: 0}

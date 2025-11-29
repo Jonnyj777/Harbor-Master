@@ -32,6 +32,8 @@ public class Truck : MonoBehaviour
     public float retreatDistance = 15f;
     private bool isBouncingBack = false;
 
+    public ParticleSystem smokePrefab;
+
     private void Awake()
     {
         if (globalRestartDelay == 0)
@@ -85,6 +87,7 @@ public class Truck : MonoBehaviour
             {
                 multipleCollisions = false;
             }
+            PlaySmoke(other);
             EnterCrashState(multipleCollisions);
         }
         if (other.CompareTag("Port") && cargo.Count <= 3)
@@ -109,6 +112,13 @@ public class Truck : MonoBehaviour
             }
             DeliverCargo();
         }
+    }
+
+    private void PlaySmoke(Collider other)
+    {
+        if (smokePrefab == null) return;
+
+        smokePrefab.Play();
     }
 
     private void StopMovement()
@@ -326,7 +336,9 @@ public class Truck : MonoBehaviour
     {
         yield return new WaitForSeconds(globalRestartDelay);
 
+        smokePrefab.Stop();
         vehicleRenderer.material = originalMaterial;
+
         vehicle.SetIsCrashed(false);
     }
 

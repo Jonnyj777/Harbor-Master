@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,16 +23,47 @@ public class SettingsData : MonoBehaviour
     public int sfxVolume = 100;
     public int musicVolume = 100;
 
+    public Transform colorChoicesContainer;
+    public List<ColorChoice> colorChoices;
+
+    public ColorChoice selectedColorChoice;
+
     private void Start()
     {
         masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
         musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
         sfxVolumeSlider.onValueChanged.AddListener(OnSfxVolumeChanged);
 
-        
+        colorChoices = new List<ColorChoice>(colorChoicesContainer.GetComponentsInChildren<ColorChoice>());
 
-        // Initialize the display once
+        for (int i = 0; i < colorChoices.Count; i++)
+        {
+            Button btn = colorChoices[i].GetComponent<Button>();
+
+            ColorChoice choice = colorChoices[i];
+
+            string name = colorChoices[i].colorName;
+
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => OnColorClicked(choice));
+        }
+
+        // initialize the display once
         InitializeValues();
+    }
+
+    private void OnColorClicked(ColorChoice color)
+    {
+        if (selectedColorChoice != null)
+        {
+            selectedColorChoice.Unselect();
+        }
+
+        // select new entry and display lobby
+        selectedColorChoice = color;
+        selectedColorChoice.Select();
+
+        LineColorManager.lineColorName = selectedColorChoice.colorName;
     }
 
     private void InitializeValues()
@@ -52,6 +84,8 @@ public class SettingsData : MonoBehaviour
         masterVolumeText.text = $"{masterVolume}%";
         musicVolumeText.text = $"{musicVolume}%";
         sfxVolumeText.text = $"{sfxVolume}%";
+
+        OnColorClicked(colorChoices[0]);
     }
 
     // Gameplay

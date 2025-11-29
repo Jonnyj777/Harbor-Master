@@ -139,6 +139,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         GetLobbyInfo();
 
+        
 
 
         //newLobbyColorChoice = newLobbyColorChoices[0];
@@ -515,6 +516,71 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         StartCoroutine(RefreshCoroutineFadeIn());
     }
 
+    public async void GetLobbyInfoWithoutFade() // refresh
+    {
+        CanvasGroup listCg = lobbyListContainer.GetComponent<CanvasGroup>();
+        listCg.alpha = 0;
+
+        await Task.Delay(lobbyListDelayDuration);
+
+        steamLobbyList = SteamMatchmaking.LobbyList;
+        //var LobbyList = SteamMatchmaking.LobbyList;
+
+        steamLobbyList = steamLobbyList.WithKeyValue("game", "PORTAUTH");
+        var LobbyResult = await steamLobbyList.RequestAsync();
+
+        selectedLobbyId = 0;
+
+        // clear old lobby entries
+        ClearLobby();
+
+        foreach (Transform child in lobbyListContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (var l in LobbyResult)
+        {
+            Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("HostAddress")}.");
+            Debug.Log(l.GetData("name"));
+
+            LobbyEntry lobbyObj = Instantiate(lobbyEntryPrefab, lobbyListContainer);
+
+            lobbyObj.lobbyNameText.text = l.GetData("name"); // name of lobby
+            lobbyObj.lobbyNameText.ForceMeshUpdate();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(lobbyObj.lobbyNameText.rectTransform);
+            int maxMembers = 4;
+            int.TryParse(l.GetData("maxMembers"), out maxMembers);
+            lobbyObj.countText.text = l.MemberCount + "/" + maxMembers; // count
+
+            String host = l.Owner.Name;
+
+
+            //lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
+
+
+            Button btn = lobbyObj.joinButton;
+            btn.onClick.RemoveAllListeners();
+
+            btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
+
+            btn.onClick.AddListener(() => AttemptJoin(l));
+
+            lobbyObj.hostText.text = "Host: " + host;
+
+            lobbyList.Add(l.Id, lobbyObj);
+            lobbyData.Add(l.Id, l);
+            Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("name")}.");
+
+            if (selectedLobbyId == 0)
+            {
+                selectedLobbyId = l.Id;
+            }
+        }
+
+        StartCoroutine(RefreshCoroutineFadeIn());
+    }
+
     private IEnumerator RefreshCoroutineFadeIn()
     {
         CanvasGroup listCg = lobbyListContainer.GetComponent<CanvasGroup>();
@@ -573,6 +639,29 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             StartCoroutine(LobbyFullCoroutine(l));
         }
+    }
+
+    private IEnumerator LobbyFullCoroutine(Steamworks.Data.Lobby l)
+    {
+        if (!lobbyList.TryGetValue(l.Id, out LobbyEntry entry))
+            yield break;
+
+        Button joinButton = entry.joinButton;
+        TMP_Text buttonText = joinButton.GetComponentInChildren<TMP_Text>();
+
+        UnityEngine.Color originalColor = joinButton.image.color;
+        string originalText = buttonText.text;
+
+        joinButton.image.color = UnityEngine.Color.red;
+        buttonText.text = "Full";
+
+        joinButton.interactable = false;
+
+        yield return new WaitForSeconds(1f);
+
+        joinButton.image.color = originalColor;
+        buttonText.text = originalText;
+        joinButton.interactable = true;
     }
 
     private IEnumerator LobbyFullCoroutine(Steamworks.Data.Lobby l)
@@ -728,7 +817,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         if (inLobby.ContainsKey(friend.Id))
         {
             StartCoroutine(PopOut(inLobby[friend.Id].playerCardObj.gameObject.transform));
-
             inLobby.Remove(friend.Id);
         }
 
@@ -958,7 +1046,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             startButton.gameObject.SetActive(false);
         }
 
-        inLobby.Add(SteamClient.SteamId, playerInfo);
+            inLobby.Add(SteamClient.SteamId, playerInfo);
         popInCards.Add(playerObj.transform);
 
         // fill waiting slots
