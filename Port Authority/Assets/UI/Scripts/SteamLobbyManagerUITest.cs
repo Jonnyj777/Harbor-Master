@@ -86,8 +86,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     private UnityEngine.Color notReadyColor;
     private bool joiningCreatedLobby = false;
 
-
-    private void Start()
+    private void Awake()
     {
         if (instance == null)
         {
@@ -117,7 +116,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         SteamMatchmaking.OnLobbyMemberDataChanged += SetReadyStatus;
         SteamMatchmaking.OnLobbyMemberDataChanged += SetColor;
 
-        
+
 
         newLobbyColorChoice = newLobbyColorChoices[0];
         StartCoroutine(SetDefaultColors());
@@ -125,6 +124,16 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         // ui colors
         readyColor = new UnityEngine.Color(22f / 255f, 218f / 255f, 35f / 255f, 1f);
         notReadyColor = new UnityEngine.Color(157f / 255f, 157f / 255f, 157f / 255f, 1f);
+
+        //GetLobbyInfo();
+        
+        
+    }
+
+    private void Start()
+    {
+        Host();
+        LeaveLobby();
     }
 
     public void OpenCreatePrompt()
@@ -277,6 +286,14 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         NetworkManager.singleton.StartHost();
 
 
+    }
+
+    public async void HostSinglePlayer()
+    {
+        print("Hosting started...");
+
+
+        NetworkManager.singleton.StartHost();
     }
 
     public async void GetLobbyInfo() // refresh
@@ -562,7 +579,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             }
         }
 
-
         PlayerCard playerObj = Instantiate(joinedPlayerCardPrefab, joinedPlayersGrid);
 
         List<Transform> popInCards = new List<Transform> { playerObj.transform };
@@ -632,6 +648,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             bool isHost = (member.Key == ownerId);
             member.Value.playerCardObj.UpdateHost(isHost);
         }
+
+        joinedHostNameText.text = lobby.Owner.Name;
 
         StartCoroutine(LobbyMemberDisconnectedCoroutine());
     }

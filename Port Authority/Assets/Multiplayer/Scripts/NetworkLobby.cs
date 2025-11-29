@@ -56,4 +56,13 @@ public class NetworkLobby : NetworkRoomManager
         }
     }
 
+    public void ChangeScene(string sceneName)
+    {
+        if (NetworkServer.active && NetworkServer.connections.Count > 0)
+        {
+            ServerChangeScene(sceneName);
+        }
+    }
+
 }
+ 
