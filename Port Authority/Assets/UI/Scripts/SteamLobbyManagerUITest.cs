@@ -86,6 +86,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     private UnityEngine.Color notReadyColor;
     private bool joiningCreatedLobby = false;
 
+    private string user = "";
+
     private void Awake()
     {
         if (instance == null)
@@ -139,6 +141,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     public void OpenCreatePrompt()
     {
         lobbyNameInput.text = SteamClient.Name + "'s Lobby";
+        user = SteamClient.Name;
         lobbySizeInput.text = "4";
     }
 
@@ -323,7 +326,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             Debug.Log($"A lobby has been found: {l.GetData("name")} vs {Lobby.GetData("HostAddress")}.");
             Debug.Log(l.GetData("name"));
-
+            
             LobbyEntry lobbyObj = Instantiate(lobbyEntryPrefab, lobbyListContainer);
 
             lobbyObj.lobbyNameText.text = l.GetData("name"); // name of lobby
@@ -346,7 +349,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
             btn.onClick.AddListener(() => AttemptJoin(l));
 
-            lobbyObj.hostText.text = "Host: " + host;
+            lobbyObj.hostText.text = "Host: " + l.GetData("HostName");
 
             lobbyList.Add(l.Id, lobbyObj);
             lobbyData.Add(l.Id, l);
@@ -411,7 +414,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
             btn.onClick.AddListener(() => AttemptJoin(l));
 
-            lobbyObj.hostText.text = "Host: " + host;
+            lobbyObj.hostText.text = "Host: " + l.GetData("HostName");
 
             lobbyList.Add(l.Id, lobbyObj);
             lobbyData.Add(l.Id, l);
@@ -549,6 +552,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             Lobby.SetData("maxMembers", maxMembers.ToString());
             Lobby.SetData("game", "PORTAUTH");
             Lobby.SetData("HostAddress", SteamClient.SteamId.Value.ToString());
+            Lobby.SetData("HostName", user);
 
 
             return true;
@@ -649,7 +653,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             member.Value.playerCardObj.UpdateHost(isHost);
         }
 
-        joinedHostNameText.text = lobby.Owner.Name;
+        joinedHostNameText.text = "Host: " + lobby.Owner.Name;
 
         StartCoroutine(LobbyMemberDisconnectedCoroutine());
     }
