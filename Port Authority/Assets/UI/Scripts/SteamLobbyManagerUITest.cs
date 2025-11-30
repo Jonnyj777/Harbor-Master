@@ -437,20 +437,12 @@ public class SteamLobbyManagerUITest : MonoBehaviour
                 int.TryParse(l.GetData("maxMembers"), out maxMembers);
                 lobbyObj.countText.text = l.MemberCount + "/" + maxMembers; // count
 
-                String host = l.Owner.Name;
-
-
-                //lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
-
-
                 Button btn = lobbyObj.joinButton;
                 btn.onClick.RemoveAllListeners();
 
                 btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
 
                 btn.onClick.AddListener(() => AttemptJoin(l));
-
-                lobbyObj.hostText.text = "Host: " + host;
 
                 lobbyList.Add(l.Id, lobbyObj);
                 lobbyData.Add(l.Id, l);
@@ -503,20 +495,12 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             int.TryParse(l.GetData("maxMembers"), out maxMembers);
             lobbyObj.countText.text = l.MemberCount + "/" + maxMembers; // count
 
-            String host = l.Owner.Name;
-
-
-            //lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
-
-
             Button btn = lobbyObj.joinButton;
             btn.onClick.RemoveAllListeners();
 
             btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
 
             btn.onClick.AddListener(() => AttemptJoin(l));
-
-            lobbyObj.hostText.text = "Host: " + host;
 
             lobbyList.Add(l.Id, lobbyObj);
             lobbyData.Add(l.Id, l);
@@ -753,10 +737,20 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             bool isHost = (member.Key == ownerId);
             member.Value.playerCardObj.UpdateHost(isHost);
+
+            if (isHost)
+            {
+                startButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                startButton.gameObject.SetActive(false);
+            }
         }
 
         StartCoroutine(LobbyMemberDisconnectedCoroutine());
     }
+
     public IEnumerator PopOut(Transform target, float endScale = 0.8f)
     {
         if (target == null)
@@ -933,6 +927,9 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         Button readyBtn = playerObj.readyButton;
         readyBtn.gameObject.SetActive(true);
         playerObj.readyButton.image.color = notReadyColor;
+
+        playerObj.isReady = false;
+
         readyBtn.onClick.AddListener(() =>
         {
             playerObj.isReady = !playerObj.isReady;
