@@ -22,6 +22,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip boatCollision;
     public AudioClip truckDelivery;
     public AudioClip truckCollision;
+    public AudioClip landObstacleSpawn;
+    public AudioClip landObstacleCleanup;
 
     [Header("Ambient Sound")]
     public AudioClip ambientWaves;
@@ -323,6 +325,18 @@ public class AudioManager : MonoBehaviour
         {
             sfxSource.PlayOneShot(truckCollision);
         }
+    }
+
+    public void PlayLandObstacleSpawn()
+    {
+        if (!sfxEnabled || landObstacleSpawn == null) return;
+        sfxSource.PlayOneShot(landObstacleSpawn, sfxSource.volume);
+    }
+
+    public void PlayLandObstacleCleanup()
+    {
+        if (!sfxEnabled || landObstacleCleanup == null) return;
+        sfxSource.PlayOneShot(landObstacleCleanup, sfxSource.volume);
     }
 
     public void ToggleSFX(bool enabled)

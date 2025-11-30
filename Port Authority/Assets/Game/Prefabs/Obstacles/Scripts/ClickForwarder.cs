@@ -16,7 +16,7 @@ public class ClickForwarder : MonoBehaviour
     {
         if (parentMud != null)
         {
-            parentMud.OnChildClicked();
+            parentMud.ShowCleanupButton();
         }
     }
 }

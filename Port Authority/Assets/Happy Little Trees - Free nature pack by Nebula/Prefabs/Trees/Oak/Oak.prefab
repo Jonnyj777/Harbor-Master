@@ -124,3 +124,6 @@ MonoBehaviour:
   fallAngle: 90
   fallSpeed: 2
   road: {fileID: 0}
+  cleanupCost: 50
+  cleanupButtonPrefab: {fileID: 2421748138931753100, guid: 10c4b39bc33f34a4a8b48aa5a030d3e4, type: 3}
+  worldUICanvas: {fileID: 377881027483354279, guid: 26cdda72b4dbfae4396505d3ddd18d2a, type: 3}
