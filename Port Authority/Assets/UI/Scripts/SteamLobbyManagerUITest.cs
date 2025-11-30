@@ -171,7 +171,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         refreshButton.onClick.AddListener(GetLobbyInfo);
         startButton.onClick.AddListener(ClearLobbyForStart);
         leaveButton.onClick.AddListener(LeaveLobby);
-        multiplayerButton.onClick.AddListener(GetLobbyInfo);
+        leaveButton.onClick.AddListener(GetLobbyInfo);
+        multiplayerButton.onClick.AddListener(GetLobbyInfoWithoutFade);
 
         NetworkLobby networkLobby = NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>();
 
@@ -447,12 +448,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
                 int.TryParse(l.GetData("maxMembers"), out maxMembers);
                 lobbyObj.countText.text = l.MemberCount + "/" + maxMembers; // count
 
-                String host = l.Owner.Name;
-
-
-                //lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
-
-
                 Button btn = lobbyObj.joinButton;
                 btn.onClick.RemoveAllListeners();
 
@@ -463,8 +458,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
                     AttemptJoin(l);
                     print("listener count: " + btn.onClick.GetPersistentEventCount());
                 });
-
-                lobbyObj.hostText.text = "Host: " + host;
 
                 lobbyList.Add(l.Id, lobbyObj);
                 lobbyData.Add(l.Id, l);
@@ -517,12 +510,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             int.TryParse(l.GetData("maxMembers"), out maxMembers);
             lobbyObj.countText.text = l.MemberCount + "/" + maxMembers; // count
 
-            String host = l.Owner.Name;
-
-
-            //lobbyObj.hostText.text = "Host: " + l.Owner.Name; // host text
-
-
             Button btn = lobbyObj.joinButton;
             btn.onClick.RemoveAllListeners();
 
@@ -531,8 +518,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
                 AttemptJoin(l);
                 print("listener count: " + btn.onClick.GetPersistentEventCount());
                 });
-
-            lobbyObj.hostText.text = "Host: " + host;
 
             lobbyList.Add(l.Id, lobbyObj);
             lobbyData.Add(l.Id, l);
@@ -968,6 +953,10 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         Button readyBtn = playerObj.readyButton;
         readyBtn.gameObject.SetActive(true);
         playerObj.readyButton.image.color = notReadyColor;
+
+        playerObj.isReady = false;
+        playerObj.readyButton.gameObject.SetActive(true);
+
         readyBtn.onClick.AddListener(() =>
         {
             playerObj.isReady = !playerObj.isReady;
@@ -976,9 +965,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         // keep track of player
         PlayerInfo playerInfo = new PlayerInfo(playerObj);
-
-        playerObj.readyButton.gameObject.SetActive(true);
-        //playerObj.UpdateReadyButton(playerInfo.IsReady);
 
         playerInfo.onValueChanged.AddListener((bool ready) =>
         {
@@ -997,6 +983,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             OnReadyButtonPressed(playerInfo.IsReady);
         });
 
+        OnReadyButtonPressed(false);
+
         bool isHost = SteamClient.SteamId == ownerId;
         playerObj.UpdateHost(isHost);
 
@@ -1009,7 +997,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             startButton.gameObject.SetActive(false);
         }
 
-            inLobby.Add(SteamClient.SteamId, playerInfo);
+        inLobby.Add(SteamClient.SteamId, playerInfo);
         popInCards.Add(playerObj.transform);
 
         // fill waiting slots
