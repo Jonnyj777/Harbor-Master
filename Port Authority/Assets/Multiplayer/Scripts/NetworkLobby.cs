@@ -49,8 +49,7 @@ public class NetworkLobby : NetworkRoomManager
         {
             Debug.Log($"RoomSlot: conn={p.connectionToClient.connectionId} ready={p.readyToBegin}");
         }
-        print("attempting to move to gameplay, is active: " + NetworkServer.active);
-        print("NetworkServer.connections.Count: " + (NetworkServer.connections.Count));
+
         if(NetworkServer.active && NetworkServer.connections.Count > 0)
         {
             ServerChangeScene(GameplayScene);
