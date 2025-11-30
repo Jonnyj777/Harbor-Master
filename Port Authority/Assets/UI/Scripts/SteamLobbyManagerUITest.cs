@@ -181,8 +181,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             Debug.LogError("ERROR: network lobby is null and did not properly add listener of - MoveToGameplayScene");
         }
-
-        IsNotInLobby(currentHostID);
     }
 
     private void GetReferences(ReferenceGrab refs)
@@ -594,7 +592,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         int maxMembers = 4;
         int.TryParse(l.GetData("maxMembers"), out maxMembers);
 
-        if (l.MemberCount < maxMembers && IsNotInLobby(SteamClient.SteamId))
+        if (l.MemberCount < maxMembers && !IsInLobby(SteamClient.SteamId))
         {
             l.Join();
         }
@@ -604,7 +602,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         }
     }
 
-    private bool IsNotInLobby(SteamId id)
+    private bool IsInLobby(SteamId id)
     {
         print("-----------------------");
         foreach(var key in inLobby.Keys)
