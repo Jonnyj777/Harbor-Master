@@ -364,6 +364,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     {
         if (IsAllReady())
         {
+            Lobby.SetData("hasStarted", "true");
             ClearLobby();
         }
     }
@@ -418,6 +419,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         //var LobbyList = SteamMatchmaking.LobbyList;
 
         steamLobbyList = steamLobbyList.WithKeyValue("game", "PORTAUTH");
+        steamLobbyList = steamLobbyList.WithKeyValue("hasStarted", "false");
         var LobbyResult = await steamLobbyList.RequestAsync();
 
         selectedLobbyId = 0;
@@ -680,6 +682,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             Lobby.SetData("maxMembers", maxMembers.ToString());
             Lobby.SetData("game", "PORTAUTH");
             Lobby.SetData("HostAddress", SteamClient.SteamId.Value.ToString());
+            Lobby.SetData("hasStarted", "false");
             SteamLobbyManagerUITest.currentHostID = SteamClient.SteamId;
 
 
