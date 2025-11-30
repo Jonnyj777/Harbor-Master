@@ -20,8 +20,16 @@ public class HostLeaveNotification : NetworkBehaviour
         }
     }
 
+    public void CheckHostLeft()
+    {
+        if(isServer)
+        {
+            HostLeft();
+        }
+    }
+
     [Server]
-    public void HostLeft()
+    private void HostLeft()
     {
         RpcShowHostLeftNotification();
     }

@@ -673,7 +673,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     private async void OnLobbyMemberJoined(Steamworks.Data.Lobby lobby, Friend friend)
     {
-        if (inLobby.ContainsKey(friend.Id)) return;
+        //if (inLobby.ContainsKey(friend.Id)) return;
         Debug.Log($"{friend.Name} joined the lobby");
 
         // clear waiting cards
