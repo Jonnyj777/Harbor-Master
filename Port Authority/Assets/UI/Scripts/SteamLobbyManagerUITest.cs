@@ -135,7 +135,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         currentHostID = default;
         GameObject[] oldPlayerObjects = GameObject.FindGameObjectsWithTag("Player");
 
-        for(int i = 0; i < oldPlayerObjects.Length; i++)
+        for (int i = 0; i < oldPlayerObjects.Length; i++)
         {
             Destroy(oldPlayerObjects[i]);
         }
@@ -176,7 +176,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         NetworkLobby networkLobby = NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>();
 
-        if(networkLobby != null)
+        if (networkLobby != null)
         {
             startButton.onClick.AddListener(NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>().MoveToGameplayScene);
         }
@@ -195,7 +195,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         playerCardPrefab = refs.playerCardPrefab;
         playersGrid = refs.playersGrid;
-        waitingCardPrefab = refs.waitingCardPrefab  ;
+        waitingCardPrefab = refs.waitingCardPrefab;
 
         multiplayerMenuScreen = refs.multiplayerMenuScreen;
         joinedLobbyScreen = refs.joinedLobbyScreen;
@@ -221,7 +221,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         createLobbyButton = refs.createLobbyButton;
         leaveButton = refs.leaveButton;
         multiplayerButton = refs.multiplayerButton;
-}
+    }
 
     public void RemoveCallbacks()
     {
@@ -559,25 +559,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         yield return StartCoroutine(FadeOut(listCg));
     }
 
-    private void OnLobbyClicked(SteamId id, bool doFade = false)
-    {
-        //// unselect previous entry
-        //if (lobbyList.TryGetValue(selectedLobbyId, out LobbyEntry oldEntry))
-        //{
-        //    oldEntry.Unselect();
-        //}
-
-        //// select new entry and display lobby
-        //selectedLobbyId = id;
-
-        //if (lobbyList.TryGetValue(id, out LobbyEntry newEntry))
-        //{
-        //    newEntry.Select();
-        //}
-
-        //StartCoroutine(DisplayLobbyCoroutine(id, doFade));
-    }
-
     private void AttemptJoin(Steamworks.Data.Lobby l)
     {
         int maxMembers = 4;
@@ -776,9 +757,9 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             bool isHost = (member.Key == ownerId);
             member.Value.playerCardObj.UpdateHost(isHost);
-
-            
         }
+
+        joinedHostNameText.text = "Host: " + lobby.Owner.Name;
 
         if (SteamClient.SteamId == currentHostID)
         {
