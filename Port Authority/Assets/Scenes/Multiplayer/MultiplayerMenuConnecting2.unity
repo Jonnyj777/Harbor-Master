@@ -14320,7 +14320,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startButton: {fileID: 1612086084}
-  multiplayerButton: {fileID: 614338144}
   lobbyEntryPrefab: {fileID: 461436353740677397, guid: 23977c2c3b683494991bbf1cac312136, type: 3}
   lobbyListContainer: {fileID: 82966113}
   noLobbyText: {fileID: 125728781}

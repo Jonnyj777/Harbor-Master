@@ -1,11 +1,12 @@
 using UnityEngine;
+using Mirror;
 
-public class HostLeaveNotification : MonoBehaviour
+public class HostLeaveNotification : NetworkBehaviour
 {
     [SerializeField]
     private RectTransform hostLeaveBox;
 
-    public static HostLeaveNotification instance;
+    public static HostLeaveNotification instance; 
 
     public void Start()
     {
@@ -19,12 +20,24 @@ public class HostLeaveNotification : MonoBehaviour
         }
     }
 
-    public void HostLeft()
+    public void CheckHostLeft()
     {
-        ShowHostLeftNotification();
+        print("check host left");
+        if(isServer)
+        {
+            print("is server");
+            HostLeft();
+        }
     }
 
-    public void ShowHostLeftNotification()
+    [Server]
+    private void HostLeft()
+    {
+        RpcShowHostLeftNotification();
+    }
+
+    [ClientRpc]
+    public void RpcShowHostLeftNotification()
     {
         print("client receive notifcation");
         hostLeaveBox.gameObject.SetActive(true);
