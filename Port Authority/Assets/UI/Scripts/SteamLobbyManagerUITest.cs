@@ -520,13 +520,10 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             btn.onClick.RemoveAllListeners();
 
             //btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
-            if(btn.onClick.GetPersistentEventCount() == 0 )
-            {
-                btn.onClick.AddListener(() => {
-                    AttemptJoin(l);
-                    print("listener count: " + btn.onClick.GetPersistentEventCount());
-                    });
-            }
+            btn.onClick.AddListener(() => {
+                AttemptJoin(l);
+                print("listener count: " + btn.onClick.GetPersistentEventCount());
+                });
 
             lobbyObj.hostText.text = "Host: " + host;
 
@@ -542,6 +539,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         StartCoroutine(RefreshCoroutineFadeIn());
     }
+
 
     private IEnumerator RefreshCoroutineFadeIn()
     {
@@ -593,7 +591,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         int maxMembers = 4;
         int.TryParse(l.GetData("maxMembers"), out maxMembers);
 
-        if (l.MemberCount < maxMembers)
+        if (l.MemberCount < maxMembers && IsNotInLobby(SteamClient.SteamId))
         {
             l.Join();
         }
@@ -601,6 +599,11 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             StartCoroutine(LobbyFullCoroutine(l));
         }
+    }
+
+    private bool IsNotInLobby(SteamId id)
+    {
+        return inLobby.ContainsKey(id);
     }
 
     private IEnumerator LobbyFullCoroutine(Steamworks.Data.Lobby l)
