@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class ReferenceGrab : MonoBehaviour
 {
     public Button startButton;
+    public Button multiplayerButton;
 
     [Header("Lobby List UI")]
     public LobbyEntry lobbyEntryPrefab;
