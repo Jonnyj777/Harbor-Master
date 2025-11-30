@@ -115,6 +115,12 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         selectedColorChoice = null;
         newLobbyColorChoice = null;
         joiningCreatedLobby = false;
+
+        foreach (var friend in inLobby.Values)
+        {
+            Destroy(friend.playerObj);
+        }
+
         lobbyData.Clear();
         inLobby.Clear();
         lobbyList.Clear();
