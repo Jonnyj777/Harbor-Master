@@ -743,7 +743,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     void OnLobbyMemberDisconnected(Steamworks.Data.Lobby lobby, Friend friend)
     {
-        if(friend.Id == SteamLobbyManagerUITest.currentHostID && lobby.MemberCount > 1)
+        print(Lobby.Owner.Id + " : " + SteamLobbyManagerUITest.currentHostID);
+        if(Lobby.Owner.Id != SteamLobbyManagerUITest.currentHostID)
         {
             HostLeaveNotification.instance.HostLeft();
         }
