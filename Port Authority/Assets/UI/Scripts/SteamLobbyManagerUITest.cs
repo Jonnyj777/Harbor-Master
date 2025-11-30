@@ -449,7 +449,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
                 Button btn = lobbyObj.joinButton;
                 btn.onClick.RemoveAllListeners();
 
-                btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
+                //btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
 
                 btn.onClick.AddListener(() => AttemptJoin(l));
 
@@ -515,9 +515,11 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             Button btn = lobbyObj.joinButton;
             btn.onClick.RemoveAllListeners();
 
-            btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
-
-            btn.onClick.AddListener(() => AttemptJoin(l));
+            //btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
+            btn.onClick.AddListener(() => {
+                AttemptJoin(l);
+                print("listener count: " + btn.onClick.GetPersistentEventCount());
+                });
 
             lobbyObj.hostText.text = "Host: " + host;
 
