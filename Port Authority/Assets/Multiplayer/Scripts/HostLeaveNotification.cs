@@ -22,8 +22,10 @@ public class HostLeaveNotification : NetworkBehaviour
 
     public void CheckHostLeft()
     {
+        print("check host left");
         if(isServer)
         {
+            print("is server");
             HostLeft();
         }
     }
@@ -37,6 +39,7 @@ public class HostLeaveNotification : NetworkBehaviour
     [ClientRpc]
     public void RpcShowHostLeftNotification()
     {
+        print("client receive notifcation");
         hostLeaveBox.gameObject.SetActive(true);
     }
 }
