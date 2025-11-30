@@ -410,6 +410,24 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     }
 
+    public async void HostAfterSwitch(int oldMaxMemberCount, string oldLobbyName)
+    {
+        print("Hosting started...");
+        var isSuccessful = await CreateLobbyAfterSwitch(oldMaxMemberCount, oldLobbyName);
+
+        if (!isSuccessful)
+        {
+            Debug.LogError("Error with creating lobby with steam.");
+            return;
+        }
+
+        //await Task.Delay(5000);
+
+        NetworkManager.singleton.StartHost();
+
+
+    }
+
     public async void GetLobbyInfo() // refresh
     {
 
@@ -635,6 +653,39 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         isLobbySet = true;
         print("setLobby");
     }
+    public async Task<bool> CreateLobbyAfterSwitch(int maxMembers, string lobbyName)
+    {
+        try
+        {
+            var lobbyOutput = await SteamMatchmaking.CreateLobbyAsync();
+            if (!lobbyOutput.HasValue)
+            {
+                Debug.Log("Created but not instantiated");
+                return false;
+            }
+
+            SetLobby(lobbyOutput.Value);
+            Lobby.SetPublic();
+            // Lobby.SetFriendsOnly();
+            Lobby.SetJoinable(true);
+            Lobby.SetData("name", lobbyName);
+            Lobby.SetData("maxMembers", maxMembers.ToString());
+            Lobby.SetData("game", "PORTAUTH");
+            Lobby.SetData("HostAddress", SteamClient.SteamId.Value.ToString());
+            Lobby.SetData("hasStarted", "false");
+            Lobby.SetData("id", lobbyOutput.Value.Id.ToString());
+            SteamLobbyManagerUITest.currentHostID = SteamClient.SteamId;
+
+
+            return true;
+
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogException(ex);
+            return false;
+        }
+    }
 
     public async Task<bool> CreateLobby()
     {
@@ -803,16 +854,18 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     private void HostSwitchToNewHost()
     {
+        print("switching host to new lobby");
         Steamworks.Data.Lobby oldLobby = Lobby;
         LeaveLobby();
         NetworkManager.singleton.StopHost();
-        Host();
+        HostAfterSwitch(int.Parse(oldLobby.GetData("maxMembers")), oldLobby.GetData("name"));
         oldLobby.SetData("switchedLobby", oldLobby.Id.ToString());
         
     }
 
     public IEnumerator ClientSwitchToNewHost()
     {
+        print("switching client to new lobby");
         yield return new WaitForSeconds(1f);
         string newLobby = Lobby.GetData("switchedLobby");
         LeaveLobby();
