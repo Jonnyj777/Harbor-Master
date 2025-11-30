@@ -35,6 +35,11 @@ public class SceneManagerScript : MonoBehaviour
         StartCoroutine(LoadScene(sceneIndex));
     }
 
+    public void LoadMainMenu()
+    {
+        StartCoroutine(LoadMainMenuCoroutine());
+    }
+
     private IEnumerator DelayedFadeIn()
     {
         yield return null;
@@ -45,15 +50,15 @@ public class SceneManagerScript : MonoBehaviour
 
     private IEnumerator LoadScene(int sceneIndex)
     {
-        yield return new WaitForSeconds(1);
-        SceneManager.LoadScene(sceneIndex);
-        /*
+        //yield return new WaitForSeconds(1);
+        
         if (currentFade != null) StopCoroutine(currentFade);
         currentFade = StartCoroutine(FadeCanvasGroup(canvasGroup, canvasGroup.alpha, 1f, fadeDuration));
         yield return currentFade;
+        SceneManager.LoadScene(sceneIndex);
 
+        /*
         loadingText.gameObject.SetActive(true);
-
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneIndex);
         asyncLoad.allowSceneActivation = false;
 
@@ -65,15 +70,18 @@ public class SceneManagerScript : MonoBehaviour
         asyncLoad.allowSceneActivation = true;
 
         yield return null;
-
+        */
         canvasGroup.alpha = 1f;
         //yield return StartCoroutine(FadeCanvasGroup(canvasGroup, 1f, 0f, fadeDuration));
-        */
+        
     }
 
-    public void LoadMainMenu()
+    private IEnumerator LoadMainMenuCoroutine()
     {
-        if(OnlineStatusManager.isOnline)
+        if (currentFade != null) StopCoroutine(currentFade);
+        currentFade = StartCoroutine(FadeCanvasGroup(canvasGroup, canvasGroup.alpha, 1f, fadeDuration));
+        yield return currentFade;
+        if (OnlineStatusManager.isOnline)
         {
             SceneManager.LoadScene(8);
         }
