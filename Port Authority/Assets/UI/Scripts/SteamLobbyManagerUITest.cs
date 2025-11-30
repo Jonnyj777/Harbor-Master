@@ -762,6 +762,9 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         Debug.Log($"{friend.Name} left the lobby");
         Debug.Log($"new lobby owner is {Lobby.Owner}");
 
+        currentHostID = lobby.Owner.Id;
+
+
         if (inLobby.ContainsKey(friend.Id))
         {
             StartCoroutine(PopOut(inLobby[friend.Id].playerCardObj.gameObject.transform));
@@ -773,14 +776,17 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             bool isHost = (member.Key == ownerId);
             member.Value.playerCardObj.UpdateHost(isHost);
-            if (isHost)
-            {
-                startButton.gameObject.SetActive(true);
-            }
-            else
-            {
-                startButton.gameObject.SetActive(false);
-            }
+
+            
+        }
+
+        if (SteamClient.SteamId == currentHostID)
+        {
+            startButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            startButton.gameObject.SetActive(false);
         }
 
         StartCoroutine(LobbyMemberDisconnectedCoroutine());
