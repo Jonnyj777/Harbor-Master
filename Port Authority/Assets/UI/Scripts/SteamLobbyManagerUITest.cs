@@ -112,8 +112,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     public void InitializeMenu(ReferenceGrab refGrab)
     {
-        RemoveCallbacks();
         GetReferences(refGrab);
+        RemoveCallbacks();
         selectedLobbyId = 0;
         selectedColorChoice = null;
         newLobbyColorChoice = null;
@@ -231,11 +231,11 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         SteamMatchmaking.OnLobbyInvite -= OnLobbyInvite;
         SteamMatchmaking.OnLobbyMemberDataChanged -= SetReadyStatus;
         SteamMatchmaking.OnLobbyMemberDataChanged -= SetColor;
-        hostButton.onClick.RemoveListener(Host);
-        createLobbyButton.onClick.RemoveListener(OpenCreatePrompt);
-        refreshButton.onClick.RemoveListener(GetLobbyInfo);
-        startButton.onClick.RemoveListener(ClearLobbyForStart);
-        leaveButton.onClick.RemoveListener(LeaveLobby);
+        hostButton.onClick.RemoveAllListeners();
+        createLobbyButton.onClick.RemoveAllListeners();
+        refreshButton.onClick.RemoveAllListeners();
+        startButton.onClick.RemoveAllListeners();
+        leaveButton.onClick.RemoveAllListeners();
 
         NetworkLobby networkLobby = NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>();
 
