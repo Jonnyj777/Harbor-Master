@@ -181,6 +181,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             Debug.LogError("ERROR: network lobby is null and did not properly add listener of - MoveToGameplayScene");
         }
+
+        IsNotInLobby(currentHostID);
     }
 
     private void GetReferences(ReferenceGrab refs)
@@ -604,6 +606,12 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     private bool IsNotInLobby(SteamId id)
     {
+        print("-----------------------");
+        foreach(var key in inLobby.Keys)
+        {
+            print("key: " + key);
+        }
+        print("-----------------------");
         return inLobby.ContainsKey(id);
     }
 
