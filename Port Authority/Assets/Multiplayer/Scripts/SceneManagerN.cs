@@ -26,7 +26,7 @@ public class SceneManagerN : MonoBehaviour
 
         if (NetworkClient.activeHost)
         {
-            HostLeaveNotification.instance.CheckHostLeft();
+            HostLeaveNotification.instance.ShowHostLeftNotification();
             NetworkManager.singleton.StopHost();
             SceneManager.LoadScene(MainMenuScene);
             return;
