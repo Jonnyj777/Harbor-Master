@@ -22,6 +22,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     public static bool isLobbySet = false;
 
+    public static SteamId currentHostID;
+
     Steamworks.ServerList.Internet Request;
 
     public UnityEvent OnLobbyCreatedEvent;
@@ -128,6 +130,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         localNetworkPlayer = null;
         steamLobbyList = default;
         Lobby = default;
+        currentHostID = default;
         GameObject[] oldPlayerObjects = GameObject.FindGameObjectsWithTag("Player");
 
         for(int i = 0; i < oldPlayerObjects.Length; i++)
@@ -654,6 +657,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             Lobby.SetData("maxMembers", maxMembers.ToString());
             Lobby.SetData("game", "PORTAUTH");
             Lobby.SetData("HostAddress", SteamClient.SteamId.Value.ToString());
+            SteamLobbyManagerUITest.currentHostID = SteamClient.SteamId;
 
 
             return true;
@@ -739,6 +743,10 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     void OnLobbyMemberDisconnected(Steamworks.Data.Lobby lobby, Friend friend)
     {
+        if(friend.Id == SteamLobbyManagerUITest.currentHostID && lobby.MemberCount > 1)
+        {
+            HostLeaveNotification.instance.HostLeft();
+        }
         Debug.Log($"{friend.Name} left the lobby");
         Debug.Log($"new lobby owner is {Lobby.Owner}");
 

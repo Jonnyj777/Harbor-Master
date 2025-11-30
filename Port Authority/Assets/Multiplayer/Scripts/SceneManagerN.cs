@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class SceneManagerN : MonoBehaviour
 {
 
+    public static bool isGameStarted = false;
+
     [Scene]
     public string GameplayScene;
 
@@ -18,15 +20,20 @@ public class SceneManagerN : MonoBehaviour
         NetworkRoomManager.singleton.ServerChangeScene(GameplayScene);
     }
 
+    public void Start()
+    {
+        isGameStarted = true;
+    }
+
 
     public void ChangeToMainMenuScene()
     {
+        isGameStarted = false;
         //SteamLobbyManagerUITest.instance.RemoveCallbacks();
         SteamLobbyManagerUITest.Lobby.Leave();
 
         if (NetworkClient.activeHost)
         {
-            HostLeaveNotification.instance.ShowHostLeftNotification();
             NetworkManager.singleton.StopHost();
             SceneManager.LoadScene(MainMenuScene);
             return;
