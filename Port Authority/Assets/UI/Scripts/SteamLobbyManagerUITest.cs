@@ -369,6 +369,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             ClearLobby();
         }
     }
+
     /*
     void OnServersUpdated()
     {
@@ -574,6 +575,26 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         }
     }
 
+    private async void AttemptJoinULong(ulong lobbyID)
+    {
+        steamLobbyList = SteamMatchmaking.LobbyList;
+
+        steamLobbyList = steamLobbyList.WithKeyValue("id", lobbyID.ToString());
+        var result = await SteamMatchmaking.LobbyList.RequestAsync();
+        
+        int maxMembers = 4;
+        int.TryParse(result[0].GetData("maxMembers"), out maxMembers);
+
+        if (result[0].MemberCount < maxMembers && !IsInLobby(SteamClient.SteamId))
+        {
+            await result[0].Join();
+        }
+        else
+        {
+            StartCoroutine(LobbyFullCoroutine(result[0]));
+        }
+    }
+
     private bool IsInLobby(SteamId id)
     {
         print("-----------------------");
@@ -649,6 +670,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             Lobby.SetData("game", "PORTAUTH");
             Lobby.SetData("HostAddress", SteamClient.SteamId.Value.ToString());
             Lobby.SetData("hasStarted", "false");
+            Lobby.SetData("id", lobbyOutput.Value.Id.ToString());
             SteamLobbyManagerUITest.currentHostID = SteamClient.SteamId;
 
 
@@ -742,7 +764,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         //}
         Debug.Log($"{friend.Name} left the lobby");
         Debug.Log($"new lobby owner is {Lobby.Owner}");
-
+        bool isNewHost = currentHostID != Lobby.Owner.Id; 
         currentHostID = lobby.Owner.Id;
 
 
@@ -763,7 +785,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         if (SteamClient.SteamId == currentHostID)
         {
-            UpdateHost(currentHostID);
+            print("steamID is equal to currentHostID");
             //startButton.gameObject.SetActive(true);
         }
         else
@@ -772,15 +794,36 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         }
 
         StartCoroutine(LobbyMemberDisconnectedCoroutine());
+
+        if(isNewHost)
+        {
+            HostSwitchToNewHost();
+        }
     }
 
-    private void UpdateHost(SteamId newHostID)
+    private void HostSwitchToNewHost()
     {
-        if(newHostID == SteamClient.SteamId)
-        {
-            NetworkManager.singleton.StopHost();
+        Steamworks.Data.Lobby oldLobby = Lobby;
+        LeaveLobby();
+        NetworkManager.singleton.StopHost();
+        Host();
+        oldLobby.SetData("switchedLobby", oldLobby.Id.ToString());
+        
+    }
 
-            Host();
+    public IEnumerator ClientSwitchToNewHost()
+    {
+        yield return new WaitForSeconds(1f);
+        string newLobby = Lobby.GetData("switchedLobby");
+        LeaveLobby();
+
+        if(!string.IsNullOrEmpty(newLobby))
+        {
+            AttemptJoinULong(ulong.Parse(newLobby));
+        }
+        else
+        {
+            Debug.LogError("new lobby id is null on client switch or there was no host swap needed.");
         }
     }
 

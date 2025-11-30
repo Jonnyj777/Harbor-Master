@@ -26,6 +26,16 @@ public class NetworkLobby : NetworkRoomManager
     
     }
 
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+
+        if(!NetworkServer.active)
+        {
+            StartCoroutine(SteamLobbyManagerUITest.instance.ClientSwitchToNewHost());
+        }
+    }
+
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         base.OnServerAddPlayer(conn);
