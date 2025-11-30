@@ -763,15 +763,27 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         if (SteamClient.SteamId == currentHostID)
         {
-            startButton.gameObject.SetActive(true);
+            UpdateHost(currentHostID);
+            //startButton.gameObject.SetActive(true);
         }
         else
         {
-            startButton.gameObject.SetActive(false);
+            //startButton.gameObject.SetActive(false);
         }
 
         StartCoroutine(LobbyMemberDisconnectedCoroutine());
     }
+
+    private void UpdateHost(SteamId newHostID)
+    {
+        if(newHostID == SteamClient.SteamId)
+        {
+            NetworkManager.singleton.StopHost();
+
+            Host();
+        }
+    }
+
     public IEnumerator PopOut(Transform target, float endScale = 0.8f)
     {
         if (target == null)
