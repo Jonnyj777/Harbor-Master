@@ -520,10 +520,13 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             btn.onClick.RemoveAllListeners();
 
             //btn.onClick.AddListener(() => OnLobbyClicked(l.Id, true));
-            btn.onClick.AddListener(() => {
-                AttemptJoin(l);
-                print("listener count: " + btn.onClick.GetPersistentEventCount());
-                });
+            if(btn.onClick.GetPersistentEventCount() == 0 )
+            {
+                btn.onClick.AddListener(() => {
+                    AttemptJoin(l);
+                    print("listener count: " + btn.onClick.GetPersistentEventCount());
+                    });
+            }
 
             lobbyObj.hostText.text = "Host: " + host;
 
