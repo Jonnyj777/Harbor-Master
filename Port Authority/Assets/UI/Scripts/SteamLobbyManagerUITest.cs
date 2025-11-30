@@ -773,6 +773,14 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             bool isHost = (member.Key == ownerId);
             member.Value.playerCardObj.UpdateHost(isHost);
+            if (isHost)
+            {
+                startButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                startButton.gameObject.SetActive(false);
+            }
         }
 
         StartCoroutine(LobbyMemberDisconnectedCoroutine());
