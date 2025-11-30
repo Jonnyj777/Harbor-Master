@@ -236,6 +236,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         createLobbyButton.onClick.RemoveListener(OpenCreatePrompt);
         refreshButton.onClick.RemoveListener(GetLobbyInfo);
         startButton.onClick.RemoveListener(ClearLobbyForStart);
+        startButton.onClick.RemoveListener(NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>().MoveToGameplayScene);
         leaveButton.onClick.RemoveListener(LeaveLobby);
         leaveButton.onClick.RemoveListener(GetLobbyInfo);
         multiplayerButton.onClick.RemoveListener(GetLobbyInfoWithoutFade);
@@ -363,6 +364,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     {
         if (IsAllReady())
         {
+            Lobby.SetData("hasStarted", "true");
             ClearLobby();
         }
     }
@@ -417,6 +419,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         //var LobbyList = SteamMatchmaking.LobbyList;
 
         steamLobbyList = steamLobbyList.WithKeyValue("game", "PORTAUTH");
+        steamLobbyList = steamLobbyList.WithKeyValue("hasStarted", "false");
         var LobbyResult = await steamLobbyList.RequestAsync();
 
         selectedLobbyId = 0;
@@ -645,6 +648,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             Lobby.SetData("maxMembers", maxMembers.ToString());
             Lobby.SetData("game", "PORTAUTH");
             Lobby.SetData("HostAddress", SteamClient.SteamId.Value.ToString());
+            Lobby.SetData("hasStarted", "false");
 
 
             return true;
@@ -982,7 +986,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             startButton.gameObject.SetActive(false);
         }
 
-            inLobby.Add(SteamClient.SteamId, playerInfo);
+        inLobby.Add(SteamClient.SteamId, playerInfo);
         popInCards.Add(playerObj.transform);
 
         // fill waiting slots
@@ -1064,6 +1068,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             Lobby.Leave();
             OnLobbyLeftEvent.Invoke();
+            NetworkManager.singleton.StopClient();
 
             foreach (var friend in inLobby.Values)
             {
