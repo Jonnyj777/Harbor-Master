@@ -94,6 +94,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     private Button refreshButton;
     private Button createLobbyButton;
     private Button leaveButton;
+    private Button multiplayerButton;
     private void Awake()
     {
         // Singleton setup
@@ -170,6 +171,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         refreshButton.onClick.AddListener(GetLobbyInfo);
         startButton.onClick.AddListener(ClearLobbyForStart);
         leaveButton.onClick.AddListener(LeaveLobby);
+        multiplayerButton.onClick.AddListener(GetLobbyInfo);
 
         NetworkLobby networkLobby = NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>();
 
@@ -217,6 +219,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         refreshButton = refs.refreshButton;
         createLobbyButton = refs.createLobbyButton;
         leaveButton = refs.leaveButton;
+        multiplayerButton = refs.multiplayerButton;
 }
 
     public void RemoveCallbacks()
@@ -236,6 +239,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         refreshButton.onClick.RemoveAllListeners();
         startButton.onClick.RemoveAllListeners();
         leaveButton.onClick.RemoveAllListeners();
+        multiplayerButton.onClick.RemoveAllListeners();
 
         NetworkLobby networkLobby = NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>();
 
