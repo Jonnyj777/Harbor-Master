@@ -78,6 +78,12 @@ public class PlayerCard : MonoBehaviour
             readyButtonBackground.color = notReadyColor;
         }
     }
+    
+    public void SetDefaultReadyButton()
+    {
+        readyButtonText.text = "Not Ready";
+        readyButtonBackground.color = notReadyColor;
+    }
 
     public void UpdateColorVisual(string colorName)
     {

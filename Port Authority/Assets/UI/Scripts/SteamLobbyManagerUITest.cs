@@ -92,6 +92,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     private Button refreshButton;
     private Button createLobbyButton;
     private Button leaveButton;
+    private Button multiplayerButton;
     private void Awake()
     {
         // Singleton setup
@@ -166,6 +167,9 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         refreshButton.onClick.AddListener(GetLobbyInfo);
         startButton.onClick.AddListener(ClearLobbyForStart);
         leaveButton.onClick.AddListener(LeaveLobby);
+        leaveButton.onClick.AddListener(GetLobbyInfo);
+        multiplayerButton.onClick.AddListener(GetLobbyInfoWithoutFade);
+
 
         NetworkLobby networkLobby = NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>();
 
@@ -213,6 +217,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         refreshButton = refs.refreshButton;
         createLobbyButton = refs.createLobbyButton;
         leaveButton = refs.leaveButton;
+        multiplayerButton = refs.multiplayerButton;
 }
 
     public void RemoveCallbacks()
@@ -232,6 +237,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         refreshButton.onClick.RemoveListener(GetLobbyInfo);
         startButton.onClick.RemoveListener(ClearLobbyForStart);
         leaveButton.onClick.RemoveListener(LeaveLobby);
+        leaveButton.onClick.RemoveListener(GetLobbyInfo);
+        multiplayerButton.onClick.RemoveListener(GetLobbyInfoWithoutFade);
 
         NetworkLobby networkLobby = NetworkRoomManager.singleton.gameObject.GetComponent<NetworkLobby>();
 
@@ -657,7 +664,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     private async void OnLobbyMemberJoined(Steamworks.Data.Lobby lobby, Friend friend)
     {
-        //if (inLobby.ContainsKey(friend.Id)) return;
+        if (inLobby.ContainsKey(friend.Id)) return;
         Debug.Log($"{friend.Name} joined the lobby");
 
         // clear waiting cards
@@ -930,6 +937,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         playerObj.isReady = false;
 
+        playerObj.readyButton.gameObject.SetActive(true);
+
         readyBtn.onClick.AddListener(() =>
         {
             playerObj.isReady = !playerObj.isReady;
@@ -939,7 +948,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         // keep track of player
         PlayerInfo playerInfo = new PlayerInfo(playerObj);
 
-        playerObj.readyButton.gameObject.SetActive(true);
         //playerObj.UpdateReadyButton(playerInfo.IsReady);
 
         playerInfo.onValueChanged.AddListener((bool ready) =>
@@ -948,6 +956,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         });
 
         joinedLobbyReadyButton.onClick.RemoveAllListeners();
+
         joinedLobbyReadyButton.onClick.AddListener(() =>
         {
             playerInfo.IsReady = !playerInfo.IsReady;
@@ -958,6 +967,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
             OnReadyButtonPressed(playerInfo.IsReady);
         });
+
+        OnReadyButtonPressed(false);
 
         bool isHost = SteamClient.SteamId == ownerId;
         playerObj.UpdateHost(isHost);
