@@ -50,6 +50,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slowdownMultiplier: 0.3
   slownessDuration: 10
+  cleanupCost: 30
+  cleanupButtonPrefab: {fileID: 2421748138931753100, guid: 395a05f1324cebc45a7906ebbd6ecaef, type: 3}
+  mudUICanvas: {fileID: 0}
 --- !u!65 &640216155794275596
 BoxCollider:
   m_ObjectHideFlags: 0
