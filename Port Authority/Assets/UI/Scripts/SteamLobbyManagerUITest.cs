@@ -1091,6 +1091,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             Lobby.Leave();
             OnLobbyLeftEvent.Invoke();
+            NetworkManager.singleton.StopClient();
 
             foreach (var friend in inLobby.Values)
             {
