@@ -47,7 +47,8 @@ public class ReferenceGrab : MonoBehaviour
     public Button createLobbyButton;
     public Button leaveButton;
 
-    public Transform hostDisconnectedBox; 
+    public Transform hostDisconnectedBox;
+    public Transform lobbyBox;
 
     private void Start()
     {

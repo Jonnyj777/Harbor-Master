@@ -98,6 +98,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     private Button multiplayerButton;
 
     private Transform hostDisconnectedBox;
+    private Transform lobbyBox;
     private void Awake()
     {
         // Singleton setup
@@ -226,6 +227,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         multiplayerButton = refs.multiplayerButton;
 
         hostDisconnectedBox = refs.hostDisconnectedBox;
+        lobbyBox = refs.lobbyBox;
     }
 
     public void RemoveCallbacks()
@@ -744,6 +746,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         hostDisconnectedBox.gameObject.SetActive(true);
         LeaveLobby();
         GetLobbyInfo();
+        lobbyBox.gameObject.SetActive(false);
         //leaveButton.onClick.Invoke();
         //multiplayerButton.onClick.Invoke();
     }

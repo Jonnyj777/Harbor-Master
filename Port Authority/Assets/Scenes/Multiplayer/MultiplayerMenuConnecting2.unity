@@ -15087,6 +15087,7 @@ MonoBehaviour:
   createLobbyButton: {fileID: 965324572}
   leaveButton: {fileID: 1882370837}
   hostDisconnectedBox: {fileID: 1766808541}
+  lobbyBox: {fileID: 1654460624}
 --- !u!4 &1629769497
 Transform:
   m_ObjectHideFlags: 0
