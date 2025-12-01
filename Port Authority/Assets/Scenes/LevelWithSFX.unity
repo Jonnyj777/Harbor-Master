@@ -7487,8 +7487,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 961739752}
-  moveSpeed: 50
-  zoomSpeed: 10
+  moveSpeed: 250
+  zoomSpeed: 20
   minHeight: 5
   maxHeight: 50
   minZoom: 100
@@ -7497,7 +7497,8 @@ MonoBehaviour:
   maxX: 1300
   minZ: -500
   maxZ: 1300
-  shiftMultiplier: 5
+  panPlaneHeight: 0
+  shiftMultiplier: 3
 --- !u!4 &999221280 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6616507279481532165, guid: 3946498d0f7d30a40a4d241dbb4f02dc, type: 3}
