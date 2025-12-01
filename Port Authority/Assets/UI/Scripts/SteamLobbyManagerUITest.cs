@@ -758,8 +758,16 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         print(Lobby.Owner.Id + " : " + lobby.GetData("hostID"));
         if(Lobby.Owner.Id.ToString() != lobby.GetData("hostID"))
         {
-            HostDisconnected();
+            if(HostLeaveNotification.instance != null)
+            {
+                HostLeaveNotification.instance.HostLeft();
+            }
+            else
+            {
+                HostDisconnected();
+            }
         }
+
         Debug.Log($"{friend.Name} left the lobby");
         //Debug.Log($"new lobby owner is {Lobby.Owner}");
 
