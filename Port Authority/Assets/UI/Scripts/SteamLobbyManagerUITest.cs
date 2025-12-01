@@ -744,9 +744,10 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     {
         print("host disconnected");
         hostDisconnectedBox.gameObject.SetActive(true);
-        LeaveLobby();
-        GetLobbyInfo();
-        lobbyBox.gameObject.SetActive(false);
+        leaveButton.onClick.Invoke();
+        //LeaveLobby();
+        //GetLobbyInfo();
+        //lobbyBox.gameObject.SetActive(false);
         //leaveButton.onClick.Invoke();
         //multiplayerButton.onClick.Invoke();
     }
