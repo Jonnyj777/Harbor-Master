@@ -19,7 +19,8 @@ public class ObstacleSpawner : MonoBehaviour
     public int maxMudPuddles = 8;
 
     public float whirlpoolSpawnInterval = 3f;
-    public float landObstacleSpawnInterval = 20f;
+    public float treeObstacleSpawnInterval = 20f;
+    public float mudObstacleSpawnInterval = 10f;
 
     [Header("Obstacle Parents")]
     public Transform whirlpoolParent;
@@ -55,7 +56,7 @@ public class ObstacleSpawner : MonoBehaviour
         }
 
         streetManagers.AddRange(managers);
-        Debug.Log("Found " + streetManagers.Count + " street managers.");
+        //Debug.Log("Found " + streetManagers.Count + " street managers.");
 
         bool ready = false;
         while (!ready)
@@ -74,11 +75,22 @@ public class ObstacleSpawner : MonoBehaviour
                 yield return new WaitForSeconds(0.25f);
         }
 
-        Debug.Log("All islands ready");
+        //Debug.Log("All islands ready");
 
         waterLevel = terrain.GetWaterLevel();
+
+        // delayed spawn schedule
+        // wait 10 seconds then start whirlpools
+        yield return new WaitForSeconds(10f);
         StartCoroutine(WhirlpoolRoutine());
-        StartCoroutine(LandObstaclesRoutine());
+
+        // wait 15 seconds then start trees
+        yield return new WaitForSeconds(15f);
+        StartCoroutine(TreeRoutine());
+
+        // wait 10 seconds to then start mud puddle spawns
+        yield return new WaitForSeconds(10f);
+        StartCoroutine(MudRoutine());
     }
 
     // WHIRLPOOL SPAWNING
@@ -166,52 +178,77 @@ public class ObstacleSpawner : MonoBehaviour
     }
 
     // LAND OBSTACLE SPAWNING
-    IEnumerator LandObstaclesRoutine()
+    IEnumerator TreeRoutine()
     {
-        while (streetManagers == null || streetManagers.Count == 0)
-        {
-            yield return null;
-        }
-
-        bool anyReady = false;
-        while (!anyReady)
-        {
-            foreach (var mgr in streetManagers)
-            {
-                if (mgr != null && mgr.GetActivatedChildren().Count > 0)
-                {
-                    anyReady = true;
-                    break;
-                }
-            }
-
-            if (!anyReady)
-            {
-                Debug.Log("Waiting for streets to finish activating...");
-                yield return new WaitForSeconds(0.25f);
-            }
-        }
-
-        Debug.Log("Streets activated. Starting land obstacle spawning.");
-        
-        while(true)
+        while (true)
         {
             trees.RemoveAll(x => x == null);
-            mudPuddles.RemoveAll(x => x == null);
 
             if (trees.Count < maxTrees)
-            {
                 SpawnTree();
-            }
 
-            if (mudPuddles.Count < maxMudPuddles)
-            {
-                SpawnMud();
-            }
-
-            yield return new WaitForSeconds(landObstacleSpawnInterval);
+            yield return new WaitForSeconds(treeObstacleSpawnInterval);
         }
     }
+
+    IEnumerator MudRoutine()
+    {
+        while (true)
+        {
+            mudPuddles.RemoveAll(x => x == null);
+
+            if (mudPuddles.Count < maxMudPuddles)
+                SpawnMud();
+
+            yield return new WaitForSeconds(mudObstacleSpawnInterval);
+        }
+    }
+    //IEnumerator LandObstaclesRoutine()
+    //{
+    //    while (streetManagers == null || streetManagers.Count == 0)
+    //    {
+    //        yield return null;
+    //    }
+
+    //    bool anyReady = false;
+    //    while (!anyReady)
+    //    {
+    //        foreach (var mgr in streetManagers)
+    //        {
+    //            if (mgr != null && mgr.GetActivatedChildren().Count > 0)
+    //            {
+    //                anyReady = true;
+    //                break;
+    //            }
+    //        }
+
+    //        if (!anyReady)
+    //        {
+    //            Debug.Log("Waiting for streets to finish activating...");
+    //            yield return new WaitForSeconds(0.25f);
+    //        }
+    //    }
+
+    //    Debug.Log("Streets activated. Starting land obstacle spawning.");
+        
+    //    while(true)
+    //    {
+    //        trees.RemoveAll(x => x == null);
+    //        mudPuddles.RemoveAll(x => x == null);
+
+    //        if (trees.Count < maxTrees)
+    //        {
+    //            SpawnTree();
+    //        }
+
+    //        if (mudPuddles.Count < maxMudPuddles)
+    //        {
+    //            SpawnMud();
+    //        }
+
+    //        yield return new WaitForSeconds(landObstacleSpawnInterval);
+    //    }
+    //}
 
     private void SpawnTree()
     {
