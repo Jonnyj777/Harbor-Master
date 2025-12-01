@@ -26,6 +26,7 @@ public class Truck : MonoBehaviour
     private GameObject repairButtonInstance;
 
     private bool mudEffected = false;
+    private bool mudInterrupted = false;
     private float originalTruckSpeed;
 
     public float bounceBackTime = 1.25f;
@@ -340,6 +341,14 @@ public class Truck : MonoBehaviour
         vehicleRenderer.material = originalMaterial;
 
         vehicle.SetIsCrashed(false);
+
+        // reset speed in case mud effected was interrupted by crash
+        if (mudInterrupted)
+        {
+            Debug.Log("Crashed while affected by mud. Returning to normal speed");
+            vehicle.TruckSpeed = originalTruckSpeed;
+            mudEffected = false;
+        }
     }
 
     public void ApplyMudEffect(float slowdownMultiplier, float duration)
@@ -369,6 +378,10 @@ public class Truck : MonoBehaviour
         {
             vehicle.TruckSpeed = originalTruckSpeed;
             Debug.Log($"{name} recovered from mud and is back to normal speed.");
+        }
+        else
+        {
+            mudInterrupted = true;
         }
 
         mudEffected = false;

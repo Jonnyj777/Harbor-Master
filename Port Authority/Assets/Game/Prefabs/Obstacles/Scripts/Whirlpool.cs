@@ -38,7 +38,7 @@ public class Whirlpool : MonoBehaviour
             {
                 activeBoats.Add(boat);
             }
-            Debug.Log($"Boat entered whirlpool. Active boats: {activeBoats.Count}");
+            //Debug.Log($"Boat entered whirlpool. Active boats: {activeBoats.Count}");
             boat.EnterWhirlpool(transform, suckDuration, finishedBoat =>
             {
                 OnBoatFinished(finishedBoat);
@@ -53,7 +53,7 @@ public class Whirlpool : MonoBehaviour
             activeBoats.Remove(boat);
         }
 
-        Debug.Log($"Boat finished whirlpool. Active boats: {activeBoats.Count}");
+        //Debug.Log($"Boat finished whirlpool. Active boats: {activeBoats.Count}");
         TryDestroyWhirlpool();
     }
 
@@ -71,7 +71,7 @@ public class Whirlpool : MonoBehaviour
 
     private void TryDestroyWhirlpool()
     {
-        Debug.Log($"Trying to destroy whirlpool. Active boats: {activeBoats.Count}, isDestroying: {readyToDestroy}");
+        //Debug.Log($"Trying to destroy whirlpool. Active boats: {activeBoats.Count}, isDestroying: {readyToDestroy}");
 
         if (readyToDestroy && activeBoats.Count == 0)
         {

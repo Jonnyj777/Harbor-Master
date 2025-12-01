@@ -11,7 +11,7 @@ public class StreetGenerationManager : MonoBehaviour
     [SerializeField] private int randomSeed = 0;
 
     private readonly List<GameObject> activatedChildren = new List<GameObject>();
-
+   
     private void Start()
     {
         if (generateOnStart)
@@ -83,5 +83,10 @@ public class StreetGenerationManager : MonoBehaviour
         }
 
         return Mathf.Clamp(fallbackIndex, 0, childCount - 1);
+    }
+
+    public List<GameObject> GetActivatedChildren()
+    {
+        return activatedChildren;
     }
 }

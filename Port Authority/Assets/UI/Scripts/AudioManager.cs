@@ -1,4 +1,5 @@
 using UnityEditor.Rendering;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -22,6 +23,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip boatCollision;
     public AudioClip truckDelivery;
     public AudioClip truckCollision;
+    public AudioClip landObstacleSpawn;
+    public AudioClip landObstacleCleanup;
 
     [Header("Ambient Sound")]
     public AudioClip ambientWaves;
@@ -43,6 +46,10 @@ public class AudioManager : MonoBehaviour
     public Slider masterSlider;
     public Slider sfxSlider;
     public Slider musicSlider;
+
+    public TMP_Text masterPercentage;
+    public TMP_Text sfxPercentage;
+    public TMP_Text musicPercentage;
 
     public Toggle sfxToggle;
     public Toggle musicToggle;
@@ -135,24 +142,45 @@ public class AudioManager : MonoBehaviour
         if (masterSlider != null)
         {
             masterSlider.onValueChanged.RemoveAllListeners();
-            float prevValue = masterSlider.value;
+            //float prevValue = masterSlider.value;
             masterSlider.SetValueWithoutNotify(masterVolume);
-            masterSlider.onValueChanged.AddListener(SetMasterVolume);
+            masterSlider.onValueChanged.AddListener(val =>
+            {
+                SetMasterVolume(val);
+                UpdatePercentage(masterPercentage, val);
+            });
+            UpdatePercentage(masterPercentage, masterVolume);
         }
 
         if (sfxSlider != null)
         {
             sfxSlider.onValueChanged.RemoveAllListeners();
             sfxSlider.SetValueWithoutNotify(sfxVolume);
-            sfxSlider.onValueChanged.AddListener(SetSfxVolume);
+            sfxSlider.onValueChanged.AddListener(val =>
+            {
+                SetSfxVolume(val);
+                UpdatePercentage(sfxPercentage, val);
+            });
+            UpdatePercentage(sfxPercentage, sfxVolume);
         }
 
         if (musicSlider != null)
         {
             musicSlider.onValueChanged.RemoveAllListeners();
             musicSlider.SetValueWithoutNotify(musicVolume);
-            musicSlider.onValueChanged.AddListener(SetMusicVolume);
+            musicSlider.onValueChanged.AddListener(val =>
+            {
+                SetMusicVolume(val);
+                UpdatePercentage(musicPercentage, val);
+            });
+            UpdatePercentage(musicPercentage, musicVolume);
         }
+    }
+
+    private void UpdatePercentage(TMP_Text text, float value)
+    {
+        if (text != null)
+            text.text = Mathf.RoundToInt(value * 100f) + "%";
     }
 
     public void PlayAmbientWaves()
@@ -163,7 +191,7 @@ public class AudioManager : MonoBehaviour
         }
 
         ambientSource.clip = ambientWaves;
-        ambientSource.volume = masterVolume * musicVolume;
+        ambientSource.volume = masterVolume * sfxVolume;
         ambientSource.Play();
     }
 
@@ -184,12 +212,12 @@ public class AudioManager : MonoBehaviour
 
         if (musicSource != null)
         {
-            musicSource.volume = 0.15f;
+            musicSource.volume = masterVolume * (musicVolume * 0.15f);
         }
 
         if (ambientSource != null)
         {
-            ambientSource.volume = masterVolume * musicVolume;
+            ambientSource.volume = masterVolume * sfxVolume;
         }
     }
 
@@ -323,6 +351,18 @@ public class AudioManager : MonoBehaviour
         {
             sfxSource.PlayOneShot(truckCollision);
         }
+    }
+
+    public void PlayLandObstacleSpawn()
+    {
+        if (!sfxEnabled || landObstacleSpawn == null) return;
+        sfxSource.PlayOneShot(landObstacleSpawn, sfxSource.volume);
+    }
+
+    public void PlayLandObstacleCleanup()
+    {
+        if (!sfxEnabled || landObstacleCleanup == null) return;
+        sfxSource.PlayOneShot(landObstacleCleanup, sfxSource.volume);
     }
 
     public void ToggleSFX(bool enabled)

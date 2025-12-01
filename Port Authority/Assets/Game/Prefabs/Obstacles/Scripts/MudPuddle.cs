@@ -7,13 +7,43 @@ public class MudPuddle : MonoBehaviour
     public float slowdownMultiplier = 0.3f;  // how much speed reduces
     public float slownessDuration = 10f;  // how long the slowdown lasts
 
+    [Header("Cleanup Settings")]
+    public int cleanupCost = 30;
+    public GameObject cleanupButtonPrefab;
+    public Canvas mudUICanvas;
+    private GameObject cleanupButtonInstance;
+    private bool isBlocking = false;
+
     private void OnTriggerEnter(Collider other)
     {
         Truck truck = other.GetComponent<Truck>();
         if (truck != null)
         {
             truck.ApplyMudEffect(slowdownMultiplier, slownessDuration);
+        
+            if (!isBlocking)
+            {
+                isBlocking = true;
+                ShowCleanupButton();
+            }
         }
+    }
+
+    public void ShowCleanupButton()
+    {
+        if (cleanupButtonPrefab == null || mudUICanvas == null)
+        {
+            return;
+        }
+
+        cleanupButtonInstance = Instantiate(cleanupButtonPrefab, mudUICanvas.transform);
+
+        Vector3 offset = new Vector3(0, 25f, 0);
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position + offset);
+        cleanupButtonInstance.transform.position = screenPos;
+
+        MudCleanupButton button = cleanupButtonInstance.GetComponent<MudCleanupButton>();
+        button.Initialize(this, cleanupCost);
     }
 
     //private IEnumerator MudEffect(VehicleMovement vehicle)
@@ -45,13 +75,10 @@ public class MudPuddle : MonoBehaviour
     //    vehicle.mudEffected = false;
     //}
 
-    public void OnChildClicked()
+    public IEnumerator CleanMud()
     {
-        StartCoroutine(CleanMud());
-    }
+        AudioManager.Instance.PlayLandObstacleCleanup();
 
-    private IEnumerator CleanMud()
-    {
         float fadeDuration = 0.5f;
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
         float elapsed = 0f;

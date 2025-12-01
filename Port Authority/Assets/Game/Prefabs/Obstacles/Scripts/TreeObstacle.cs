@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
 using TMPro;
+using UnityEditor.Build.Content;
 using UnityEngine;
 
 public class TreeObstacle : MonoBehaviour
@@ -10,6 +11,14 @@ public class TreeObstacle : MonoBehaviour
     public float fallSpeed = 2f;  // speed which tree stands back up
     public Transform road;
 
+    [Header("Cleanup Settings")]
+    public int cleanupCost = 50;  // costs $50 to remove tree from road
+    private bool isBlocking = false;  // true when fallen
+
+    public GameObject cleanupButtonPrefab;
+    public Canvas treesUICanvas;
+    private GameObject cleanupButtonInstance;
+
     private Quaternion uprightRotation;
     private Quaternion fallenRotation;
     private bool fallen = false;
@@ -18,6 +27,7 @@ public class TreeObstacle : MonoBehaviour
 
     private void Start()
     {
+
         rb = GetComponent<Rigidbody>();
         if (rb == null)
         {
@@ -77,9 +87,11 @@ public class TreeObstacle : MonoBehaviour
 
     private IEnumerator TriggerFall()
     {
+        Debug.Log("Tree is falling");
 
         falling = true;
 
+        AudioManager.Instance.PlayLandObstacleSpawn();
         rb.isKinematic = true;
 
         float elapsed = 0f;
@@ -96,7 +108,20 @@ public class TreeObstacle : MonoBehaviour
 
         falling = false;
         fallen = true;
+        isBlocking = true;
 
+        // show cleanup button
+        if (cleanupButtonPrefab != null && treesUICanvas != null)
+        {
+            cleanupButtonInstance = Instantiate(cleanupButtonPrefab, treesUICanvas.transform);
+
+            // position above tree
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
+            cleanupButtonInstance.transform.position = screenPos;
+
+            TreeCleanupButton buttonScript = cleanupButtonInstance.GetComponent<TreeCleanupButton>();
+            buttonScript.Initialize(this, cleanupCost);
+        }
         rb.isKinematic = true;
         rb.detectCollisions = true;
 
@@ -106,38 +131,9 @@ public class TreeObstacle : MonoBehaviour
         Debug.Log($"{gameObject.name} has fallen and is blocking the road.");
     }
 
-    private void OnMouseDown()
+    public void SetBlocking(bool state)
     {
-        if (fallen)
-        {
-            StartCoroutine(ResetTree());
-        }
-    }
-
-    private IEnumerator ResetTree()
-    {
-        rb.isKinematic = true;
-        rb.angularVelocity = Vector3.zero;
-        rb.linearVelocity = Vector3.zero;
-
-        Quaternion startRot = transform.rotation;
-        float elapsed = 0f;
-
-        while (elapsed < 1f)
-        {
-            elapsed += Time.deltaTime;
-            transform.rotation = Quaternion.Slerp(startRot, uprightRotation, elapsed);
-            yield return null;
-        }
-
-        transform.rotation = uprightRotation;
-        fallen = false;
-
-        // freeze rigidbody again
-        rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
-        
-        // TEST DEBUG
-        Debug.Log($"{gameObject.name} has been reset upright and is ready to fall again.");
+        isBlocking = state;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -147,7 +143,7 @@ public class TreeObstacle : MonoBehaviour
         Truck truck = other.GetComponent<Truck>();
         if (truck != null)
         {
-            truck.EnterCrashState(true);
+            truck.EnterCrashState(false);
             return;
         }
     }
