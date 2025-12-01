@@ -1,4 +1,5 @@
 using Edgegap;
+using IO.Swagger.Model;
 using Mirror;
 using Steamworks;
 using Steamworks.Data;
@@ -741,7 +742,9 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     {
         print("host disconnected");
         hostDisconnectedBox.gameObject.SetActive(true);
-        leaveButton.onClick.Invoke();
+        LeaveLobby();
+        GetLobbyInfo();
+        //leaveButton.onClick.Invoke();
         //multiplayerButton.onClick.Invoke();
     }
 
@@ -753,7 +756,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             HostDisconnected();
         }
         Debug.Log($"{friend.Name} left the lobby");
-        Debug.Log($"new lobby owner is {Lobby.Owner}");
+        //Debug.Log($"new lobby owner is {Lobby.Owner}");
 
         currentHostID = lobby.Owner.Id;
 
@@ -763,15 +766,15 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             StartCoroutine(PopOut(inLobby[friend.Id].playerCardObj.gameObject.transform));
             inLobby.Remove(friend.Id);
         }
-
+        /*
         var ownerId = lobby.Owner.Id;
         foreach (var member in inLobby)
         {
             bool isHost = (member.Key == ownerId);
             member.Value.playerCardObj.UpdateHost(isHost);
         }
-
         joinedHostNameText.text = "Host: " + lobby.Owner.Name;
+        */
 
         if (SteamClient.SteamId == currentHostID)
         {
@@ -1087,6 +1090,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             Lobby.Leave();
             OnLobbyLeftEvent.Invoke();
             NetworkManager.singleton.StopClient();
+            Lobby = default;
 
             foreach (var friend in inLobby.Values)
             {
@@ -1095,9 +1099,9 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
             inLobby.Clear();
         }
-        catch
+        catch(Exception err)
         {
-
+            Debug.LogError("Error with leaving lobby: " + err);
         }
     }
 
