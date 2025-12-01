@@ -67,4 +67,10 @@ public class NetworkLobby : NetworkRoomManager
         }
     }
 
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        networkAddress = "localhost";
+    }
+
 }
