@@ -95,6 +95,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
     private Button createLobbyButton;
     private Button leaveButton;
     private Button multiplayerButton;
+
+    private Transform hostDisconnectedBox;
     private void Awake()
     {
         // Singleton setup
@@ -221,6 +223,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         createLobbyButton = refs.createLobbyButton;
         leaveButton = refs.leaveButton;
         multiplayerButton = refs.multiplayerButton;
+
+        hostDisconnectedBox = refs.hostDisconnectedBox;
     }
 
     public void RemoveCallbacks()
@@ -733,13 +737,21 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         StartCoroutine(SequentialPopIn(popInCards));
     }
 
+    void HostDisconnected()
+    {
+        print("host disconnected");
+        hostDisconnectedBox.gameObject.SetActive(true);
+        leaveButton.onClick.Invoke();
+        //multiplayerButton.onClick.Invoke();
+    }
+
     void OnLobbyMemberDisconnected(Steamworks.Data.Lobby lobby, Friend friend)
     {
         print(Lobby.Owner.Id + " : " + SteamLobbyManagerUITest.currentHostID);
-        //if(Lobby.Owner.Id != SteamLobbyManagerUITest.currentHostID)
-        //{
-        //    HostLeaveNotification.instance.HostLeft();
-        //}
+        if(Lobby.Owner.Id != SteamLobbyManagerUITest.currentHostID)
+        {
+            HostDisconnected();
+        }
         Debug.Log($"{friend.Name} left the lobby");
         Debug.Log($"new lobby owner is {Lobby.Owner}");
 
