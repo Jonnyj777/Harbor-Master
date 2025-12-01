@@ -19,8 +19,6 @@ public class HostLeaveNotification : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    [Server]
     public void HostLeft()
     {
         ShowHostLeftNotification();
