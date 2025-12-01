@@ -41,7 +41,7 @@ public class SceneManagerN : MonoBehaviour
         
         if(NetworkClient.isConnected)
         {
-            NetworkManager.singleton.StopClient();
+            //NetworkManager.singleton.StopClient();
             SceneManager.LoadScene(MainMenuScene);
             return;
         }
