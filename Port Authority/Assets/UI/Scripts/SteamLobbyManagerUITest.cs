@@ -656,7 +656,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             Lobby.SetData("game", "PORTAUTH");
             Lobby.SetData("HostAddress", SteamClient.SteamId.Value.ToString());
             Lobby.SetData("hasStarted", "false");
-            SteamLobbyManagerUITest.currentHostID = SteamClient.SteamId;
+            Lobby.SetData("hostID", SteamClient.SteamId.ToString());
+            //SteamLobbyManagerUITest.currentHostID = SteamClient.SteamId;
 
 
             return true;
@@ -754,8 +755,8 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     void OnLobbyMemberDisconnected(Steamworks.Data.Lobby lobby, Friend friend)
     {
-        print(Lobby.Owner.Id + " : " + SteamLobbyManagerUITest.currentHostID);
-        if(Lobby.Owner.Id != SteamLobbyManagerUITest.currentHostID)
+        print(Lobby.Owner.Id + " : " + lobby.GetData("hostID"));
+        if(Lobby.Owner.Id.ToString() != lobby.GetData("hostID"))
         {
             HostDisconnected();
         }
