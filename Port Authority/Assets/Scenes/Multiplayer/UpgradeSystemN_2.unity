@@ -9163,9 +9163,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6cb0c73d0fb2c74eb7c6026c597b46d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   hostLeaveBox: {fileID: 262663175}
 --- !u!1 &1479123381
 GameObject:
@@ -9275,8 +9272,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1494380411}
-  moveSpeed: 50
-  zoomSpeed: 10
+  moveSpeed: 250
+  zoomSpeed: 100
   minHeight: 5
   maxHeight: 50
   minZoom: 100
@@ -9285,7 +9282,8 @@ MonoBehaviour:
   maxX: 1300
   minZ: -500
   maxZ: 1300
-  shiftMultiplier: 5
+  panPlaneHeight: 0
+  shiftMultiplier: 3
 --- !u!114 &1494380409
 MonoBehaviour:
   m_ObjectHideFlags: 0

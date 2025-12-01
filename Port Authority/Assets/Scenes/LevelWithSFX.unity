@@ -7488,7 +7488,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 961739752}
   moveSpeed: 250
-  zoomSpeed: 20
+  zoomSpeed: 100
   minHeight: 5
   maxHeight: 50
   minZoom: 100
