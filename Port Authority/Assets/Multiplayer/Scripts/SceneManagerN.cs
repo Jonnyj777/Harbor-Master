@@ -30,7 +30,7 @@ public class SceneManagerN : MonoBehaviour
     {
         isGameStarted = false;
         //SteamLobbyManagerUITest.instance.RemoveCallbacks();
-        SteamLobbyManagerUITest.Lobby.Leave();
+        SteamLobbyManagerUITest.instance.LeaveLobby();
 
         if (NetworkClient.activeHost)
         {
