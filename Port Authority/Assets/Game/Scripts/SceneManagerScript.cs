@@ -83,7 +83,6 @@ public class SceneManagerScript : MonoBehaviour
         yield return currentFade;
         if (OnlineStatusManager.isOnline)
         {
-            HostLeaveNotification.instance.CheckHostLeft();
             SceneManager.LoadScene(8);
         }
         else
