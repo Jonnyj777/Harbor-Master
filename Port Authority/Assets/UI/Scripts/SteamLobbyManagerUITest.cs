@@ -13,6 +13,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -1107,7 +1108,24 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             Lobby.Leave();
             OnLobbyLeftEvent.Invoke();
-            NetworkManager.singleton.StopClient();
+
+            if (NetworkServer.active)
+            {
+                Debug.LogError("active host is disconnecting to main menu");
+                //NetworkServer.DisconnectAll();
+                NetworkManager.singleton.StopHost();
+                //SceneManager.LoadScene(MainMenuScene);
+                //return;
+            }
+
+            if (NetworkClient.isConnected)
+            {
+                Debug.LogError("client is disconnecting to main menu");
+                //NetworkManager.singleton.StopClient();
+                //SceneManager.LoadScene(MainMenuScene);
+                //return;
+            }
+            //NetworkManager.singleton.StopClient();
 
             /*
             NetworkManager.singleton.StopServer();
