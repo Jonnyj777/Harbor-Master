@@ -32,10 +32,10 @@ public class SceneManagerN : MonoBehaviour
         //SteamLobbyManagerUITest.instance.RemoveCallbacks();
         SteamLobbyManagerUITest.instance.LeaveLobby();
 
-        if (NetworkClient.activeHost)
+        if (NetworkServer.active)
         {
             Debug.LogError("active host is disconnecting to main menu");
-            NetworkServer.DisconnectAll();
+            //NetworkServer.DisconnectAll();
             NetworkManager.singleton.StopHost();
             SceneManager.LoadScene(MainMenuScene);
             return;
