@@ -117,6 +117,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     public void InitializeMenu(ReferenceGrab refGrab)
     {
+        print("initializing menu");
         GetReferences(refGrab);
         RemoveCallbacks();
         selectedLobbyId = 0;

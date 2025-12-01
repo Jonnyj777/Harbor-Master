@@ -779,7 +779,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
       propertyPath: autoCreatePlayer
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
       propertyPath: spawnPrefabs.Array.size
