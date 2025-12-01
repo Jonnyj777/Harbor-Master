@@ -39,12 +39,14 @@ public class TreeObstacle : MonoBehaviour
 
         uprightRotation = transform.rotation;
 
-        if (road == null)
-        {
-            Debug.Log("Could not detect road. Falling normally.");
-            fallenRotation = Quaternion.Euler(fallAngle, transform.eulerAngles.y, transform.eulerAngles.z);
-            return;
-        }
+        fallenRotation = Quaternion.Euler(fallAngle, transform.eulerAngles.y, transform.eulerAngles.z);
+
+        //if (road == null)
+        //{
+        //Debug.Log("Could not detect road. Falling normally.");
+        //fallenRotation = Quaternion.Euler(fallAngle, transform.eulerAngles.y, transform.eulerAngles.z);
+        //return;
+        //}
         //if (road != null)
         //{
         //Vector3 toRoad = (road.position - transform.position).normalized;
@@ -60,44 +62,60 @@ public class TreeObstacle : MonoBehaviour
         //fallenRotation = Quaternion.Euler(fallAngle, transform.eulerAngles.y, transform.eulerAngles.z);
         //}
 
-        Collider roadCollider = road.GetComponent<Collider>();
-        if (roadCollider != null)
-        {
-            // get nearest point on the road to the tree
-            Vector3 closestPoint = roadCollider.ClosestPoint(transform.position);
-            Vector3 fallDirection = (closestPoint - transform.position).normalized;
-            fallDirection.y = 0f;
+        //Collider roadCollider = road.GetComponent<Collider>();
+        //if (roadCollider != null)
+        //{
+        //    // get nearest point on the road to the tree
+        //    Vector3 closestPoint = roadCollider.ClosestPoint(transform.position);
+        //    Vector3 fallDirection = (closestPoint - transform.position).normalized;
+        //    fallDirection.y = 0f;
 
-            fallenRotation = Quaternion.LookRotation(fallDirection) * Quaternion.Euler(fallAngle, 0f, 0f);
-        }
-        else
-        {
-            fallenRotation = Quaternion.Euler(fallAngle, transform.eulerAngles.y, transform.eulerAngles.z);
-        }
+        //    fallenRotation = Quaternion.LookRotation(fallDirection) * Quaternion.Euler(fallAngle, 0f, 0f);
+        //}
+        //else
+        //{
+        //    fallenRotation = Quaternion.Euler(fallAngle, transform.eulerAngles.y, transform.eulerAngles.z);
+        //}
+
+        // start coroutine that waits before falling
+        StartCoroutine(StandThenFall());
     }
 
+    private IEnumerator StandThenFall()
+    {
+        // play spawn sound
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayTreeSpawn();
+
+        // stand upright for 5 seconds
+        yield return new WaitForSeconds(5f);
+
+        // start fall
+        yield return TriggerFall();
+    }
     private void Update()
     {
-        // TEST KEY TO MAKE TREE FALL USING F
-        if (Input.GetKeyDown(KeyCode.F) && !fallen && !falling)
+        if (cleanupButtonInstance != null)
         {
-            StartCoroutine(TriggerFall());
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
+            cleanupButtonInstance.transform.position = screenPos;
         }
     }
 
     private IEnumerator TriggerFall()
     {
-        Debug.Log("Tree is falling");
+        //Debug.Log("Tree is falling");
 
         falling = true;
 
-        AudioManager.Instance.PlayLandObstacleSpawn();
+        //AudioManager.Instance.PlayLandObstacleSpawn();
         rb.isKinematic = true;
 
         float elapsed = 0f;
+        float duration = 1f;
         Quaternion startRot = transform.rotation;
 
-        while (elapsed < 1f)
+        while (elapsed < duration)
         {
             elapsed += Time.deltaTime * fallSpeed;
             transform.rotation = Quaternion.Slerp(startRot, fallenRotation, elapsed);
@@ -122,13 +140,14 @@ public class TreeObstacle : MonoBehaviour
             TreeCleanupButton buttonScript = cleanupButtonInstance.GetComponent<TreeCleanupButton>();
             buttonScript.Initialize(this, cleanupCost);
         }
+
         rb.isKinematic = true;
         rb.detectCollisions = true;
 
         rb.constraints = RigidbodyConstraints.FreezeAll;
 
         // TEST
-        Debug.Log($"{gameObject.name} has fallen and is blocking the road.");
+        //Debug.Log($"{gameObject.name} has fallen and is blocking the road.");
     }
 
     public void SetBlocking(bool state)

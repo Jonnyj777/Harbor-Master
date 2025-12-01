@@ -14,6 +14,14 @@ public class MudPuddle : MonoBehaviour
     private GameObject cleanupButtonInstance;
     private bool isBlocking = false;
 
+    private void Update()
+    {
+        {
+            Vector3 offset = new Vector3(0, 25f, 0);
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position + offset);
+            cleanupButtonInstance.transform.position = screenPos;
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
         Truck truck = other.GetComponent<Truck>();
@@ -31,6 +39,12 @@ public class MudPuddle : MonoBehaviour
 
     public void ShowCleanupButton()
     {
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayMudSpawn();
+        }
+
         if (cleanupButtonPrefab == null || mudUICanvas == null)
         {
             return;

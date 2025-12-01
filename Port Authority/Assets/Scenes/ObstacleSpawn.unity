@@ -7089,7 +7089,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrain: {fileID: 274804573}
-  streetManager: {fileID: 0}
+  streetManagers: []
   whirlpoolPrefab: {fileID: 5399419671867262910, guid: 8b6e6269a6cab8a41b5e098650e61bda, type: 3}
   treePrefab: {fileID: 6577857602279842889, guid: 6ecd8b4bc211e454ea918d6d527c28f7, type: 3}
   mudPrefab: {fileID: 3042198004925896561, guid: 6b96559bad54d184f86e7fa40e0d4e97, type: 3}
@@ -7098,6 +7098,13 @@ MonoBehaviour:
   maxMudPuddles: 8
   whirlpoolSpawnInterval: 7
   landObstacleSpawnInterval: 20
+  whirlpoolParent: {fileID: 1020138683}
+  treesParent: {fileID: 2019362484}
+  mudParent: {fileID: 749691414}
+  treeCleanupButtonPrefab: {fileID: 2421748138931753100, guid: 10c4b39bc33f34a4a8b48aa5a030d3e4, type: 3}
+  mudCleanupButtonPrefab: {fileID: 2421748138931753100, guid: 395a05f1324cebc45a7906ebbd6ecaef, type: 3}
+  treesUICanvas: {fileID: 104710152}
+  mudUICanvas: {fileID: 1812269644}
 --- !u!1 &922364808
 GameObject:
   m_ObjectHideFlags: 0
@@ -8318,6 +8325,8 @@ MonoBehaviour:
   whiskeyCard: {fileID: 1645803587}
   furnitureCard: {fileID: 822523489}
   industrialEquipmentCard: {fileID: 1000928997}
+  audioSource: {fileID: 0}
+  purchaseSFX: {fileID: 0}
 --- !u!1 &1363419199
 GameObject:
   m_ObjectHideFlags: 0
@@ -8429,7 +8438,9 @@ MonoBehaviour:
   boatCollision: {fileID: 8300000, guid: 9184d33469b23ba41bc2699f815b158f, type: 3}
   truckDelivery: {fileID: 8300000, guid: a57980bbabefa4546b09fa6fd0be4092, type: 3}
   truckCollision: {fileID: 8300000, guid: 10787058314562243aae3f538c3b2efe, type: 3}
-  landObstacleSpawn: {fileID: 8300000, guid: df729d213c4be44a9b55cd109f5cd4f9, type: 3}
+  whirlpoolSpawn: {fileID: 8300000, guid: dfa47fe971ffd5d4aa3344257c8bf3e1, type: 3}
+  treeSpawn: {fileID: 8300000, guid: df729d213c4be44a9b55cd109f5cd4f9, type: 3}
+  mudSpawn: {fileID: 8300000, guid: 3f3650405c7c04445aa0cdee3469026d, type: 3}
   landObstacleCleanup: {fileID: 8300000, guid: 79180f511d89441b9aa23ccae1992fe0, type: 3}
   ambientWaves: {fileID: 0}
   sfxEnabled: 1
@@ -8440,6 +8451,9 @@ MonoBehaviour:
   masterSlider: {fileID: 0}
   sfxSlider: {fileID: 0}
   musicSlider: {fileID: 0}
+  masterPercentage: {fileID: 0}
+  sfxPercentage: {fileID: 0}
+  musicPercentage: {fileID: 0}
   sfxToggle: {fileID: 0}
   musicToggle: {fileID: 0}
 --- !u!4 &1448363998 stripped

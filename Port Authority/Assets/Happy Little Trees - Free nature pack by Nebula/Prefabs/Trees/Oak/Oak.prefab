@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4632447904568673692}
   - component: {fileID: 6092118374170656790}
   - component: {fileID: 5520049268683609966}
+  - component: {fileID: 2742904564959084960}
   m_Layer: 0
   m_Name: Oak
   m_TagString: Untagged
@@ -126,4 +127,17 @@ MonoBehaviour:
   road: {fileID: 0}
   cleanupCost: 50
   cleanupButtonPrefab: {fileID: 2421748138931753100, guid: 10c4b39bc33f34a4a8b48aa5a030d3e4, type: 3}
-  worldUICanvas: {fileID: 377881027483354279, guid: 26cdda72b4dbfae4396505d3ddd18d2a, type: 3}
+  treesUICanvas: {fileID: 0}
+--- !u!114 &2742904564959084960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6577857602279842889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69e5f57fe2d78db47afe1dc4a69d2a3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiCanvas: {fileID: 0}

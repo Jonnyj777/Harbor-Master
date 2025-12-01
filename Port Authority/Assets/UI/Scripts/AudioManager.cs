@@ -23,7 +23,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip boatCollision;
     public AudioClip truckDelivery;
     public AudioClip truckCollision;
-    public AudioClip landObstacleSpawn;
+    public AudioClip whirlpoolSpawn;
+    public AudioClip treeSpawn;
+    public AudioClip mudSpawn;
     public AudioClip landObstacleCleanup;
 
     [Header("Ambient Sound")]
@@ -353,10 +355,22 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayLandObstacleSpawn()
+    public void PlayWhirlpoolSpawn()
     {
-        if (!sfxEnabled || landObstacleSpawn == null) return;
-        sfxSource.PlayOneShot(landObstacleSpawn, sfxSource.volume);
+        if (!sfxEnabled || whirlpoolSpawn == null) return;
+        sfxSource.PlayOneShot(whirlpoolSpawn, sfxSource.volume);
+    }
+
+    public void PlayTreeSpawn()
+    {
+        if (!sfxEnabled || treeSpawn == null) return;
+        sfxSource.PlayOneShot(treeSpawn, sfxSource.volume);
+    }
+
+    public void PlayMudSpawn()
+    {
+        if (!sfxEnabled || mudSpawn == null) return;
+        sfxSource.PlayOneShot(mudSpawn, sfxSource.volume);
     }
 
     public void PlayLandObstacleCleanup()

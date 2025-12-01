@@ -6,7 +6,7 @@ public class ObstacleSpawner : MonoBehaviour
 {
     [Header("References")]
     public NoiseToTerrainGenerator terrain;
-    public StreetGenerationManager streetManager;
+    public List<StreetGenerationManager> streetManagers = new List<StreetGenerationManager>();
 
     [Header("Obstacles")]
     public GameObject whirlpoolPrefab;
@@ -21,6 +21,17 @@ public class ObstacleSpawner : MonoBehaviour
     public float whirlpoolSpawnInterval = 3f;
     public float landObstacleSpawnInterval = 20f;
 
+    [Header("Obstacle Parents")]
+    public Transform whirlpoolParent;
+    public Transform treesParent;
+    public Transform mudParent;
+
+    [Header("UI References")]
+    public GameObject treeCleanupButtonPrefab;
+    public GameObject mudCleanupButtonPrefab;
+    public Canvas treesUICanvas;
+    public Canvas mudUICanvas;
+
     private List<GameObject> whirlpools = new List<GameObject>();
     private List<GameObject> trees = new List<GameObject>();
     private List<GameObject> mudPuddles = new List<GameObject>();
@@ -29,23 +40,41 @@ public class ObstacleSpawner : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(WaitForStreetManager());
+        StartCoroutine(WaitForStreetManagers());
     }
-    private IEnumerator WaitForStreetManager()
-    {
-        //Debug.Log("ObstacleSpawner.Start() has begun executing");
-        while (streetManager == null)
-        {
-            streetManager = Object.FindFirstObjectByType<StreetGenerationManager>();
-            
-            if (streetManager != null)
-            {
-                Debug.Log("Street generator found: " + streetManager.name);
-                break;
-            }
 
-            yield return new WaitForSeconds(0.25f);
+    private IEnumerator WaitForStreetManagers()
+    {
+        StreetGenerationManager[] managers = null;
+
+        //Debug.Log("ObstacleSpawner.Start() has begun executing");
+        while (managers == null || managers.Length == 0)
+        {
+            managers = FindObjectsByType<StreetGenerationManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            yield return new WaitForSeconds(0.1f);
         }
+
+        streetManagers.AddRange(managers);
+        Debug.Log("Found " + streetManagers.Count + " street managers.");
+
+        bool ready = false;
+        while (!ready)
+        {
+            ready = true;
+
+            foreach (var mgr in managers)
+            {
+                if (mgr.GetActivatedChildren().Count == 0)
+                {
+                    ready = false;
+                    break;
+                }
+            }
+            if (!ready)
+                yield return new WaitForSeconds(0.25f);
+        }
+
+        Debug.Log("All islands ready");
 
         waterLevel = terrain.GetWaterLevel();
         StartCoroutine(WhirlpoolRoutine());
@@ -72,12 +101,15 @@ public class ObstacleSpawner : MonoBehaviour
 
     private void SpawnWhirlpools()
     {
-        List<Vector3> oceanEdges = terrain.GetOceanEdgeVertices();
-        if (oceanEdges.Count == 0)
+        StreetGenerationManager island = streetManagers[Random.Range(0, streetManagers.Count)];
+        
+        List<Vector3> islandEdges = terrain.GetOceanEdgeVerticesNearIsland(island.transform.position, 20f);
+        
+        if (islandEdges.Count == 0)
             return;
 
         // choose random water point
-        Vector3 pos = oceanEdges[Random.Range(0, oceanEdges.Count)];
+        Vector3 pos = islandEdges[Random.Range(0, islandEdges.Count)];
 
         // pushes whirlpool inward to avoid getting stuck at edge
         pos += new Vector3(
@@ -87,8 +119,14 @@ public class ObstacleSpawner : MonoBehaviour
 
         pos.y = waterLevel + 1f;
 
-        GameObject wp = Instantiate(whirlpoolPrefab, pos, Quaternion.identity);
+        GameObject wp = Instantiate(whirlpoolPrefab, pos, Quaternion.identity, whirlpoolParent);
         whirlpools.Add(wp);
+
+        // spawn sound
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayWhirlpoolSpawn();
+        }
     }
 
     // ROAD LOCATION
@@ -96,15 +134,25 @@ public class ObstacleSpawner : MonoBehaviour
     {
         result = Vector3.zero;
 
-        var roads = streetManager.GetActivatedChildren();
-        if (roads == null || roads.Count == 0)
+        List<GameObject> allRoads = new List<GameObject>();
+
+        foreach (var mgr in streetManagers)
+        {
+            allRoads.AddRange(mgr.GetActivatedChildren());
+        }
+
+        if (allRoads.Count == 0)
             return false;
 
-        GameObject road = roads[Random.Range(0, roads.Count)];
+        GameObject road = allRoads[Random.Range(0, allRoads.Count)];
 
-        MeshRenderer rend = road.GetComponent<MeshRenderer>();
+        MeshRenderer rend = road.GetComponentInChildren<MeshRenderer>();
+
         if (!rend)
+        {
+            Debug.LogWarning("No MeshRenderer found inside: " + road.name);
             return false;
+        }
 
         Bounds b = rend.bounds;
 
@@ -120,18 +168,32 @@ public class ObstacleSpawner : MonoBehaviour
     // LAND OBSTACLE SPAWNING
     IEnumerator LandObstaclesRoutine()
     {
-        while (streetManager == null)
+        while (streetManagers == null || streetManagers.Count == 0)
         {
             yield return null;
         }
 
-        while (streetManager.GetActivatedChildren().Count == 0)
+        bool anyReady = false;
+        while (!anyReady)
         {
-            Debug.Log("Waiting for streets to finish activating...");
-            yield return new WaitForSeconds(0.25f);
+            foreach (var mgr in streetManagers)
+            {
+                if (mgr != null && mgr.GetActivatedChildren().Count > 0)
+                {
+                    anyReady = true;
+                    break;
+                }
+            }
+
+            if (!anyReady)
+            {
+                Debug.Log("Waiting for streets to finish activating...");
+                yield return new WaitForSeconds(0.25f);
+            }
         }
 
         Debug.Log("Streets activated. Starting land obstacle spawning.");
+        
         while(true)
         {
             trees.RemoveAll(x => x == null);
@@ -153,14 +215,34 @@ public class ObstacleSpawner : MonoBehaviour
 
     private void SpawnTree()
     {
+        //Debug.Log("SpawnTree() called");
+
+        if (treePrefab == null)
+        {
+            //Debug.LogError("TREE PREFAB IS NULL");
+            return;
+        }
+
         Vector3 pos;
         if(!RoadSpawnPoint(out pos))
         {
             return;
         }
 
-        GameObject t = Instantiate(treePrefab, pos, Quaternion.identity);
+        pos.y += 0.2f;
+
+        GameObject t = Instantiate(treePrefab, pos, Quaternion.identity, treesParent);
+        
+        TreeObstacle obstacle = t.GetComponent<TreeObstacle>();
+        // assign canvas
+        if(obstacle != null)
+        {
+            obstacle.treesUICanvas = treesUICanvas;
+            obstacle.cleanupButtonPrefab = treeCleanupButtonPrefab;
+        }
+
         trees.Add(t);
+        //Debug.Log("Tree spawned at: " + pos);
     }
 
     private void SpawnMud()
@@ -171,7 +253,19 @@ public class ObstacleSpawner : MonoBehaviour
             return;
         }
 
-        GameObject m = Instantiate(mudPrefab, pos, Quaternion.identity);
+        pos.y += 0.5f;
+
+        GameObject m = Instantiate(mudPrefab, pos, Quaternion.identity, mudParent);
+
+        MudPuddle puddle = m.GetComponent<MudPuddle>();
+        if (puddle != null)
+        {
+            puddle.mudUICanvas = mudUICanvas;
+            puddle.cleanupButtonPrefab = mudCleanupButtonPrefab;
+
+            puddle.ShowCleanupButton();
+        }
+
         mudPuddles.Add(m);
     }
 }

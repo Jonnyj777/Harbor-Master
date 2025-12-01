@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5856501482760209841}
   - component: {fileID: 8037948422389126119}
   - component: {fileID: 640216155794275596}
+  - component: {fileID: -5475858441382828057}
   m_Layer: 0
   m_Name: MudPuddle
   m_TagString: Untagged
@@ -74,6 +75,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-5475858441382828057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3042198004925896561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69e5f57fe2d78db47afe1dc4a69d2a3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiCanvas: {fileID: 0}
 --- !u!1001 &5717895243126573955
 PrefabInstance:
   m_ObjectHideFlags: 0
