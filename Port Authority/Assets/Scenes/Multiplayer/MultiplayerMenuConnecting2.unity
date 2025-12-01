@@ -6276,7 +6276,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2351157205755734473, guid: 071ddc2465a1de6499b30ab5d850cc62, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8099125309081641713, guid: 071ddc2465a1de6499b30ab5d850cc62, type: 3}
       propertyPath: m_Pivot.x
@@ -11921,7 +11921,7 @@ MonoBehaviour:
   multiplayerMenuScreen: {fileID: 1975035637}
   joinedLobbyScreen: {fileID: 1654460623}
   selectedLobbySection: {fileID: 257257925}
-  joinedLobbyNameText: {fileID: 2045335122}
+  joinedLobbyNameText: {fileID: 1666209545}
   joinedHostNameText: {fileID: 1422737291}
   joinedLobbyContainer: {fileID: 1299937684}
   joinedPlayerCardPrefab: {fileID: 5919725040682772574, guid: b397892d5fb4e1d408010c166327d23c, type: 3}

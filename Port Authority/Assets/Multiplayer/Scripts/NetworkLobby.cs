@@ -12,6 +12,7 @@ public class NetworkLobby : NetworkRoomManager
     private TextMeshProUGUI playerList;
 
     public override void OnRoomServerAddPlayer(NetworkConnectionToClient conn) {
+        base.OnRoomServerAddPlayer(conn);
         foreach(PendingPlayer player in pendingPlayers)
         {
             playerList.text += "\n" + player;
