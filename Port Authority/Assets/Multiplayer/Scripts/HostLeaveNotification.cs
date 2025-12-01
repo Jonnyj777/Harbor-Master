@@ -31,7 +31,7 @@ public class HostLeaveNotification : NetworkBehaviour
     }
 
     [Server]
-    private void HostLeft()
+    public void HostLeft()
     {
         RpcShowHostLeftNotification();
     }

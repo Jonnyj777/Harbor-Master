@@ -6276,7 +6276,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2351157205755734473, guid: 071ddc2465a1de6499b30ab5d850cc62, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8099125309081641713, guid: 071ddc2465a1de6499b30ab5d850cc62, type: 3}
       propertyPath: m_Pivot.x
@@ -10051,6 +10051,8 @@ MonoBehaviour:
   boatCollision: {fileID: 0}
   truckDelivery: {fileID: 0}
   truckCollision: {fileID: 0}
+  landObstacleSpawn: {fileID: 0}
+  landObstacleCleanup: {fileID: 0}
   ambientWaves: {fileID: 8300000, guid: 88bd76943a363c94d9e6ef61033bae97, type: 3}
   sfxEnabled: 1
   musicEnabled: 1
@@ -10060,6 +10062,9 @@ MonoBehaviour:
   masterSlider: {fileID: 1371170955}
   sfxSlider: {fileID: 1852576472}
   musicSlider: {fileID: 1388148319}
+  masterPercentage: {fileID: 0}
+  sfxPercentage: {fileID: 0}
+  musicPercentage: {fileID: 0}
   sfxToggle: {fileID: 0}
   musicToggle: {fileID: 0}
 --- !u!4 &1180570736
@@ -11934,6 +11939,7 @@ MonoBehaviour:
   refreshButton: {fileID: 1626212802}
   createLobbyButton: {fileID: 965324572}
   leaveButton: {fileID: 1882370837}
+  multiplayerButton: {fileID: 614338144}
   hostDisconnectedBox: {fileID: 1766808541}
   lobbyBox: {fileID: 1654460624}
 --- !u!4 &1629769497

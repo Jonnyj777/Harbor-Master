@@ -1121,7 +1121,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
             if (NetworkClient.isConnected)
             {
                 Debug.LogError("client is disconnecting to main menu");
-                //NetworkManager.singleton.StopClient();
+                NetworkManager.singleton.StopClient();
                 //SceneManager.LoadScene(MainMenuScene);
                 //return;
             }
