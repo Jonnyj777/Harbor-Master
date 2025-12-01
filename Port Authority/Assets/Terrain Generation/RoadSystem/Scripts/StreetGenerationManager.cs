@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Splines;
 
 public class StreetGenerationManager : MonoBehaviour
 {
@@ -62,6 +63,8 @@ public class StreetGenerationManager : MonoBehaviour
                 if (shouldActivate)
                 {
                     activatedChildren.Add(child);
+                    //child.GetComponent<SplineInstantiate>().UpdateInstances();
+                    
                 }
             }
         }
