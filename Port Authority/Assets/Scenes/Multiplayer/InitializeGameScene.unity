@@ -778,6 +778,10 @@ PrefabInstance:
       value: Assets/Scenes/Multiplayer/UpgradeSystemN_2.unity
       objectReference: {fileID: 0}
     - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
+      propertyPath: autoCreatePlayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3402788639275741396, guid: d677365b008a03344af2e757b275f8df, type: 3}
       propertyPath: spawnPrefabs.Array.size
       value: 24
       objectReference: {fileID: 0}

@@ -147,7 +147,6 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
         //Request = new Steamworks.ServerList.Internet();
         //Request.RunQueryAsync(30);
-        GetLobbyInfo();
         startButton.interactable = false;
 
         //attach functions to event listeners
@@ -491,6 +490,7 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         //var LobbyList = SteamMatchmaking.LobbyList;
 
         steamLobbyList = steamLobbyList.WithKeyValue("game", "PORTAUTH");
+        steamLobbyList = steamLobbyList.WithKeyValue("hasStarted", "false");
         var LobbyResult = await steamLobbyList.RequestAsync();
 
         selectedLobbyId = 0;
@@ -1098,13 +1098,29 @@ public class SteamLobbyManagerUITest : MonoBehaviour
 
     public void LeaveLobby()
     {
+        Debug.LogError("CALLING BEFORE StopClient()   " +
+            "NetworkClient.active=" + NetworkClient.active +
+            "  isConnected=" + NetworkClient.isConnected +
+            "  transport=" + NetworkManager.singleton.transport +
+            "  networkAddress=" + NetworkManager.singleton.networkAddress);
         try
         {
             Lobby.Leave();
             OnLobbyLeftEvent.Invoke();
             NetworkManager.singleton.StopClient();
-            Lobby = default;
 
+            /*
+            NetworkManager.singleton.StopServer();
+            NetworkManager.singleton.StopHost();
+
+            NetworkServer.Shutdown();
+            NetworkClient.Shutdown();
+
+            NetworkManager.singleton.networkAddress = "";
+            */
+
+
+            Lobby = default;
             foreach (var friend in inLobby.Values)
             {
                 Destroy(friend.playerObj);
@@ -1116,6 +1132,11 @@ public class SteamLobbyManagerUITest : MonoBehaviour
         {
             Debug.LogError("Error with leaving lobby: " + err);
         }
+        Debug.LogError("CALLING AFTER StopClient()   " +
+            "NetworkClient.active=" + NetworkClient.active +
+            "  isConnected=" + NetworkClient.isConnected +
+            "  transport=" + NetworkManager.singleton.transport +
+            "  networkAddress=" + NetworkManager.singleton.networkAddress);
     }
 
     void OnLobbyInvite(Friend friend, Steamworks.Data.Lobby lobby)

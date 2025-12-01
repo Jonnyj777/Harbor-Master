@@ -70,6 +70,7 @@ public class NetworkLobby : NetworkRoomManager
     public override void OnStopClient()
     {
         base.OnStopClient();
+        Debug.LogError("Stopping client");
         networkAddress = "localhost";
     }
 
