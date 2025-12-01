@@ -91,11 +91,11 @@ public class SceneManagerScript : MonoBehaviour
         yield return currentFade;
         if (OnlineStatusManager.isOnline)
         {
-            SceneManager.LoadScene(8);
+            SceneManager.LoadScene(4);
         }
         else
         {
-            SceneManager.LoadScene(9);
+            SceneManager.LoadScene(5);
         }
     }
 
