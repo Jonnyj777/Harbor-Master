@@ -84,6 +84,10 @@ public class StoreScript : MonoBehaviour
     public ProductCard furnitureCard;
     public ProductCard industrialEquipmentCard;
 
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip purchaseSFX;
+
     float fadeDuration = 0.2f;
     private void Start()
     {
@@ -106,6 +110,14 @@ public class StoreScript : MonoBehaviour
         UpdateIndustrialEquipmentEntry();
     }
 
+    private void PlayPurchaseSound()
+    {
+        if (audioSource != null && purchaseSFX != null)
+        {
+            audioSource.PlayOneShot(purchaseSFX);
+        }
+    }
+
     // stat upgrades
     public void PurchaseRepairSpeedUpgrade()
     {
@@ -113,6 +125,8 @@ public class StoreScript : MonoBehaviour
                 && currentRepairSpeedLevel <= maxRepairSpeedLevel)
         {
             ScoreManager.Instance.UpdateSpendableScore(-currentRepairSpeedCost);
+
+            PlayPurchaseSound();
 
             currentRepairSpeedLevel++;
 
@@ -133,6 +147,8 @@ public class StoreScript : MonoBehaviour
         {
             ScoreManager.Instance.UpdateSpendableScore(-currentLoadingSpeedCost);
 
+            PlayPurchaseSound();
+
             currentLoadingSpeedLevel++;
 
             float reductionFactor = 1f - (loadingSpeedMult * currentLoadingSpeedLevel);
@@ -152,6 +168,8 @@ public class StoreScript : MonoBehaviour
         {
             ScoreManager.Instance.UpdateSpendableScore(-currentDurabilityCost);
 
+            PlayPurchaseSound();
+
             currentDurabilityLevel++;
 
             LivesManager.Instance.AddLife();
@@ -168,6 +186,8 @@ public class StoreScript : MonoBehaviour
                 && currentSpeedLevel <= maxSpeedLevel)
         {
             ScoreManager.Instance.UpdateSpendableScore(-currentSpeedCost);
+
+            PlayPurchaseSound();
 
             currentSpeedLevel++;
 
@@ -190,6 +210,8 @@ public class StoreScript : MonoBehaviour
         {
             ScoreManager.Instance.UpdateSpendableScore(-bigCargoShipCost);
 
+            PlayPurchaseSound();
+
             vehicleSpawnScript.UnlockShip(bigCargoShip);
 
             bigCargoShipPurchased = true;
@@ -203,6 +225,8 @@ public class StoreScript : MonoBehaviour
                 && !biggerCargoShipPurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-biggerCargoShipCost);
+
+            PlayPurchaseSound();
 
             vehicleSpawnScript.UnlockShip(biggerCargoShip);
 
@@ -219,6 +243,8 @@ public class StoreScript : MonoBehaviour
         {
             ScoreManager.Instance.UpdateSpendableScore(-whiskeyCost);
 
+            PlayPurchaseSound();
+
             CargoManager.Instance.UnlockCargo(whiskey);
 
             whiskeyPurchased = true;
@@ -233,6 +259,8 @@ public class StoreScript : MonoBehaviour
         {
             ScoreManager.Instance.UpdateSpendableScore(-furnitureCost);
 
+            PlayPurchaseSound();
+
             CargoManager.Instance.UnlockCargo(furniture);
 
             furniturePurchased = true;
@@ -246,6 +274,8 @@ public class StoreScript : MonoBehaviour
                 && !industrialEquipmentPurchased)
         {
             ScoreManager.Instance.UpdateSpendableScore(-industrialEquipmentCost);
+            
+            PlayPurchaseSound();
 
             CargoManager.Instance.UnlockCargo(industrialEquipment);
 

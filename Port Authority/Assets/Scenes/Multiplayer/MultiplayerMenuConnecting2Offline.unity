@@ -12316,6 +12316,8 @@ MonoBehaviour:
   boatCollision: {fileID: 0}
   truckDelivery: {fileID: 0}
   truckCollision: {fileID: 0}
+  landObstacleSpawn: {fileID: 0}
+  landObstacleCleanup: {fileID: 0}
   ambientWaves: {fileID: 8300000, guid: 88bd76943a363c94d9e6ef61033bae97, type: 3}
   sfxEnabled: 1
   musicEnabled: 1
@@ -12325,6 +12327,9 @@ MonoBehaviour:
   masterSlider: {fileID: 589477670}
   sfxSlider: {fileID: 2082240205}
   musicSlider: {fileID: 516657445}
+  masterPercentage: {fileID: 331974686}
+  sfxPercentage: {fileID: 1034756193}
+  musicPercentage: {fileID: 1874621579}
   sfxToggle: {fileID: 0}
   musicToggle: {fileID: 0}
 --- !u!4 &1180570736
@@ -20290,6 +20295,9 @@ MonoBehaviour:
   masterVolume: 100
   sfxVolume: 100
   musicVolume: 100
+  colorChoicesContainer: {fileID: 0}
+  colorChoices: []
+  selectedColorChoice: {fileID: 0}
 --- !u!1001 &1896219364088682802
 PrefabInstance:
   m_ObjectHideFlags: 0
