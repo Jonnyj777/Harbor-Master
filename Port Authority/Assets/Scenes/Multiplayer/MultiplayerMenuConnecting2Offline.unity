@@ -11097,6 +11097,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1034756191}
   m_CullTransparentMesh: 1
+--- !u!1 &1037915248
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1037915250}
+  - component: {fileID: 1037915249}
+  m_Layer: 0
+  m_Name: GameLeaveManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1037915249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037915248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 914b6fdac6f782e4783c58ab3dd736d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1037915250
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037915248}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 279.7963, y: 0.10885239, z: 149.62909}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1066469960
 GameObject:
   m_ObjectHideFlags: 0
@@ -14795,6 +14839,9 @@ MonoBehaviour:
   refreshButton: {fileID: 1626212802}
   createLobbyButton: {fileID: 965324572}
   leaveButton: {fileID: 1882370837}
+  multiplayerButton: {fileID: 0}
+  hostDisconnectedBox: {fileID: 0}
+  lobbyBox: {fileID: 0}
 --- !u!4 &1629769497
 Transform:
   m_ObjectHideFlags: 0
@@ -17088,6 +17135,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1180570735}
         m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
         m_MethodName: PlayClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1037915249}
+        m_TargetAssemblyTypeName: GameLeaver, Assembly-CSharp
+        m_MethodName: QuitGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -21003,3 +21062,4 @@ SceneRoots:
   - {fileID: 705064292}
   - {fileID: 1629769497}
   - {fileID: 1454051820}
+  - {fileID: 1037915250}

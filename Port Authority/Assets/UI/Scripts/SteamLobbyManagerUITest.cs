@@ -1,5 +1,4 @@
 using Edgegap;
-using IO.Swagger.Model;
 using Mirror;
 using Steamworks;
 using Steamworks.Data;

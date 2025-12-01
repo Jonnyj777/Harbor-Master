@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
 using TMPro;
-using UnityEditor.Build.Content;
 using UnityEngine;
 
 public class TreeObstacle : MonoBehaviour
