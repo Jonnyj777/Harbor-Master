@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,6 +11,8 @@ public class SceneManagerScript : MonoBehaviour
     private Coroutine currentFade;
     private bool fadeInStarted = false;
     public TextMeshProUGUI loadingText;
+
+    public static event Action BeforeSceneLoad;
 
 
     private void Awake()
@@ -50,6 +53,11 @@ public class SceneManagerScript : MonoBehaviour
 
     private IEnumerator LoadScene(int sceneIndex)
     {
+
+        BeforeSceneLoad?.Invoke();
+
+        // Ensure timescale is in a sane state for a new run.
+        Time.timeScale = 1f;
         //yield return new WaitForSeconds(1);
         
         if (currentFade != null) StopCoroutine(currentFade);

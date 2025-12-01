@@ -5,7 +5,7 @@ using UnityEngine;
 public class LivesManager : MonoBehaviour
 {
     public static LivesManager Instance;
-    private int lives = 6;
+    private int lives = 1;
     public TextMeshProUGUI livesText;
     public Button resetButton;
     public Button menuButton;
