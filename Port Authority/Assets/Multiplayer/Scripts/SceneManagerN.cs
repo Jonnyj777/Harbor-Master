@@ -34,6 +34,7 @@ public class SceneManagerN : MonoBehaviour
 
         if (NetworkClient.activeHost)
         {
+            NetworkServer.DisconnectAll();
             NetworkManager.singleton.StopHost();
             SceneManager.LoadScene(MainMenuScene);
             return;
