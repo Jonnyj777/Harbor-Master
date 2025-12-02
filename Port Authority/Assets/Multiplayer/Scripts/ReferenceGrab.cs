@@ -45,6 +45,10 @@ public class ReferenceGrab : MonoBehaviour
     public Button refreshButton;
     public Button createLobbyButton;
     public Button leaveButton;
+    public Button multiplayerButton;
+
+    public Transform hostDisconnectedBox;
+    public Transform lobbyBox;
 
     private void Start()
     {

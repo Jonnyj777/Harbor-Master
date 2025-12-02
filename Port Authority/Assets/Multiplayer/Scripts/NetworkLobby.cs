@@ -12,6 +12,7 @@ public class NetworkLobby : NetworkRoomManager
     private TextMeshProUGUI playerList;
 
     public override void OnRoomServerAddPlayer(NetworkConnectionToClient conn) {
+        base.OnRoomServerAddPlayer(conn);
         foreach(PendingPlayer player in pendingPlayers)
         {
             playerList.text += "\n" + player;
@@ -64,6 +65,13 @@ public class NetworkLobby : NetworkRoomManager
         {
             //StopHost();
         }
+    }
+
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        Debug.LogError("Stopping client");
+        networkAddress = "localhost";
     }
 
 }

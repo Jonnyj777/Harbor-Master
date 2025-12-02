@@ -144,6 +144,7 @@ namespace Mirror.FizzySteam
 
     public override void ClientDisconnect()
     {
+      Debug.LogError(">>> TRANSPORT OnClientDisconnected <<<");
       if (ClientActive())
       {
         Shutdown();

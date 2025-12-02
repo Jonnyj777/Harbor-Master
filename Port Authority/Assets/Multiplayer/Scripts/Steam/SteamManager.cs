@@ -18,7 +18,7 @@ public class SteamManager : MonoBehaviour
             try
             {
                 //SteamClient.Init(appId, true);
-                Debug.Log("Steam is working");
+                //Debug.Log("Steam is working");
             }
             catch(System.Exception e)
             {

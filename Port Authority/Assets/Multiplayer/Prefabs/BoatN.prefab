@@ -520,7 +520,7 @@ MonoBehaviour:
   - {fileID: 4825489036044855431}
   crashedColor: {r: 0, g: 1, b: 1, a: 1}
   explosionPrefab: {fileID: 2659756843846086693}
-  dockingTime: 1.5
+  dockingTime: 0.1
   rotationSmooth: 10
   rend: {fileID: 6768941464760523500}
 --- !u!114 &123370551021672185

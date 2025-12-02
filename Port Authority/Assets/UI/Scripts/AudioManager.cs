@@ -1,4 +1,3 @@
-using UnityEditor.Rendering;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -66,7 +65,7 @@ public class AudioManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
         // set up audio sources
         sfxSource = gameObject.AddComponent<AudioSource>();
@@ -110,7 +109,7 @@ public class AudioManager : MonoBehaviour
     {
         Scene currentScene = SceneManager.GetActiveScene();
 
-        if (currentScene.name == "LevelWithSFX" && musicEnabled)
+        if ((currentScene.name == "LevelWithSFX" || currentScene.name == "UpgradeSystemN_2") && musicEnabled)
         {
             PlayMusic();
         }

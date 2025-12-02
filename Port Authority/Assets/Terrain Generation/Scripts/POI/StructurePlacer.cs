@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using System.Collections;
 
 public class StructurePlacer : MonoBehaviour
 {
@@ -80,11 +81,20 @@ public class StructurePlacer : MonoBehaviour
         }
 
         Debug.Log("Spawning Buildings");
-        EnsurePlacementBounds();
+        StartCoroutine(Initialization());
+    }
 
+    private IEnumerator Initialization()
+    {
+        yield return new WaitForSeconds(0.5f);
+        EnsurePlacementBounds();
+        //yield return new WaitForSeconds(0.5f);
         InitializeIndices();
+        //yield return new WaitForSeconds(0.5f);
         StoreLoop();
+        //yield return new WaitForSeconds(0.5f);
         DockLoop();
+        //yield return new WaitForSeconds(0.5f);
         FactoryLoop();
     }
     

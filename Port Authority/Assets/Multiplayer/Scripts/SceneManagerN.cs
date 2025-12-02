@@ -22,22 +22,7 @@ public class SceneManagerN : MonoBehaviour
     public void ChangeToMainMenuScene()
     {
         //SteamLobbyManagerUITest.instance.RemoveCallbacks();
-        SteamLobbyManagerUITest.Lobby.Leave();
-
-        if (NetworkClient.activeHost)
-        {
-            NetworkManager.singleton.StopHost();
-            SceneManager.LoadScene(MainMenuScene);
-            return;
-        }
-        
-        if(NetworkClient.isConnected)
-        {
-            NetworkManager.singleton.StopClient();
-            SceneManager.LoadScene(MainMenuScene);
-            return;
-        }
-
+        SteamLobbyManagerUITest.instance.LeaveLobby();
         SceneManager.LoadScene(MainMenuScene);
 
     }
