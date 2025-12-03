@@ -2664,43 +2664,6 @@ PrefabInstance:
       propertyPath: m_ChildControlHeight
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 9010807050121408005, guid: 1e2bcee5b60ad8f4f83bddfd8d1502e4, type: 3}
-      propertyPath: m_text
-      value: 'FREE Casual Game SFX Pack - Dustyroom (Unity Asset Store)
-
-
-
-        Nature
-        Sound FX - Dustyroom (Unity Asset Store)
-
-
-
-        Water Splash Pack - Rocklynn
-        Productions (Unity Asset Store)
-
-
-
-        Regular Impact Sounds - AD Sounds
-        (Unity Asset Store)
-
-
-
-        Boat Horn - DRAGON-STUDIO (Pixabay)
-
-
-
-        Cash
-        Register Kaching - DRAGON-STUDIO (Pixabay)
-
-
-
-        Car Honk - DRAGON-STUDIO
-        (Pixabay)
-
-
-
-        Island Meet and Greet - Kevin Macleod (incompetech.com) '
-      objectReference: {fileID: 0}
     - target: {fileID: 9165989963066625845, guid: 1e2bcee5b60ad8f4f83bddfd8d1502e4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
