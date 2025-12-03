@@ -1,0 +1,23 @@
+﻿<Solution>
+  <Project Path="Unity.Mirror.CodeGen.csproj" />
+  <Project Path="Edgegap.csproj" />
+  <Project Path="Mirror.Components.csproj" />
+  <Project Path="Mirror.Editor.csproj" />
+  <Project Path="PlayTests.csproj" />
+  <Project Path="kcp2k.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Mirror.csproj" />
+  <Project Path="SimpleWebTransport.csproj" />
+  <Project Path="Mirror.Authenticators.csproj" />
+  <Project Path="Mirror.Transports.csproj" />
+  <Project Path="EncryptionTransportEditor.csproj" />
+  <Project Path="Unity.Splines.Examples.csproj" />
+  <Project Path="Telepathy.csproj" />
+  <Project Path="SplineMesh.Colliders.csproj" />
+  <Project Path="Tests.csproj" />
+  <Project Path="SplineMesh.Editor.csproj" />
+  <Project Path="Unity.Splines.Examples.Editor.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Mirror.CompilerSymbols.csproj" />
+  <Project Path="SplineMesh.Runtime.csproj" />
+</Solution>
