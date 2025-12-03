@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using System.Linq;
+using UnityEditor.PackageManager.UI;
 
 public class ObstacleSpawner : MonoBehaviour
 {
@@ -113,36 +116,41 @@ public class ObstacleSpawner : MonoBehaviour
 
     private void SpawnWhirlpools()
     {
-        StreetGenerationManager island = streetManagers[Random.Range(0, streetManagers.Count)];
-        
-        List<Vector3> islandEdges = terrain.GetOceanEdgeVerticesNearIsland(island.transform.position, 20f);
-        
-        if (islandEdges.Count == 0)
-            return;
-
-        // choose random water point
-        Vector3 pos = islandEdges[Random.Range(0, islandEdges.Count)];
-
-        // pushes whirlpool inward to avoid getting stuck at edge
-        pos += new Vector3(
-            Random.Range(-15f, 15f),
-            0,
-            Random.Range(-15f, 15f));
-
-        pos.y = waterLevel + 1f;
-
-        GameObject wp = Instantiate(whirlpoolPrefab, pos, Quaternion.identity, whirlpoolParent);
-        whirlpools.Add(wp);
-
-        // spawn sound
-        if (AudioManager.Instance != null)
+        int whirlpoolSpawnRange = Random.Range(1, 4);
+        for (int i = 0; i < whirlpoolSpawnRange; i++)
         {
-            AudioManager.Instance.PlayWhirlpoolSpawn();
+            StreetGenerationManager island = streetManagers[Random.Range(0, streetManagers.Count)];
+            Vector3 islandPos = island.transform.position;
+
+            // random angle and distance from island center
+            float angle = Random.Range(0f, 360f);
+            float radius = Random.Range(20f, 30f);
+
+            float x = islandPos.x + Mathf.Cos(angle * Mathf.Deg2Rad) * radius; ;
+            float z = islandPos.z + Mathf.Sin(angle * Mathf.Deg2Rad) * radius;
+
+            // choose random water point
+            Vector3 pos = new Vector3(x, waterLevel + 1f, z);
+
+            // pushes whirlpool inward to avoid getting stuck at edge
+            //pos += new Vector3(
+            //Random.Range(-20f, 20f),
+            //0,
+            //Random.Range(-20f, 20f));
+
+            GameObject wp = Instantiate(whirlpoolPrefab, pos, Quaternion.identity, whirlpoolParent);
+            whirlpools.Add(wp);
+
+            // spawn sound
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayWhirlpoolSpawn();
+            }
         }
     }
 
     // ROAD LOCATION
-    private bool RoadSpawnPoint(out Vector3 result)
+    private bool RoadSpawnPoint(out Vector3 result, float minDistance = 10f, int maxAttempts = 30)
     {
         result = Vector3.zero;
 
@@ -156,25 +164,60 @@ public class ObstacleSpawner : MonoBehaviour
         if (allRoads.Count == 0)
             return false;
 
-        GameObject road = allRoads[Random.Range(0, allRoads.Count)];
+        // shuffle roads so each attempt picks different one
+        allRoads = allRoads.OrderBy(x => Random.value).ToList();
 
-        MeshRenderer rend = road.GetComponentInChildren<MeshRenderer>();
-
-        if (!rend)
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
         {
-            Debug.LogWarning("No MeshRenderer found inside: " + road.name);
-            return false;
+            GameObject road = allRoads[attempt % allRoads.Count];
+
+            MeshRenderer rend = road.GetComponentInChildren<MeshRenderer>();
+
+            if (!rend)
+            {
+                //Debug.LogWarning("No MeshRenderer found inside: " + road.name);
+                continue;
+            }
+
+            Bounds b = rend.bounds;
+
+            for (int location = 0; location < 4; location++)
+            {
+                Vector3 point = new Vector3(Random.Range(b.min.x, b.max.x), b.center.y + 0.3f, Random.Range(b.min.z, b.max.z));
+
+                // offsets to avoid obstacle perfect pizel-aligned positions
+                point += new Vector3(Random.Range(-20f, 20f), 0, Random.Range(-20f, 20f));
+
+                // ensures obstacles do not spawn too close to one another/on top of each other
+                bool tooClose = false;
+
+                foreach (var t in trees)
+                {
+                    if (t != null && Vector3.Distance(point, t.transform.position) < minDistance)
+                    {
+                        tooClose = true;
+                        break;
+                    }
+                }
+                foreach (var m in mudPuddles)
+                {
+                    if (m != null && Vector3.Distance(point, m.transform.position) < minDistance)
+                    {
+                        tooClose = true;
+                        break;
+                    }
+                }
+
+                if (!tooClose)
+                {
+                    result = point;
+                    return true;
+                }
+            }
         }
 
-        Bounds b = rend.bounds;
-
-        Vector3 point = new Vector3(Random.Range(b.min.x, b.max.x), b.center.y + 0.3f, Random.Range(b.min.z, b.max.z));
-
-        // offsets to avoid obstacle perfect pizel-aligned positions
-        point += new Vector3(Random.Range(-3f, 3f), 0, Random.Range(-3f, 3f));
-
-        result = point;
-        return true;
+        // no valid spot after max attempts 10
+        return false;
     }
 
     // LAND OBSTACLE SPAWNING
@@ -261,7 +304,9 @@ public class ObstacleSpawner : MonoBehaviour
         }
 
         Vector3 pos;
-        if(!RoadSpawnPoint(out pos))
+
+        // spawn bigger distance
+        if (!RoadSpawnPoint(out pos, minDistance: 15f))
         {
             return;
         }
@@ -285,12 +330,14 @@ public class ObstacleSpawner : MonoBehaviour
     private void SpawnMud()
     {
         Vector3 pos;
-        if (!RoadSpawnPoint(out pos))
+
+        // spawn bigger distance
+        if (!RoadSpawnPoint(out pos, minDistance: 20f))
         {
             return;
         }
 
-        pos.y += 0.5f;
+        pos.y += 1.5f;
 
         GameObject m = Instantiate(mudPrefab, pos, Quaternion.identity, mudParent);
 

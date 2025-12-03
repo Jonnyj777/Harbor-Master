@@ -16,6 +16,7 @@ public class MudPuddle : MonoBehaviour
 
     private void Update()
     {
+        if (cleanupButtonInstance != null)
         {
             Vector3 offset = new Vector3(0, 25f, 0);
             Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position + offset);
@@ -39,6 +40,10 @@ public class MudPuddle : MonoBehaviour
 
     public void ShowCleanupButton()
     {
+        if (cleanupButtonInstance != null)
+        {
+            return;
+        }
 
         if (AudioManager.Instance != null)
         {
@@ -110,6 +115,12 @@ public class MudPuddle : MonoBehaviour
                 }
             }
             yield return null;
+        }
+
+        if (mudUICanvas != null && cleanupButtonInstance != null)
+        {
+            Destroy(cleanupButtonInstance);
+            cleanupButtonInstance = null;
         }
         Destroy(gameObject);
     }

@@ -8995,10 +8995,11 @@ MonoBehaviour:
   treePrefab: {fileID: 6577857602279842889, guid: 6ecd8b4bc211e454ea918d6d527c28f7, type: 3}
   mudPrefab: {fileID: 3042198004925896561, guid: 6b96559bad54d184f86e7fa40e0d4e97, type: 3}
   maxWhirlpools: 7
-  maxTrees: 12
+  maxTrees: 10
   maxMudPuddles: 8
-  whirlpoolSpawnInterval: 4
-  landObstacleSpawnInterval: 10
+  whirlpoolSpawnInterval: 7
+  treeObstacleSpawnInterval: 30
+  mudObstacleSpawnInterval: 45
   whirlpoolParent: {fileID: 128622415}
   treesParent: {fileID: 646078054}
   mudParent: {fileID: 1741947330}

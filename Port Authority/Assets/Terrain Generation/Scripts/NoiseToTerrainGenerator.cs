@@ -139,22 +139,6 @@ public class NoiseToTerrainGenerator : MonoBehaviour
 
     }
 
-    public List<Vector3> GetOceanEdgeVerticesNearIsland(Vector3 islandCenter, float minDistanceFromLand)
-    {
-        List<Vector3> result = new List<Vector3>();
-        List<Vector3> allEdges = GetOceanEdgeVertices();
-
-        foreach (Vector3 v in allEdges)
-        {
-            if (Vector3.Distance(v, islandCenter) >= minDistanceFromLand)
-            {
-                result.Add(v);
-            }
-        }
-
-        return result;
-    }
-
     public List<Vector3> GetOceanEdgeVertices() => edgeVertices;
 
     public float GetWaterLevel() => waterLevel;

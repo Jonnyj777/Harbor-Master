@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9125608211529495437}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -691.8689, y: -109.255325, z: 158.36601}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -56,7 +56,9 @@ MonoBehaviour:
   boatCollision: {fileID: 8300000, guid: 9184d33469b23ba41bc2699f815b158f, type: 3}
   truckDelivery: {fileID: 8300000, guid: a57980bbabefa4546b09fa6fd0be4092, type: 3}
   truckCollision: {fileID: 8300000, guid: 10787058314562243aae3f538c3b2efe, type: 3}
-  landObstacleSpawn: {fileID: 8300000, guid: df729d213c4be44a9b55cd109f5cd4f9, type: 3}
+  whirlpoolSpawn: {fileID: 8300000, guid: dfa47fe971ffd5d4aa3344257c8bf3e1, type: 3}
+  treeSpawn: {fileID: 8300000, guid: df729d213c4be44a9b55cd109f5cd4f9, type: 3}
+  mudSpawn: {fileID: 8300000, guid: 3f3650405c7c04445aa0cdee3469026d, type: 3}
   landObstacleCleanup: {fileID: 8300000, guid: 79180f511d89441b9aa23ccae1992fe0, type: 3}
   ambientWaves: {fileID: 0}
   sfxEnabled: 1

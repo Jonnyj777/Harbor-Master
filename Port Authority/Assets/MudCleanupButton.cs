@@ -21,7 +21,6 @@ public class MudCleanupButton : MonoBehaviour
         {
             ScoreManager.Instance.UpdateSpendableScore(-cleanupCost);
             mud.StartCoroutine(mud.CleanMud());
-            Destroy(gameObject);
         }
     }
 }
